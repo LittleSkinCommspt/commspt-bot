@@ -112,6 +112,11 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
                     Plain(
                         text=send_message)
                 ])
+        elif command == '$help':
+            await app.sendGroupMessage(group, [
+                Plain(
+                    text='请查看 https://littleskin-commspt-bot-manual.netlify.app/')
+            ])
 
 
 if __name__ == "__main__":
