@@ -8,7 +8,7 @@ def getPlayerInfo(player_name: str):
     r = requests.get(f'https://mcskin.littleservice.cn/csl/{player_name}.json')
     j = r.json()
     name = j['username']
-    if not name == 404:
+    if name != '404':
         skin_type = 'default' if 'default' in j['skins'] else 'slim'
         skin_hash = j['skins'][skin_type]
         cape_hash = j['cape'] if 'cape' in j else '无'

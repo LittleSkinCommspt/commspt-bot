@@ -5,7 +5,7 @@ def getAll(l: list):
     text = ''
     for _i in l:
         i_text = _i.text
-        if not _i.text.strip() == '':
+        if _i.text.strip() != '':
             text = f'{text} {i_text}'
     return text.strip()
 
