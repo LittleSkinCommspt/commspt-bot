@@ -76,7 +76,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/off-topic.png"),
                 Plain(
-                    text='不要过分水群啦！可前往 Honoka Café，群号 651672723')
+                    text='闲聊请前往 Honoka Café，群号 651672723')
             ])
         elif command == '$ban':
             if message_at:  # at
