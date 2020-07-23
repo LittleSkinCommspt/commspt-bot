@@ -59,7 +59,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
         elif command == '$csl.json':
             await app.sendGroupMessage(group, [
                 Plain(
-                    text='请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#_13-1-14-6a')
+                    text='请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6')
             ])
         elif command == '$browser':
             await app.sendGroupMessage(group, [
