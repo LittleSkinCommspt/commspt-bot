@@ -56,6 +56,11 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             await app.sendGroupMessage(group, [
                 send_message  # 返回一个 Plain 对象
             ])
+        elif command == '$csl.json':
+            await app.sendGroupMessage(group, [
+                Plain(
+                    text='请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#_13-1-14-6a')
+            ])
         elif command == '$browser':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/browser.png"),
