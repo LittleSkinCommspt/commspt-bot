@@ -1,11 +1,11 @@
-from mirai import Mirai, Plain, At, Image, Quote, MessageChain, Group, GroupMessage, MemberJoinEvent
 import asyncio
 
 import botmessages
-import csl
 import permission
-
+import player
 import settings
+from mirai import (At, Group, GroupMessage, Image, MemberJoinEvent,
+                   MessageChain, Mirai, Plain, Quote)
 
 app = Mirai(settings.mirai_url)
 
@@ -35,7 +35,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
 
     if message_plain and not permission.isblocked(senderId):  # 如果有纯文本且没有被封禁
         _spilted_message = message_plain.split(' ', 1)
-        
+
         # 另一些常量
         command = _spilted_message[0]
         args = _spilted_message[1] if len(_spilted_message) > 1 else None
@@ -43,23 +43,37 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
         # Commands
         if command == '$csl':  # csl
             if args:  # 参数方式
-                send_message = csl.getPlayerInfo(args)
+                _player_name = args
             else:  # 回复方式
                 _player_name = botmessages.getQuote(
                     message.getFirstComponent(Quote).origin)
-                send_message = csl.getPlayerInfo(_player_name)
+
+            thisPlayer = player.PlayerProfile(_player_name)
+            send_message = thisPlayer.getCsl()
             await app.sendGroupMessage(group, [
-                send_message  # 返回一个 Plain 对象
+                send_message  # Plain
             ])
         elif command == '$csl.log':
-            send_message = csl.showLog()
             await app.sendGroupMessage(group, [
-                send_message  # 返回一个 Plain 对象
+                Plain(
+                    text='CustomSkinLoader 的日志位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将此文件直接上传至群文件')
             ])
         elif command == '$csl.json':
             await app.sendGroupMessage(group, [
                 Plain(
                     text='请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6')
+            ])
+        elif command == '$ygg':
+            if args:
+                _player_name = args
+            else:
+                _player_name = botmessages.getQuote(
+                    message.getFirstComponent(Quote).origin)
+
+            thisPlayer = player.PlayerProfile(_player_name)
+            send_message = thisPlayer.getYgg()
+            await app.sendGroupMessage(group, [
+                send_message  # Plain
             ])
         elif command == '$browser':
             await app.sendGroupMessage(group, [

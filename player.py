@@ -46,11 +46,11 @@ class YggdrasilProfile():
         return _provider
 
 
-class GameProfile():
+class PlayerProfile():
     def __init__(self, player_name: str):
         self.playerName = player_name
 
-    def getCsl(self):
+    def getCsl(self) -> Plain:
         r = requests.get(
             f'https://mcskin.littleservice.cn/csl/{self.playerName}.json')
         j = r.json()
@@ -66,7 +66,7 @@ class GameProfile():
         else:
             return Plain(text='[Error] 找不到角色')
 
-    def getYgg(self):
+    def getYgg(self) -> Plain:
         r1 = requests.post(
             'https://mcskin.littleservice.cn/api/yggdrasil/api/profiles/minecraft', json=[self.playerName])
         s1 = r1.json()
@@ -86,7 +86,3 @@ UUID：{gameprofile.uuid}
 模型：{gameprofile.skin.model}
 皮肤：{gameprofile.skin.hash} ({gameprofile.skin.provider})
 披风：{gameprofile.cape.hash} ({gameprofile.cape.provider})''')
-
-
-def showCslLog():
-    return Plain(text='CustomSkinLoader 的日志位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将此文件直接上传至群文件')
