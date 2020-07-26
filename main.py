@@ -1,5 +1,7 @@
 import asyncio
 
+import requests
+
 import botmessages
 import botpermissions
 import player
@@ -79,9 +81,9 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             ])
         elif command == '$texture':
             _texture_hash = args
+            r = requests.get(f'https://mcskin.littleservice.cn/textures/{_texture_hash}')
             await app.sendGroupMessage(group, [
-                Image.fromRemote(
-                    f'https://mcskin.littleservice.cn/textures/{_texture_hash}')
+                Image.fromBytes(r.content)
             ])
         elif command == '$browser':
             await app.sendGroupMessage(group, [
