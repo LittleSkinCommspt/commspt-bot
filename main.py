@@ -77,6 +77,12 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             await app.sendGroupMessage(group, [
                 send_message  # Plain
             ])
+        elif command == '$texture':
+            _texture_hash = args
+            await app.sendGroupMessage(group, [
+                Image.fromRemote(
+                    f'https://mcskin.littleservice.cn/textures/{_texture_hash}')
+            ])
         elif command == '$browser':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/browser.png"),
@@ -124,7 +130,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             else:  # QQ 号
                 userqq = int(args)
                 displayname = int(args)
-            
+
             _User = botpermissions.groupPermissions(userqq)
             if Operator.isAdmin():
                 _status = Operator.unblock(userqq)
