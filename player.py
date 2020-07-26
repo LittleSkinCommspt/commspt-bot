@@ -26,7 +26,7 @@ class YggdrasilProfile():
             self.skin.hash = None
             self.skin.provider = None
 
-        if 'cape' in yggdrasil_profile['textures']:
+        if 'CAPE' in yggdrasil_profile['textures']:
             self.cape.url = yggdrasil_profile['textures']['CAPE']['url']
             self.cape.provider = self.getTextureProvider(self.cape.url)
             self.cape.hash = self.getHashFromUrl(self.cape.url)
@@ -80,6 +80,7 @@ class PlayerProfile():
         unbase64ed = s2['properties'][0]['value']
         _gameprofile = base64.b64decode(unbase64ed)
         #
+        print(json.loads(_gameprofile))
         gameprofile = YggdrasilProfile(json.loads(_gameprofile))
         return Plain(text=f'''角色名：{gameprofile.name}
 UUID：{gameprofile.uuid}
