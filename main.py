@@ -1,7 +1,7 @@
 import asyncio
 
 import botmessages
-import permission
+import botpermissions
 import player
 import settings
 from mirai import (At, Group, GroupMessage, Image, MemberJoinEvent,
@@ -33,10 +33,12 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
     messageId = message.getSource().id
     senderId = event.sender.id
 
-    if message_plain and not permission.isblocked(senderId):  # 如果有纯文本且没有被封禁
+    Operator = botpermissions.groupPermissions(senderId)
+
+    if message_plain and not Operator.isBlocked():  # 如果有纯文本且没有被封禁
         _spilted_message = message_plain.split(' ', 1)
 
-        # 另一些常量
+        # 指令常量
         command = _spilted_message[0]
         args = _spilted_message[1] if len(_spilted_message) > 1 else None
 
@@ -104,8 +106,9 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             else:  # QQ 号
                 userqq = int(args)
                 displayname = int(args)
-            if permission.check(senderId) and not permission.check(userqq):
-                _status = permission.blockuser(userqq)
+            _User = botpermissions.groupPermissions(userqq)
+            if Operator.isAdmin() and not _User.isAdmin():
+                _status = Operator.block(userqq)
                 if _status:
                     send_message = f'已封禁 {displayname}，请不要滥用机器人！'
                 else:
@@ -121,8 +124,10 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             else:  # QQ 号
                 userqq = int(args)
                 displayname = int(args)
-            if permission.check(senderId):
-                _status = permission.allowuser(userqq)
+            
+            _User = botpermissions.groupPermissions(userqq)
+            if Operator.isAdmin():
+                _status = Operator.unblock(userqq)
                 if _status:
                     send_message = f'已解封 {displayname}'
                 else:
