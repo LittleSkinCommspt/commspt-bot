@@ -81,10 +81,17 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             ])
         elif command == '$texture':
             _texture_hash = args
-            r = requests.get(f'https://mcskin.littleservice.cn/textures/{_texture_hash}')
-            await app.sendGroupMessage(group, [
-                Image.fromBytes(r.content)
-            ])
+            if len(_texture_hash) != 64:
+                await app.sendGroupMessage(group, [Plain(text='[ERROR] Hash 长度有误')])
+            else:
+                r = requests.get(
+                    f'https://mcskin.littleservice.cn/textures/{_texture_hash}')
+                if r.status_code == 200:
+                    await app.sendGroupMessage(group, [
+                        Image.fromBytes(r.content)
+                    ])
+                else:
+                    await app.sendGroupMessage(group, [Plain(text=f'[ERROR] {r.status_code}')])
         elif command == '$browser':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/browser.png"),
@@ -92,21 +99,14 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
                     text='Chrome: https://www.google.cn/chrome\nFirefox: https://www.mozilla.org/zh-CN/firefox/new/')
             ])
         elif command == '$mail':
-            await app.sendGroupMessage(group, [
-                Plain(
-                    text='请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html')
-            ])
+            await app.sendGroupMessage(group, [Plain(text='请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html')])
         elif command == '$faq':
-            await app.sendGroupMessage(group, [
-                Plain(
-                    text='你应该阅读一遍 常见问题解答\nhttps://manual.littlesk.in/faq.html')
-            ])
+            await app.sendGroupMessage(group, [Plain(text='你应该阅读一遍 常见问题解答\nhttps://manual.littlesk.in/faq.html')])
         elif command == '$ot':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/off-topic.png"),
-                Plain(
-                    text='闲聊请前往 Honoka Café，群号 651672723')
-            ])
+                Plain(text='闲聊请前往 Honoka Café，群号 651672723')]
+            )
         elif command == '$ban':
             if message_at:  # at
                 userqq = message_at.target
