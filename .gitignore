@@ -130,3 +130,5 @@ dmypy.json
 
 # settings and secrets
 settings.py
+admins.list
+blockusers.list
