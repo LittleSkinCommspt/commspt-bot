@@ -40,7 +40,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
     if message_plain and not Operator.isBlocked():  # 如果有纯文本且没有被封禁
         if senderId == 3426549342:  # Constance 消息同步机器人
             message_plain = message_plain.split('：', 1)[1]  # overwrite
-        
+
         _spilted_message = message_plain.split(' ', 1)
 
         # 指令常量
@@ -156,6 +156,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/rtfm.png"),
                 Plain(text='请确认服务器正确配置 authlib-injector 并将 online-mode 设为 true，否则请使用 CustomSkinLoader。\n更多：https://manual.littlesk.in/advanced/yggdrasil.html')]
+            )
 
 if __name__ == "__main__":
     app.run()
