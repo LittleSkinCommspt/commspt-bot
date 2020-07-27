@@ -154,7 +154,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             ])
         elif command == '$ygg.nsl':
             await app.sendGroupMessage(group, [
-                Image.fromFileSystem("./images/off-topic.png"),
+                Image.fromFileSystem("./images/rtfm.png"),
                 Plain(text='请确认服务器正确配置 authlib-injector 并将 online-mode 设为 true，否则请使用 CustomSkinLoader。\n更多：https://manual.littlesk.in/advanced/yggdrasil.html')]
 
 if __name__ == "__main__":
