@@ -80,7 +80,6 @@ class PlayerProfile():
         unbase64ed = s2['properties'][0]['value']
         _gameprofile = base64.b64decode(unbase64ed)
         #
-        print(json.loads(_gameprofile))
         gameprofile = YggdrasilProfile(json.loads(_gameprofile))
         return Plain(text=f'''角色名：{gameprofile.name}
 UUID：{gameprofile.uuid}
