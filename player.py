@@ -2,7 +2,7 @@ import requests
 import base64
 import io
 from mirai import Plain, Image
-from PIL import Image as pilImage
+# from PIL import Image as pilImage
 import json
 
 
@@ -60,12 +60,14 @@ class PlayerProfile():
         '''通过 hash 获取 Image 对象'''
         r = requests.get(
             f'https://mcskin.littleservice.cn/preview/hash/{texture_hash}?png')
-        webpIo = io.BytesIO(r.content)
-        pngIo = io.BytesIO()
-        middleImage = pilImage.open(webpIo)
-        middleImage.save(pngIo, format='PNG')
+        # WebP 转 PNG
+        # webpIo = io.BytesIO(r.content)
+        # pngIo = io.BytesIO()
+        # middleImage = pilImage.open(webpIo)
+        # middleImage.save(pngIo, format='PNG')
+
         if r.status_code == 200:
-            return Image.fromBytes(pngIo.getvalue())
+            return Image.fromBytes(r.content)
         else:
             return None
 
