@@ -38,7 +38,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
     Operator = botpermissions.groupPermissions(senderId)
 
     if message_plain and not Operator.isBlocked():  # 如果有纯文本且没有被封禁
-        if senderId == 3426549342:  # Constance 消息同步机器人
+        if senderId == 3426549342 and '：' in message_plain:  # Constance 消息同步机器人
             message_plain = message_plain.split('：', 1)[1]  # overwrite
 
         _spilted_message = message_plain.split(' ', 1)
