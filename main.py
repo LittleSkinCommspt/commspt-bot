@@ -57,9 +57,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
 
             thisPlayer = player.PlayerProfile(_player_name)
             send_message = thisPlayer.getCsl()
-            await app.sendGroupMessage(group, [
-                send_message  # Plain
-            ])
+            await app.sendGroupMessage(group, send_message)
         elif command == '$csl.log':
             await app.sendGroupMessage(group, [
                 Plain(
@@ -79,9 +77,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
 
             thisPlayer = player.PlayerProfile(_player_name)
             send_message = thisPlayer.getYgg()
-            await app.sendGroupMessage(group, [
-                send_message  # Plain
-            ])
+            await app.sendGroupMessage(group, send_message)
         elif command == '$ygg.nsis':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/rtfm.png"),
@@ -92,14 +88,11 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             if len(_texture_hash) != 64:
                 await app.sendGroupMessage(group, [Plain(text='[ERROR] Hash 长度有误')])
             else:
-                r = requests.get(
-                    f'https://mcskin.littleservice.cn/textures/{_texture_hash}')
-                if r.status_code == 200:
-                    await app.sendGroupMessage(group, [
-                        Image.fromBytes(r.content)
-                    ])
+                _image_message = player.PlayerProfile.getPreviewByHash(_texture_hash)
+                if _image_message:
+                    await app.sendGroupMessage(group, [_image_message])
                 else:
-                    await app.sendGroupMessage(group, [Plain(text=f'[ERROR] {r.status_code}')])
+                    await app.sendGroupMessage(group, [Plain(text='[ERROR]')])
         elif command == '$browser':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/browser.png"),
