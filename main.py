@@ -25,6 +25,11 @@ async def member_join(app: Mirai, event: MemberJoinEvent):
                 At(target=event.member.id),
                 Plain(text="欢迎！要使用清晰的语言描述你的情况哦~")
             ])
+    elif group_id == 651672723:  # Honoka Café
+        await app.sendGroupMessage(  # 刷新群名片
+            event.member.group.id, [
+                Plain(text="!!name")
+            ])
 
 
 @app.receiver("GroupMessage")
