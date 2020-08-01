@@ -13,8 +13,9 @@ class groupPermissions():
             return [int(_i) for _i in f.read().split()]
 
     def _writeBlockList(self, l: list):
+        _l = [str(_i) for _i in l]
         with open(self.blockusersList, 'w+') as f:
-            f.writelines([str(_i) for _i in l])
+            f.writelines([f'{_i}\n' for _i in _l])
 
     def isAdmin(self) -> bool:
         '''是否为 admin'''
