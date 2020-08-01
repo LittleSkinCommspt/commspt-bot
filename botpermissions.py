@@ -38,7 +38,8 @@ class groupPermissions():
         if userId in _l:  # 用户已被 block
             return False
         else:
-            self._writeBlockList(_l.append(userId))
+            _l.append(userId)
+            self._writeBlockList(_l)
             return True
 
     def unblock(self, userId: int) -> bool:
