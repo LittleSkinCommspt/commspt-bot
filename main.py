@@ -107,11 +107,15 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
         elif command == '$mail':
             await app.sendGroupMessage(group, [Plain(text='请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html')])
         elif command == '$faq':
-            await app.sendGroupMessage(group, [Plain(text='你应该阅读一遍 常见问题解答\nhttps://manual.littlesk.in/faq.html')])
+            await app.sendGroupMessage(group, [
+                Image.fromFileSystem("./images/rtfm.png"),
+                Plain(text='你需要去阅读一遍 常见问题解答。\nhttps://manual.littlesk.in/faq.html')]
         elif command == '$ot':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/off-topic.png"),
                 Plain(text='闲聊请前往 Honoka Café，群号 651672723')]
+        elif command == '$url':
+            await app.sendGroupMessage(group, [Plain(text='你可能仍在使用 littleskin.cn ，该域名已在国内下线。\n我们强烈建议你去使用 littlesk.in 来获取最佳体验。')])
             )
         elif command == '$ban':
             if message_at:  # at
@@ -124,9 +128,9 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             if Operator.isAdmin() and not _User.isAdmin():
                 _status = Operator.block(userqq)
                 if _status:
-                    send_message = f'已封禁 {displayname}，请不要滥用机器人！'
+                    send_message = f'{displayname} 已被管理员封禁。'
                 else:
-                    send_message = f'{displayname} 已经在封禁列表中'
+                    send_message = f'{displayname} 已经在封禁列表中。'
                 await app.sendGroupMessage(group, [
                     Plain(
                         text=send_message)
@@ -143,9 +147,9 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             if Operator.isAdmin():
                 _status = Operator.unblock(userqq)
                 if _status:
-                    send_message = f'已解封 {displayname}'
+                    send_message = f'{displayname} 已被管理员解封。'
                 else:
-                    send_message = f'{displayname} 并不在封禁列表中'
+                    send_message = f'{displayname} 并不在封禁列表中。'
                 await app.sendGroupMessage(group, [
                     Plain(
                         text=send_message)
