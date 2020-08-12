@@ -23,7 +23,7 @@ async def member_join(app: Mirai, event: MemberJoinEvent):
         await app.sendGroupMessage(
             event.member.group.id, [
                 At(target=event.member.id),
-                Plain(text="欢迎！要使用清晰的语言描述你的情况哦~")
+                Plain(text="欢迎！请认真阅读群公告后用清晰的语言提问哦~")
             ])
     elif group_id == 651672723:  # Honoka Café
         await app.sendGroupMessage(  # 刷新群名片
@@ -110,13 +110,14 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/rtfm.png"),
                 Plain(text='你需要去阅读一遍 常见问题解答。\nhttps://manual.littlesk.in/faq.html')]
+             )
         elif command == '$ot':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/off-topic.png"),
                 Plain(text='闲聊请前往 Honoka Café，群号 651672723')]
+             )
         elif command == '$url':
             await app.sendGroupMessage(group, [Plain(text='你可能仍在使用 littleskin.cn ，该域名已在国内下线。\n我们强烈建议你去使用 littlesk.in 来获取最佳体验。')])
-            )
         elif command == '$ban':
             if message_at:  # at
                 userqq = message_at.target
