@@ -116,8 +116,8 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
                 Image.fromFileSystem("./images/off-topic.png"),
                 Plain(text='闲聊请前往 Honoka Café，群号 651672723')]
              )
-        elif command == '$url':
-            await app.sendGroupMessage(group, [Plain(text='你可能仍在使用 littleskin.cn ，该域名已在国内下线。\n我们强烈建议你去使用 littlesk.in 来获取最佳体验。')])
+        elif command == '$domain':
+            await app.sendGroupMessage(group, [Plain(text='你可能仍在中国大陆使用过时的 littleskin.cn，请使用 littlesk.in 以获取最佳体验。')])
         elif command == '$ban':
             if message_at:  # at
                 userqq = message_at.target
