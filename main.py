@@ -102,7 +102,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/browser.png"),
                 Plain(
-                    text='Chrome: https://www.google.cn/chrome\nFirefox: https://www.mozilla.org/zh-CN/firefox/new/')
+                    text='请认真阅读图片内容后再点击链接下载浏览器。\nChrome: https://www.google.cn/chrome\nFirefox: https://www.mozilla.org/zh-CN/firefox/new/')
             ])
         elif command == '$mail':
             await app.sendGroupMessage(group, [Plain(text='请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html')])
