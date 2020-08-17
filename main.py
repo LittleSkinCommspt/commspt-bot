@@ -53,7 +53,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
         args = _spilted_message[1] if len(_spilted_message) > 1 else None
 
         # Commands
-        if command == '$csl':  # csl
+        if command == '&csl':  # csl
             if args:  # 参数方式
                 _player_name = args
             else:  # 回复方式
@@ -63,17 +63,17 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             thisPlayer = player.PlayerProfile(_player_name)
             send_message = thisPlayer.getCsl()
             await app.sendGroupMessage(group, send_message)
-        elif command == '$csl.log':
+        elif command == '&csl.log':
             await app.sendGroupMessage(group, [
                 Plain(
                     text='CustomSkinLoader 的日志位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将此文件直接上传至群文件')
             ])
-        elif command == '$csl.json':
+        elif command == '&csl.json':
             await app.sendGroupMessage(group, [
                 Plain(
                     text='请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6')
             ])
-        elif command == '$ygg':
+        elif command == '&ygg':
             if args:
                 _player_name = args
             else:
@@ -83,12 +83,12 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
             thisPlayer = player.PlayerProfile(_player_name)
             send_message = thisPlayer.getYgg()
             await app.sendGroupMessage(group, send_message)
-        elif command == '$ygg.nsis':
+        elif command == '&ygg.nsis':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/rtfm.png"),
                 Plain(text='请确认服务器正确配置 authlib-injector 并将 online-mode 设为 true，否则请使用 CustomSkinLoader。\n更多：https://manual.littlesk.in/advanced/yggdrasil.html')]
             )
-        elif command == '$texture':
+        elif command == '&texture':
             _texture_hash = args
             if len(_texture_hash) != 64:
                 await app.sendGroupMessage(group, [Plain(text='[ERROR] Hash 长度有误')])
@@ -98,27 +98,27 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
                     await app.sendGroupMessage(group, [_image_message])
                 else:
                     await app.sendGroupMessage(group, [Plain(text='[ERROR]')])
-        elif command == '$browser':
+        elif command == '&browser':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/browser.png"),
                 Plain(
                     text='请仔细阅读图片中的内容！以下是几个推荐的浏览器\nChrome: https://www.google.cn/chrome\nFirefox: https://www.mozilla.org/zh-CN/firefox/new/\nEdge: https://aka.ms/msedge')
             ])
-        elif command == '$mail':
+        elif command == '&mail':
             await app.sendGroupMessage(group, [Plain(text='请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html')])
-        elif command == '$faq':
+        elif command == '&faq':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/rtfm.png"),
                 Plain(text='你需要去阅读一遍 常见问题解答。\nhttps://manual.littlesk.in/faq.html')]
              )
-        elif command == '$ot':
+        elif command == '&ot':
             await app.sendGroupMessage(group, [
                 Image.fromFileSystem("./images/off-topic.png"),
                 Plain(text='闲聊请前往 Honoka Café，群号 651672723')]
              )
-        elif command == '$domain':
+        elif command == '&domain':
             await app.sendGroupMessage(group, [Plain(text='你可能仍在中国大陆使用过时的 littleskin.cn，请使用 littlesk.in 以获取最佳体验。')])
-        elif command == '$ban':
+        elif command == '&ban':
             if message_at:  # at
                 userqq = message_at.target
                 displayname = message_at.display
@@ -136,7 +136,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
                     Plain(
                         text=send_message)
                 ])
-        elif command == '$unban':
+        elif command == '&unban':
             if message_at:  # at
                 userqq = message_at.target
                 displayname = message_at.display
@@ -155,7 +155,7 @@ async def event_gm(app: Mirai, group: Group, message: MessageChain, event: Group
                     Plain(
                         text=send_message)
                 ])
-        elif command == '$help':
+        elif command == '&help':
             await app.sendGroupMessage(group, [
                 Plain(
                     text='请查看 https://littleskin-commspt-bot-manual.netlify.app/')
