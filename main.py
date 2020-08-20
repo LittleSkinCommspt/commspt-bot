@@ -1,7 +1,8 @@
 import asyncio
+from typing import List
 
 import requests
-from graia.application import GraiaMiraiApplication
+from graia.application import GraiaMiraiApplication, application
 from graia.application.entry import (At, Group, GroupMessage, Image,
                                      MemberCardChangeEvent, MemberJoinEvent,
                                      MessageChain, Plain)
@@ -116,9 +117,20 @@ async def command_browser(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ot')), Depend(filterCafe)])
-async def command_ot(app: GraiaMiraiApplication, group: Group):
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('client.refresh'))])
+async def command_client_refresh(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/client-refresh.png'),
+        Plain(tF.client_refresh)
+    ]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ot')), Depend(filterCafe)])
+async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    atList = [At(t.target) for t in CP.at] if CP.at != [] else []
+    await app.sendGroupMessage(group, MessageChain.create([
+        *atList, 
         Image.fromLocalFile('./images/off-topic.png'),
         Plain(tF.ot)
     ]))
