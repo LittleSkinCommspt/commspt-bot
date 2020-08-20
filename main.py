@@ -128,7 +128,9 @@ async def command_ot(app: GraiaMiraiApplication, group: Group):
 async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
     _textureHash = CP.Command.args
-    if len(_textureHash) != 64:
+    if not _textureHash:
+        await app.sendGroupMessage(group, MessageChain.create(tF.view_no_hash_error))
+    elif len(_textureHash) != 64:
         await app.sendGroupMessage(group, MessageChain.create(tF.view_hash_length_error))
     else:
         _image_message = PlayerProfile.getPreviewByHash(_textureHash)

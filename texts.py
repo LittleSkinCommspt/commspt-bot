@@ -11,6 +11,7 @@ class TextFields(object):
     domain = '你可能仍在中国大陆使用过时的 littleskin.cn，请使用 littlesk.in 以获取最佳体验。'
     view_hash_length_error = 'Hash 长度有误'
     view_not_200_error = 'HTTP 状态码不为 200，可能找不到材质'
+    view_no_hash_error = '请提供 Hash'
     mail = '请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html'
     csl_json = 'CustomSkinLoader 的日志位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将此文件直接上传至群文件'
     browser = '''请仔细阅读图片中的内容！以下是几个推荐的浏览器
