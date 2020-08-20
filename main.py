@@ -1,165 +1,190 @@
 import asyncio
 
 import requests
+from graia.application import GraiaMiraiApplication
+from graia.application.entry import (At, Group, GroupMessage, Image,
+                                     MemberCardChangeEvent, MemberJoinEvent,
+                                     MessageChain, Plain)
+from graia.broadcast import Broadcast
+from graia.broadcast.builtin.decoraters import Depend
 
-import botmessages
-import botpermissions
-import player
 import settings
-from mirai import (At, Group, GroupMessage, Image, MemberJoinEvent,
-                   MessageChain, Mirai, Plain, Quote)
+from botpermissions import groupPermissions
+from commandparser import CommandParser, onCommand, filterCafe
+from player import PlayerProfile
+from texts import TextFields as tF
 
-app = Mirai(settings.mirai_url)
-
-
-@app.receiver("MemberJoinEvent")
-async def member_join(app: Mirai, event: MemberJoinEvent):
-    group_id = event.member.group.id
-    if group_id == 586146922:  # [user@LittleSkin ~/group/QQ]$
-        await app.sendGroupMessage(  # 刷新群名片
-            event.member.group.id, [
-                Plain(text="!!name")
-            ])
-        await app.sendGroupMessage(
-            event.member.group.id, [
-                At(target=event.member.id),
-                Plain(text="欢迎！请认真阅读群公告后用清晰的语言提问哦~")
-            ])
-    elif group_id == 651672723:  # Honoka Café
-        await app.sendGroupMessage(  # 刷新群名片
-            event.member.group.id, [
-                Plain(text="!!name")
-            ])
+# Application & BCC 初始化
+loop = asyncio.get_event_loop()
+bcc = Broadcast(loop=loop)
+app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 
 
-@app.receiver("GroupMessage")
-async def event_gm(app: Mirai, group: Group, message: MessageChain, event: GroupMessage):
-    # 一些常量
-    message_plain = botmessages.getAll(message.getAllofComponent(Plain))
-    message_at = message.getFirstComponent(At)
-    messageId = message.getSource().id
-    senderId = event.sender.id
+# 刷新群名片
+@bcc.receiver(MemberJoinEvent)
+async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoinEvent):
+    member = event.member
+    group = member.group
+    if group.id == settings.specialqq.littleskin_main:
+        await app.sendGroupMessage(group, MessageChain.create(
+            [Plain(tF.constance_refresh_name)]))
+        await app.sendGroupMessage(group, MessageChain.create(
+            [At(member.id), Plain(tF.welcome_to_littleskin)]))
+    elif group.id == settings.specialqq.littleskin_cafe:
+        await app.sendGroupMessage(group, MessageChain.create(
+            [Plain(tF.constance_refresh_name)]))
 
-    Operator = botpermissions.groupPermissions(senderId)
 
-    if message_plain and not Operator.isBlocked():  # 如果有纯文本且没有被封禁
-        if senderId == 3426549342 and '：' in message_plain:  # Constance 消息同步机器人
-            message_plain = message_plain.split('：', 1)[1]  # overwrite
+@bcc.receiver(MemberCardChangeEvent)
+async def membercardchangeevent_listener(app: GraiaMiraiApplication, event: MemberCardChangeEvent):
+    member = event.member
+    group = member.group
+    GP = groupPermissions(member.id)  # 防止滥用
+    if GP.isBlocked():
+        return None
+    if group.id in [settings.specialqq.littleskin_main, settings.specialqq.littleskin_cafe]:
+        await app.sendGroupMessage(group, MessageChain.create(
+            [Plain(tF.constance_refresh_name)]))
 
-        _spilted_message = message_plain.split(' ', 1)
 
-        # 指令常量
-        command = _spilted_message[0]
-        args = _spilted_message[1] if len(_spilted_message) > 1 else None
+# 指令监听
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('help'))])
+async def command_help(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
 
-        # Commands
-        if command == '&csl':  # csl
-            if args:  # 参数方式
-                _player_name = args
-            else:  # 回复方式
-                _player_name = botmessages.getQuote(
-                    message.getFirstComponent(Quote).origin)
 
-            thisPlayer = player.PlayerProfile(_player_name)
-            send_message = thisPlayer.getCsl()
-            await app.sendGroupMessage(group, send_message)
-        elif command == '&csl.log':
-            await app.sendGroupMessage(group, [
-                Plain(
-                    text='CustomSkinLoader 的日志位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将此文件直接上传至群文件')
-            ])
-        elif command == '&csl.json':
-            await app.sendGroupMessage(group, [
-                Plain(
-                    text='请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6')
-            ])
-        elif command == '&ygg':
-            if args:
-                _player_name = args
-            else:
-                _player_name = botmessages.getQuote(
-                    message.getFirstComponent(Quote).origin)
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
+async def command_manual(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.manual)]))
 
-            thisPlayer = player.PlayerProfile(_player_name)
-            send_message = thisPlayer.getYgg()
-            await app.sendGroupMessage(group, send_message)
-        elif command == '&ygg.nsis':
-            await app.sendGroupMessage(group, [
-                Image.fromFileSystem("./images/rtfm.png"),
-                Plain(text='请确认服务器正确配置 authlib-injector 并将 online-mode 设为 true，否则请使用 CustomSkinLoader。\n更多：https://manual.littlesk.in/advanced/yggdrasil.html')]
-            )
-        elif command == '&texture':
-            _texture_hash = args
-            if len(_texture_hash) != 64:
-                await app.sendGroupMessage(group, [Plain(text='[ERROR] Hash 长度有误')])
-            else:
-                _image_message = player.PlayerProfile.getPreviewByHash(_texture_hash)
-                if _image_message:
-                    await app.sendGroupMessage(group, [_image_message])
-                else:
-                    await app.sendGroupMessage(group, [Plain(text='[ERROR]')])
-        elif command == '&browser':
-            await app.sendGroupMessage(group, [
-                Image.fromFileSystem("./images/browser.png"),
-                Plain(
-                    text='请仔细阅读图片中的内容！以下是几个推荐的浏览器\nChrome: https://www.google.cn/chrome\nFirefox: https://www.mozilla.org/zh-CN/firefox/new/\nEdge: https://aka.ms/msedge')
-            ])
-        elif command == '&mail':
-            await app.sendGroupMessage(group, [Plain(text='请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html')])
-        elif command == '&faq':
-            await app.sendGroupMessage(group, [
-                Image.fromFileSystem("./images/rtfm.png"),
-                Plain(text='你需要去阅读一遍 常见问题解答。\nhttps://manual.littlesk.in/faq.html')]
-             )
-        elif command == '&ot':
-            await app.sendGroupMessage(group, [
-                Image.fromFileSystem("./images/off-topic.png"),
-                Plain(text='闲聊请前往 Honoka Café，群号 651672723')]
-             )
-        elif command == '&domain':
-            await app.sendGroupMessage(group, [Plain(text='你可能仍在中国大陆使用过时的 littleskin.cn，请使用 littlesk.in 以获取最佳体验。')])
-        elif command == '&ban':
-            if message_at:  # at
-                userqq = message_at.target
-                displayname = message_at.display
-            else:  # QQ 号
-                userqq = int(args)
-                displayname = int(args)
-            _User = botpermissions.groupPermissions(userqq)
-            if Operator.isAdmin() and not _User.isAdmin():
-                _status = Operator.block(userqq)
-                if _status:
-                    send_message = f'{displayname} 已被管理员封禁。'
-                else:
-                    send_message = f'{displayname} 已经在封禁列表中。'
-                await app.sendGroupMessage(group, [
-                    Plain(
-                        text=send_message)
-                ])
-        elif command == '&unban':
-            if message_at:  # at
-                userqq = message_at.target
-                displayname = message_at.display
-            else:  # QQ 号
-                userqq = int(args)
-                displayname = int(args)
 
-            _User = botpermissions.groupPermissions(userqq)
-            if Operator.isAdmin():
-                _status = Operator.unblock(userqq)
-                if _status:
-                    send_message = f'{displayname} 已被管理员解封。'
-                else:
-                    send_message = f'{displayname} 并不在封禁列表中。'
-                await app.sendGroupMessage(group, [
-                    Plain(
-                        text=send_message)
-                ])
-        elif command == '&help':
-            await app.sendGroupMessage(group, [
-                Plain(
-                    text='请查看 https://littleskin-commspt-bot-manual.netlify.app/')
-            ])
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.server.jvm'))])
+async def command_ygg_server_jvm(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ygg_server_jvm)]))
 
-if __name__ == "__main__":
-    app.run()
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('domain'))])
+async def command_domain(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.domain)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('mail'))])
+async def command_mail(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.mail)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.latest'))])
+async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
+    _r = requests.get(
+        'https://authlib-injector.yushi.moe/artifact/latest.json')
+    _j: dict = _r.json()
+    _latestVersion = _j['version']
+    _url = _j['download_url']
+    _message = f'authlib-injector 最新版本：{_latestVersion}\n{_url}'
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.latest'))])
+async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
+    _r = requests.get(
+        'https://csl-1258131272.cos.ap-shanghai.myqcloud.com/latest.json')
+    _j: dict = _r.json()
+    _latestVersion = _j['version']
+    _forge = _j['downloads']['Forge']
+    _fabric = _j['downloads']['Fabric']
+    _message = f'''CustomSkinLoader 最新版本：{_latestVersion}
+Forge: {_forge}
+Fabric: {_fabric}'''
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.json'))])
+async def command_csl_json(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_json)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.nsis'))])
+async def command_ygg_nsis(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ygg_nsis)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('browser'))])
+async def command_browser(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/browser.png'),
+        Plain(tF.browser)
+    ]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ot')), Depend(filterCafe)])
+async def command_ot(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/off-topic.png'),
+        Plain(tF.ot)
+    ]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('view'))])
+async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    _textureHash = CP.Command.args
+    if len(_textureHash) != 64:
+        await app.sendGroupMessage(group, MessageChain.create(tF.view_hash_length_error))
+    else:
+        _image_message = PlayerProfile.getPreviewByHash(_textureHash)
+        if _image_message:
+            await app.sendGroupMessage(group, MessageChain.create(_image_message))
+        else:
+            await app.sendGroupMessage(group, MessageChain.create(tF.view_not_200_error))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl'))])
+async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    _playerName = CP.Command.args if CP.Command.args else CP.quote_plain_message
+    _player = PlayerProfile(_playerName)
+    _message = _player.getCsl()
+    await app.sendGroupMessage(group, MessageChain.create(_message))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg'))])
+async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    _playerName = CP.Command.args if CP.Command.args else CP.quote_plain_message
+    _player = PlayerProfile(_playerName)
+    _message = _player.getYgg()
+    await app.sendGroupMessage(group, MessageChain.create(_message))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ban'))])
+async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    GP = groupPermissions(CP.sender_id)
+    if GP.isAdmin():
+        for t in CP.at:
+            targetGP = groupPermissions(t.target)
+            if not targetGP.isAdmin():
+                _result = targetGP.blockme()
+                _message = f'{t.display} 因滥用而被封禁' if _result else f'失败，{t.display} 已在封禁列表中'
+                await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('unban'))])
+async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    GP = groupPermissions(CP.sender_id)
+    if GP.isAdmin():
+        for t in CP.at:
+            targetGP = groupPermissions(t.target)
+            _result = targetGP.unblockme()
+            _message = f'{t.display} 解除封禁成功' if _result else f'失败，{t.display} 不在封禁列表中'
+            await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('test'))])
+async def command_test(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.test)]))
+
+
+if __name__ == '__main__':
+    app.launch_blocking()

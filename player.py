@@ -1,15 +1,38 @@
-import requests
 import base64
-from mirai import Plain, Image
 import json
+
+import requests
+from graia.application.entry import Image, Plain
+
+class TextureBase(object):
+    url: str
+    hash: str
+
+class TextureProvider(object):
+    class LittleSkin(object):
+        description = 'LittleSkin'
+
+    class Mojang(object):
+        description = 'Mojang'
+
+
+class TextureModel(object):
+    class slim(object):
+        description = 'slim'
+
+    class default(object):
+        description = 'default'
 
 
 class YggdrasilProfile():
-    class skin:
+    uuid: str
+    name: str
+
+    class skin(TextureBase):
         '''皮肤'''
         pass
 
-    class cape:
+    class cape(TextureBase):
         '''披风'''
         pass
 
@@ -18,8 +41,8 @@ class YggdrasilProfile():
         self.name = yggdrasil_profile['profileName']
 
         if 'SKIN' in yggdrasil_profile['textures']:
-            self.skin.model = 'slim' if 'metadata' in yggdrasil_profile[
-                'textures']['SKIN'] else 'default'
+            self.skin.model = TextureModel.slim if 'metadata' in yggdrasil_profile[
+                'textures']['SKIN'] else TextureModel.default
             self.skin.url = yggdrasil_profile['textures']['SKIN']['url']
             self.skin.hash = self.getHashFromUrl(self.skin.url)
             self.skin.provider = self.getTextureProvider(self.skin.url)
@@ -45,7 +68,7 @@ class YggdrasilProfile():
 
     @staticmethod
     def getTextureProvider(url: str) -> str:
-        _provider = 'LittleSkin' if 'mcskin.littleservice.cn' in url else 'Mojang'
+        _provider = TextureProvider.LittleSkin if 'mcskin.littleservice.cn' in url else TextureProvider.Mojang
         return _provider
 
 
@@ -59,14 +82,17 @@ class PlayerProfile():
         r = requests.get(
             f'https://mcskin.littleservice.cn/preview/hash/{texture_hash}?png')
         if r.status_code == 200:
-            return Image.fromBytes(r.content)
+            return Image.fromUnsafeBytes(r.content)
         else:
             return None
 
     def previewImage(self, skin_hash: str, cape_hash: str) -> list:
         '''获取皮肤和披风的预览图
 
-        使用：*self.previewImage(skin_hash, cape_hash)'''
+        使用方法：
+        ``` python
+        *self.previewImage(skin_hash, cape_hash)
+        ```'''
         _l = list()
         if skin_hash:
             _l.append(self.getPreviewByHash(skin_hash))
@@ -83,20 +109,20 @@ class PlayerProfile():
             skin_type = 'default' if 'default' in j['skins'] else 'slim'
             skin_hash = j['skins'][skin_type] if j['skins'][skin_type] else None
             cape_hash = j['cape'] if j['cape'] else None
-            return [Plain(text=f'''角色名：{name}
+            return [Plain(f'''角色名：{name}
 模型：{skin_type}
 皮肤：{skin_hash}
 披风：{cape_hash}
 '''), *self.previewImage(skin_hash, cape_hash)]
         else:
-            return [Plain(text='[Error] 找不到角色')]
+            return [Plain('[Error] 找不到角色')]
 
     def getYgg(self) -> list:
         r1 = requests.post(
             'https://mcskin.littleservice.cn/api/yggdrasil/api/profiles/minecraft', json=[self.playerName])
         s1 = r1.json()
         if s1 == []:
-            return [Plain(text='[Error] 找不到角色')]
+            return [Plain('[Error] 找不到角色')]
         #
         player_uuid = s1[0]['id']
         r2 = requests.get(
@@ -107,10 +133,10 @@ class PlayerProfile():
 
         #
         gameprofile = YggdrasilProfile(json.loads(_gameprofile))
-        return [Plain(text=f'''角色名：{gameprofile.name}
+        return [Plain(f'''角色名：{gameprofile.name}
 UUID：{gameprofile.uuid}
-模型：{gameprofile.skin.model}
-皮肤：{gameprofile.skin.hash} ({gameprofile.skin.provider})
-披风：{gameprofile.cape.hash} ({gameprofile.cape.provider})
-'''), *self.previewImage(gameprofile.skin.hash if gameprofile.skin.provider == 'LittleSkin' else None,
-                         gameprofile.cape.hash if gameprofile.cape.provider == 'LittleSkin' else None)]
+模型：{gameprofile.skin.model.description}
+皮肤：{gameprofile.skin.hash} ({gameprofile.skin.provider.description})
+披风：{gameprofile.cape.hash} ({gameprofile.cape.provider.description})
+'''), *self.previewImage(gameprofile.skin.hash if gameprofile.skin.provider.description == TextureProvider.LittleSkin.description else None,
+                         gameprofile.cape.hash if gameprofile.cape.provider.description == TextureProvider.LittleSkin.description else None)]

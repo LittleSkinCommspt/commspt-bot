@@ -1,6 +1,9 @@
-class groupPermissions():
+class groupPermissions(object):
+    '''处理 `Member` 的权限'''
     adminsList = 'admins.list'
     blockusersList = 'blockusers.list'
+
+    qq: int
 
     def __init__(self, qq: int):
         '''检查用户权限或进行权限操作
@@ -29,31 +32,31 @@ class groupPermissions():
             _l = [int(_i) for _i in f.read().split()]
         return self.qq in _l
 
-    def block(self, userId: int) -> bool:
-        '''封禁 userId
+    def blockme(self) -> bool:
+        '''封禁自己
         
         成功 True
         
         :params userId: 被封禁对象的 QQ'''
         _l = self._readBlockList()
-        if userId in _l:  # 用户已被 block
+        if self.qq in _l:  # 用户已被 block
             return False
         else:
-            _l.append(userId)
+            _l.append(self.qq)
             self._writeBlockList(_l)
             return True
 
-    def unblock(self, userId: int) -> bool:
-        '''解除 userId 的封禁
+    def unblockme(self) -> bool:
+        '''解除自己的封禁
         
         成功 True
         
         :params userId: 被解除封禁的对象的 QQ'''
         _l = self._readBlockList()
-        if not userId in _l:  # 用户没被 block
+        if not self.qq in _l:  # 用户没被 block
             return False
         else:
-            del _l[_l.index(userId)]
+            del _l[_l.index(self.qq)]
             self._writeBlockList(_l)
             return True
 
