@@ -20,4 +20,4 @@ Firefox: https://www.mozilla.org/firefox/new/
 Edge: https://aka.ms/msedge'''
     ygg_nsis = '''请确认服务器正确配置 authlib-injector 并将 online-mode 设为 true，否则请使用 CustomSkinLoader。
 更多：https://manual.littlesk.in/advanced/yggdrasil.html'''
-    client-refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
+    client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
