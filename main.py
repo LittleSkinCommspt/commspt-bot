@@ -2,7 +2,7 @@ import asyncio
 from typing import List
 
 import requests
-from graia.application import GraiaMiraiApplication, application
+from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
                                      MemberCardChangeEvent, MemberJoinEvent,
                                      MessageChain, Plain)
