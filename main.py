@@ -139,7 +139,7 @@ async def command_ygg_client_refresh(app: GraiaMiraiApplication, group: Group):
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ot')), Depend(filterCafe)])
 async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
-    atList = [At(t.target) for t in CP.at] if CP.at != [] else []
+    atList: List[Optional[At]] = [At(t.target) for t in CP.at] if CP.at != [] else []
     await app.sendGroupMessage(group, MessageChain.create([
         *atList,
         Image.fromLocalFile('./images/off-topic.png'),
