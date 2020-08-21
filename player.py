@@ -9,6 +9,9 @@ class TextureBase(object):
     hash: str
 
 class TextureProvider(object):
+    class No(object):
+        description = '无'
+    
     class LittleSkin(object):
         description = 'LittleSkin'
 
@@ -17,6 +20,9 @@ class TextureProvider(object):
 
 
 class TextureModel(object):
+    class No(object):
+        description = '无'
+    
     class slim(object):
         description = 'slim'
 
@@ -41,16 +47,16 @@ class YggdrasilProfile():
         self.name = yggdrasil_profile['profileName']
 
         if 'SKIN' in yggdrasil_profile['textures']:
-            self.skin.model = TextureModel.slim if 'metadata' in yggdrasil_profile[
-                'textures']['SKIN'] else TextureModel.default
+            self.skin.model = TextureModel.slim() if 'metadata' in yggdrasil_profile[
+                'textures']['SKIN'] else TextureModel.default()
             self.skin.url = yggdrasil_profile['textures']['SKIN']['url']
             self.skin.hash = self.getHashFromUrl(self.skin.url)
             self.skin.provider = self.getTextureProvider(self.skin.url)
         else:
-            self.skin.model = None
+            self.skin.model = TextureModel.No()
             self.skin.url = None
             self.skin.hash = None
-            self.skin.provider = None
+            self.skin.provider = TextureProvider.No()
 
         if 'CAPE' in yggdrasil_profile['textures']:
             self.cape.url = yggdrasil_profile['textures']['CAPE']['url']
@@ -58,7 +64,7 @@ class YggdrasilProfile():
             self.cape.hash = self.getHashFromUrl(self.cape.url)
         else:
             self.cape.url = None
-            self.cape.provider = None
+            self.cape.provider = TextureProvider.No()
             self.cape.hash = None
 
     @staticmethod
@@ -68,7 +74,7 @@ class YggdrasilProfile():
 
     @staticmethod
     def getTextureProvider(url: str) -> str:
-        _provider = TextureProvider.LittleSkin if 'mcskin.littleservice.cn' in url else TextureProvider.Mojang
+        _provider = TextureProvider.LittleSkin() if 'mcskin.littleservice.cn' in url else TextureProvider.Mojang()
         return _provider
 
 
@@ -138,5 +144,5 @@ UUID：{gameprofile.uuid}
 模型：{gameprofile.skin.model.description}
 皮肤：{gameprofile.skin.hash} ({gameprofile.skin.provider.description})
 披风：{gameprofile.cape.hash} ({gameprofile.cape.provider.description})
-'''), *self.previewImage(gameprofile.skin.hash if gameprofile.skin.provider.description == TextureProvider.LittleSkin.description else None,
-                         gameprofile.cape.hash if gameprofile.cape.provider.description == TextureProvider.LittleSkin.description else None)]
+'''), *self.previewImage(gameprofile.skin.hash if isinstance(gameprofile.skin.provider, TextureProvider.LittleSkin) else None,
+                         gameprofile.cape.hash if isinstance(gameprofile.cape.provider, TextureProvider.LittleSkin) else None)]
