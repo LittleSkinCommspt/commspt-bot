@@ -56,7 +56,10 @@ async def command_help(app: GraiaMiraiApplication, group: Group):
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
 async def command_manual(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.manual)]))
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/rtfm.png'), 
+        Plain(tF.manual)
+    ]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.server.jvm'))])
@@ -130,7 +133,7 @@ async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage
     CP = CommandParser(_gm, settings.commandSymbol)
     atList = [At(t.target) for t in CP.at] if CP.at != [] else []
     await app.sendGroupMessage(group, MessageChain.create([
-        *atList, 
+        *atList,
         Image.fromLocalFile('./images/off-topic.png'),
         Plain(tF.ot)
     ]))
