@@ -128,10 +128,10 @@ async def command_browser(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('client.refresh'))])
-async def command_client_refresh(app: GraiaMiraiApplication, group: Group):
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.client.refresh'))])
+async def command_ygg_client_refresh(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
-        Image.fromLocalFile('./images/client-refresh.png'),
+        Image.fromLocalFile('./images/ygg-client-refresh.png'),
         Plain(tF.client_refresh)
     ]))
 
@@ -148,7 +148,7 @@ async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('view'))])
-async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+async def command_view(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
     _textureHash = CP.Command.args
     if not _textureHash:
@@ -173,7 +173,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg'))])
-async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+async def command_ygg(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
     _playerName = CP.Command.args if CP.Command.args else CP.quote_plain_message
     _player = PlayerProfile(_playerName)
@@ -182,7 +182,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ban'))])
-async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
     GP = groupPermissions(CP.sender_id)
     if GP.isAdmin():
@@ -195,7 +195,7 @@ async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessa
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('unban'))])
-async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+async def command_unban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
     GP = groupPermissions(CP.sender_id)
     if GP.isAdmin():
