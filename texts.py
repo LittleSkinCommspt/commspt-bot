@@ -22,3 +22,8 @@ Edge: https://aka.ms/msedge'''
     ygg_nsis = '''请确认服务器正确配置 authlib-injector 并将 online-mode 设为 true，否则请使用 CustomSkinLoader。
 更多：https://manual.littlesk.in/advanced/yggdrasil.html'''
     client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
+    class ban(object):
+        add_succ = '因滥用而被封禁'
+        add_fail = '已在封禁列表中'
+        remove_succ = '已被解除封禁'
+        remove_fail = '不在封禁列表中'

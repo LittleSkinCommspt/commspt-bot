@@ -1,5 +1,5 @@
 import asyncio
-from typing import List
+from typing import List, Optional
 
 import requests
 from graia.application import GraiaMiraiApplication
@@ -11,7 +11,7 @@ from graia.broadcast.builtin.decoraters import Depend
 
 import settings
 from botpermissions import groupPermissions
-from commandparser import CommandParser, onCommand, filterCafe
+from commandparser import CommandParser, onCommand, filterCafe, adminOnly
 from player import PlayerProfile
 from texts import TextFields as tF
 
@@ -181,29 +181,35 @@ async def command_ygg(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
     await app.sendGroupMessage(group, MessageChain.create(_message))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ban'))])
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ban')), Depend(adminOnly)])
 async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
-    GP = groupPermissions(CP.sender_id)
-    if GP.isAdmin():
+
+    def add() -> str:
+        _l = str()
         for t in CP.at:
             targetGP = groupPermissions(t.target)
             if not targetGP.isAdmin():
                 _result = targetGP.blockme()
-                _message = f'{t.display} 因滥用而被封禁' if _result else f'失败，{t.display} 已在封禁列表中'
-                await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+                _message = f'{t.display} {tF.ban.add_succ}\n' if _result else f'{t.display} {tF.ban.add_fail}\n'
+                _l = f'{_l}{_message}'
+        return _l
 
-
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('unban'))])
-async def command_unban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-    CP = CommandParser(_gm, settings.commandSymbol)
-    GP = groupPermissions(CP.sender_id)
-    if GP.isAdmin():
+    def remove() -> str:
+        _l = str()
         for t in CP.at:
             targetGP = groupPermissions(t.target)
             _result = targetGP.unblockme()
-            _message = f'{t.display} 解除封禁成功' if _result else f'失败，{t.display} 不在封禁列表中'
-            await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+            _message = f'{t.display} {tF.ban.remove_succ}\n' if _result else f'{t.display} {tF.ban.remove_fail}\n'
+            _l = f'{_l}{_message}'
+        return _l
+
+    if CP.Command.args:
+        subCommand = CP.Command.argsList[0]
+        if subCommand == 'add':
+            await app.sendGroupMessage(group, MessageChain.create([Plain(add())]))
+        if subCommand == 'remove':
+            await app.sendGroupMessage(group, MessageChain.create([Plain(remove())]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('test'))])
