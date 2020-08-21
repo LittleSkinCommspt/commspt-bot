@@ -57,8 +57,16 @@ async def command_help(app: GraiaMiraiApplication, group: Group):
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
 async def command_manual(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
-        Image.fromLocalFile('./images/rtfm.png'), 
+        Image.fromLocalFile('./images/rtfm.png'),
         Plain(tF.manual)
+    ]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('faq'))])
+async def command_faq(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/rtfm.png'),
+        Plain(tF.faq)
     ]))
 
 
