@@ -232,8 +232,11 @@ async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMess
         settings.specialqq.littleskin_main, 
         settings.specialqq.littleskin_cafe
     ]
-    _message = aoscPastebin(CP.plain_message, fromLittleSkin=fromLs)
-    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+    try:
+        _message = aoscPastebin(CP.plain_message, fromLittleSkin=fromLs)
+        await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+    except Exception as e:
+        await app.sendGroupMessage(group, MessageChain.create([Plain(repr(e))]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('test'))])

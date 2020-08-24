@@ -1,4 +1,4 @@
-from typing import List, Set, Optional, Tuple
+from typing import Dict, List, Set, Optional, Tuple
 from texts import TextFields as tF
 import re
 import json
@@ -15,6 +15,7 @@ class cslLogParser(object):
     javaSubVersion: Optional[int]
     isLsOldDomain: bool
     players: Set[str]
+    loadFrom: Dict[Optional[str], Optional[str]]
     responseContents: List[dict]
 
     def __init__(self, cslLogRaw: str):
@@ -26,6 +27,7 @@ class cslLogParser(object):
         self.javaSubVersion = self._getJavaSubVersion()
         self.isLsOldDomain = self._isLsOldDomain()
         self.players = self._getPlayersList()
+        self.loadFrom = self._getLoadFrom()
         self.responseContents = self._getResponseContents()
 
     @staticmethod
@@ -60,14 +62,25 @@ class cslLogParser(object):
         '''获取 玩家列表'''
         return self._getAllItem(r'Loading (.*)\'s profile', self.log_raw, 1)
 
-    def _getResponseContents(self) -> list:
+    def _getResponseContents(self) -> List[str]:
         '''获取 API 响应'''
         return [json.loads(_i) for _i in self._getAllItem(r'Content: ({.*})', self.log_raw, 1)]
+
+    def _getLoadFrom(self) -> Dict[Optional[str], Optional[str]]:
+        _d = dict()
+        for p in self.players:
+            _i = self._getAllItem(
+                rf'\[.*\] \[{p}\'s .* INFO\] .* Try to load profile from \'(.*)\'\.(\n.*)*{p}\'s profile loaded.', self.log_raw, 1)
+            if _i:
+                _d[p] = str().join(_i)
+            else:
+                _d[p] = None
+        return _d
 
     def _getJavaVersion(self) -> Optional[str]:
         '''获取 Java 详细版本'''
         return self._getItem(r'Java Version: (.*)', self.log_raw, 1)
-    
+
     def _getJavaSubVersion(self) -> Optional[int]:
         '''获取 Java 小版本号（数字）'''
         if self.javaVersion:
@@ -76,34 +89,37 @@ class cslLogParser(object):
             return None
 
 
-def cslHandler(log_raw: str, fromLittleSkin: bool=True) -> Tuple[str, Set[str]]:
+def cslHandler(log_raw: str, fromLittleSkin: bool = True) -> Tuple[str, Set[str]]:
     C = cslLogParser(log_raw)
 
     _s = str()
     for p in C.players:
-        _s = f'{_s}{p}, '
+        fromApi = C.loadFrom[p]
+        _s = f'{_s}{p} (from {fromApi})\n'
     
+    s = _s.strip('\n')
     envMessage = f'''CSL {C.cslVersion}, MC {C.mcVersion}
 Java {C.javaVersion}
-Players: {_s.strip(', ')}
+##### Players #####
+{s}
+##### Problems #####
 '''
     diaMessages: Set[str] = set()
     for rc in C.responseContents:
-        if 'slim' in rc['skins'] and C.mcVersion == '1.7.10':
+        if 'skins' in rc and 'slim' in rc['skins'] and C.mcVersion == '1.7.10':
             diaMessages.add('[ERROR] 试图在 1.7.10 中加载 Slim 模型的皮肤\n')
-        elif C.javaSubVersion < 111:
-            diaMessages.add('[WARN] Java 版本过低，影响到使用 Let\'s Encrypt 的站点\n')
-        elif fromLittleSkin and C.isLsOldDomain:
-            diaMessages.add(f'[WARN] {tF.domain}\n')
-        else:
-            diaMessages.add('[TIPS] 未能与任何一个典型错误匹配，请人工检查日志\n')
+    if C.javaSubVersion and C.javaSubVersion < 111:
+        diaMessages.add('[WARN] Java 版本过低，影响到使用 Let\'s Encrypt 的站点\n')
+    if fromLittleSkin and C.isLsOldDomain:
+        diaMessages.add(f'[WARN] {tF.domain}\n')
+    if diaMessages == set():
+        diaMessages.add('[TIPS] 未能与任何一个典型错误匹配，请人工检查日志\n')
     return envMessage, diaMessages
 
 
-def aoscPastebin(url: str, fromLittleSkin: bool=True) -> str:
+def aoscPastebin(url: str, fromLittleSkin: bool = True) -> str:
     rawUrl = f'{url}/raw'
     r = requests.get(rawUrl)
     m1, m2 = cslHandler(r.text, fromLittleSkin=fromLittleSkin)
     m3 = str().join(m2)
     return f'{m1}{m3}'
-
