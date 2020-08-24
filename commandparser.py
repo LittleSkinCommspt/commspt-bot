@@ -36,6 +36,20 @@ def onCommand(command_name: str):
             raise ExecutionStop()
     return wrapper
 
+def onWord(word: str):
+    '''在消息中有特定文字时执行
+
+    Args:
+        word: 文字'''
+    def wrapper(gm: GroupMessage):
+        cp = CommandParser(gm, settings.commandSymbol)
+        gp = groupPermissions(cp.sender_id)
+        if gp.isBlocked():
+            raise ExecutionStop()
+        if not word in cp.plain_message:
+            raise ExecutionStop()
+    return wrapper
+    
 
 class CommandParser(object):
     '''指令解析器'''
@@ -45,6 +59,7 @@ class CommandParser(object):
     plain_message: str
     quote_plain_message: str
     at: List[At]
+    permission: groupPermissions
 
     class Command(object):
         '''指令
@@ -67,6 +82,7 @@ class CommandParser(object):
         self.at = self._getAt()
         self.Command.cmd, self.Command.args, self.Command.argsList = self._getCommand()
         self.quote_plain_message = self._getQuotePlainMessage()
+        self.permission = groupPermissions(self.sender_id)
 
     def _getPlainMessage(self, _messagechain: MessageChain) -> str:
         _text = str()
