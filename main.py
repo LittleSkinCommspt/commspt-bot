@@ -156,7 +156,7 @@ async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage
     await app.sendGroupMessage(group, MessageChain.create([
         *atList,
         Image.fromLocalFile('./images/off-topic.png'),
-        Plain(tF.ot) if group.id == settings.specialqq.littleskin_main else None  ## 仅在 LittleSkin 主群中启用此文本消息
+        Plain(tF.ot) if group.id == settings.specialqq.littleskin_main else *[]  # 仅在 LittleSkin 主群中启用此文本消息
     ]))
 
 
