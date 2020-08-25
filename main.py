@@ -206,7 +206,7 @@ async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
                 _result = targetGP.blockme()
                 _message = f'{t.display} {tF.ban.add_succ}\n' if _result else f'{t.display} {tF.ban.add_fail}\n'
                 _l = f'{_l}{_message}'
-        return _l
+        return _l.strip('\n')
 
     def remove() -> str:
         _l = str()
@@ -215,7 +215,7 @@ async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
             _result = targetGP.unblockme()
             _message = f'{t.display} {tF.ban.remove_succ}\n' if _result else f'{t.display} {tF.ban.remove_fail}\n'
             _l = f'{_l}{_message}'
-        return _l
+        return _l.strip('\n')
 
     if CP.Command.args:
         subCommand = CP.Command.argsList[0]
