@@ -110,8 +110,8 @@ class PlayerProfile():
         r = requests.get(
             f'https://mcskin.littleservice.cn/csl/{self.playerName}.json')
         j = r.json()
-        name = j['username']
-        if name != '404':
+        if 'username' in j:
+            name = j['username']
             skin_type = 'default' if 'default' in j['skins'] else 'slim'
             skin_hash = j['skins'][skin_type] if j['skins'][skin_type] else None
             cape_hash = j['cape'] if j['cape'] else None
@@ -121,7 +121,7 @@ class PlayerProfile():
 披风：{cape_hash}
 '''), *self.previewImage(skin_hash, cape_hash)]
         else:
-            return [Plain('[Error] 找不到角色')]
+            return [Plain('Error: Player not found')]
 
     def getYgg(self) -> list:
         r1 = requests.post(
