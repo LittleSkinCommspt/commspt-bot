@@ -69,10 +69,18 @@ class cslLogParser(object):
     def _getLoadFrom(self) -> Dict[Optional[str], Optional[str]]:
         _d = dict()
         for p in self.players:
-            _i = self._getAllItem(
-                rf'\[.*\] \[{p}\'s .* INFO\] .* Try to load profile from \'(.*)\'\.(\n.*)*{p}\'s profile loaded.', self.log_raw, 1)
-            if _i:
-                _d[p] = str().join(_i)
+            isProfileLoaded = re.search(
+                rf'{p}\'s profile loaded.', self.log_raw)
+            if isProfileLoaded:
+                profileLoadedStartLoc, _ = isProfileLoaded.span()
+                print(profileLoadedStartLoc)
+                trytoLoad = re.finditer(
+                    rf'\[.*\] \[{p}\'s.* INFO\] .* Try to load profile from \'(.*)\'\.', self.log_raw)
+                apis: List[str] = list()
+                for t in trytoLoad:
+                    apiName = t.group(1)
+                    apis.append(apiName)
+                _d[p] = apis[-1]
             else:
                 _d[p] = None
         return _d
@@ -96,7 +104,7 @@ def cslHandler(log_raw: str, fromLittleSkin: bool = True) -> Tuple[str, Set[str]
     for p in C.players:
         fromApi = C.loadFrom[p]
         _s = f'{_s}{p} (from {fromApi})\n'
-    
+
     s = _s.strip('\n')
     envMessage = f'''CSL {C.cslVersion}, MC {C.mcVersion}
 Java {C.javaVersion}

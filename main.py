@@ -1,5 +1,4 @@
 import asyncio
-import aiohttp
 from typing import List, Optional
 
 import requests
