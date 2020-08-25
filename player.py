@@ -121,14 +121,14 @@ class PlayerProfile():
 披风：{cape_hash}
 '''), *self.previewImage(skin_hash, cape_hash)]
         else:
-            return [Plain('Error: Player not found')]
+            return [Plain(f'Error: Player {self.playerName} not found')]
 
     def getYgg(self) -> list:
         r1 = requests.post(
             'https://mcskin.littleservice.cn/api/yggdrasil/api/profiles/minecraft', json=[self.playerName])
         s1 = r1.json()
         if s1 == []:
-            return [Plain('[Error] 找不到角色')]
+            return [Plain(f'Error: Player {self.playerName} not found')]
         #
         player_uuid = s1[0]['id']
         r2 = requests.get(
