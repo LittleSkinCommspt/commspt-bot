@@ -243,7 +243,7 @@ async def command_test(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.test)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWords(['mn', 'wy', '网易', '迷你', '翻墙']), Depend(filterCafe))])
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWords(['mn', 'wy', '网易', '迷你', '翻墙'])), Depend(filterCafe)])
 async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('请不要在此群中讨论有关话题！')]))
 
