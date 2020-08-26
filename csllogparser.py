@@ -75,7 +75,7 @@ class cslLogParser(object):
                 profileLoadedStartLoc, _ = isProfileLoaded.span()
                 print(profileLoadedStartLoc)
                 trytoLoad = re.finditer(
-                    rf'\[.*\] \[{p}\'s.* INFO\] .* Try to load profile from \'(.*)\'\.', self.log_raw)
+                    rf'\[.*\] \[{p}.* INFO\] .* Try to load profile from \'(.*)\'\.', self.log_raw)
                 apis: List[str] = list()
                 for t in trytoLoad:
                     apiName = t.group(1)
