@@ -129,5 +129,5 @@ def aoscPastebin(url: str, fromLittleSkin: bool = True) -> str:
     rawUrl = f'{url}/raw'
     r = requests.get(rawUrl)
     m1, m2 = cslHandler(r.text, fromLittleSkin=fromLittleSkin)
-    m3 = str().join(m2.strip('\n'))
-    return f'{m1}{m3}'
+    m3 = str().join(m2)
+    return f'{m1}{m3}'.strip('\n')
