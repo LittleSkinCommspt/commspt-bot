@@ -49,6 +49,26 @@ def onWord(word: str):
         if not word in cp.plain_message:
             raise ExecutionStop()
     return wrapper
+
+
+def onWords(words_list: List[str]):
+    '''在消息中有特定文字时执行
+
+    Args:
+        words_list: 关键字列表'''
+    def wrapper(gm: GroupMessage):
+        cp = CommandParser(gm, settings.commandSymbol)
+        gp = groupPermissions(cp.sender_id)
+        if gp.isBlocked():
+            raise ExecutionStop()
+        inList = False
+        for word in words_list:
+          if word in cp.plain_message:
+              inList = True
+              break
+        if not inList:
+          raise ExecutionStop()
+    return wrapper
     
 
 class CommandParser(object):
