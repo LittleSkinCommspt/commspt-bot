@@ -116,6 +116,19 @@ Fabric: {_fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('clfcsl.latest'))])
+async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
+    _r = requests.get(
+        'https://csl-1258131272.cos.ap-shanghai.myqcloud.com/latest.json')
+    _j: dict = _r.json()
+    _latestVersion = _j['version']
+    _forge = _j['downloads']['Forge']
+    _message = f'''CustomSkinLoader 最新版本：{_latestVersion}
+Forge: {_forge}
+{tF.clfcsl_latest}'''
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.config'))])
 async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
         _message: str = tF.csl_config_csl_group if group.id == settings.specialqq.csl_group else tF.csl_config_littleskin
