@@ -18,7 +18,7 @@ class TextFields(object):
     csl_config_littleskin = '请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6'
     csl_config_csl_group = '请访问 https://csl.littleservice.cn/faq/config-csl.html 以了解如何修改 CustomSkinLoader 的配置文件'
     clfcsl_latest = '''在 1.7.10 中使用需要同时安装最新 Forge 版的 CustomSkinLoader 和 CompatibilityLayerForCustomSkinLoader，
-你可以在 https://www.mcbbs.net/thread-1109996-1-1.html%EF%BC%89%E3%80%8D 下载到后者'''
+你可以在 https://www.mcbbs.net/thread-1109996-1-1.html 下载到后者'''
     browser = '''请仔细阅读图片中的内容！以下是几个推荐的浏览器
 Chrome: https://www.google.cn/chrome
 Firefox: https://www.mozilla.org/firefox/new/
