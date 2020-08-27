@@ -1,4 +1,5 @@
 from typing import List, Optional, Tuple
+import re
 
 from graia.application.entry import (At, Group, GroupMessage, MessageChain,
                                      Plain, Quote)
@@ -14,6 +15,12 @@ def filterCafe(group: Group):
     '''在咖啡馆中禁用'''
     if group.id == settings.specialqq.littleskin_cafe:
         raise ExecutionStop()
+
+def exceptGroups(group_list: List[int]):
+    '''在指定群聊内禁用'''
+    def wrapper(group: Group):
+        if group.id in group_list:
+            raise ExecutionStop()
 
 def adminOnly(gm: GroupMessage):
     '''仅管理员'''
@@ -68,6 +75,20 @@ def onWords(words_list: List[str]):
               break
         if not inList:
           raise ExecutionStop()
+    return wrapper
+
+def onMatch(pattern: str):
+    '''在消息匹配正则表达式时执行
+
+    Args:
+        pattern: 正则表达式（必须为 str）'''
+    def wrapper(gm: GroupMessage):
+        cp = CommandParser(gm, settings.commandSymbol)
+        gp = groupPermissions(cp.sender_id)
+        if gp.isBlocked():
+            raise ExecutionStop()
+        if not re.match(pattern, cp.plain_message):
+            raise ExecutionStop()
     return wrapper
     
 
