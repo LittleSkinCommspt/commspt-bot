@@ -16,6 +16,7 @@ class TextFields(object):
     mail = '请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html'
     csl_log = 'CustomSkinLoader 的日志位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将文件内容直接粘贴至 https://pastebin.aosc.io/\n在提交后，请将网址发送至群内'
     csl_config_littleskin = '请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6'
+    csl_config_csl_group = '请访问 https://csl.littleservice.cn/faq/config-csl.html 以了解如何修改 CustomSkinLoader 的配置文件'
     browser = '''请仔细阅读图片中的内容！以下是几个推荐的浏览器
 Chrome: https://www.google.cn/chrome
 Firefox: https://www.mozilla.org/firefox/new/
