@@ -272,7 +272,7 @@ async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatch(r'^草*$')),
                                                  Depend(exceptGroups([settings.specialqq.littleskin_main]))])
 async def grass_spammer(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([Plain('草')]))
+    await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
 
 
 if __name__ == '__main__':
