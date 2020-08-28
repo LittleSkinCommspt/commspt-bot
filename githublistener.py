@@ -30,10 +30,14 @@ async def event_handler(repo: str, req, Send):
 
 async def issuesOpend(repo: str, payload: dict, Send):
     this = payload['issue']
-    if payload['action'] == 'opened':
-        _number = this['number']
-        _title = this['title']
-        await Send(f'[{repo}] #{_number} {_title}')
+    action = payload['action']
+    _number = this['number']
+    _title = this['title']
+    _html_url = this['html_url']
+    if action == 'opened':
+        await Send(f'[{repo}] #{_number} {_title}\n1 new issue opened\n{_html_url}')
+    elif action == 'closed':
+        await Send(f'[{repo}] #{_number} {_title}\n1 issue closed\n{_html_url}')
 
 
 async def pushEvent(repo: str, event: dict, Send):
