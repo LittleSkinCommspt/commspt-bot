@@ -15,14 +15,17 @@ from commandparser import (CommandParser,
                            onCommand, onWord, onWords, onMatch, exceptGroups, filterCafe, adminOnly)
 from csllogparser import aoscPastebin
 from player import PlayerProfile
-from settings import specialqq
 from texts import TextFields as tF
+from githublistener import githubListener
 
 # Application & BCC 初始化
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 
+# GitHub Listener
+async def _send(message: str):
+    await app.sendGroupMessage(settings.specialqq.commspt_group, MessageChain.create([Plain(message)]))
 
 # 刷新群名片
 @bcc.receiver(MemberJoinEvent)
@@ -273,4 +276,8 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group):
 
 
 if __name__ == '__main__':
-    app.launch_blocking()
+    app.subscribe_atexit()
+    graia_task = app.create_background_task()
+    github_tasks = githubListener(_send)
+    future = asyncio.wait([graia_task, *github_tasks])
+    loop.run_until_complete(future)
