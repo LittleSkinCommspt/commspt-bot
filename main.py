@@ -11,7 +11,8 @@ from graia.broadcast.builtin.decoraters import Depend
 
 import settings
 from botpermissions import groupPermissions
-from commandparser import CommandParser, onCommand, onWord, onWords, filterCafe, adminOnly
+from commandparser import (CommandParser,
+                           onCommand, onWord, onWords, onMatch, exceptGroups, filterCafe, adminOnly)
 from csllogparser import aoscPastebin
 from player import PlayerProfile
 from settings import specialqq
@@ -46,10 +47,10 @@ async def membercardchangeevent_listener(app: GraiaMiraiApplication, event: Memb
     if GP.isBlocked():
         return None
     if group.id in [
-        settings.specialqq.littleskin_main, 
-        settings.specialqq.littleskin_cafe, 
+        settings.specialqq.littleskin_main,
+        settings.specialqq.littleskin_cafe,
         settings.specialqq.csl_group
-        ]:
+    ]:
         await app.sendGroupMessage(group, MessageChain.create(
             [Plain(tF.constance_refresh_name)]))
 
@@ -86,7 +87,8 @@ async def command_domain(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.domain)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('mail'))])
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('mail')),
+                                                 Depend(exceptGroups([settings.specialqq.csl_group]))])
 async def command_mail(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.mail)]))
 
@@ -131,8 +133,8 @@ Forge: {_forge}
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.config'))])
 async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
-        _message: str = tF.csl_config_csl_group if group.id == settings.specialqq.csl_group else tF.csl_config_littleskin
-        await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+    _message: str = tF.csl_config_csl_group if group.id == settings.specialqq.csl_group else tF.csl_config_littleskin
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.log'))])
@@ -164,11 +166,13 @@ async def command_ygg_client_refresh(app: GraiaMiraiApplication, group: Group):
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ot')), Depend(filterCafe)])
 async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     CP = CommandParser(_gm, settings.commandSymbol)
-    atList: List[Optional[At]] = [At(t.target) for t in CP.at] if CP.at != [] else []
+    atList: List[Optional[At]] = [At(t.target)
+                                  for t in CP.at] if CP.at != [] else []
     await app.sendGroupMessage(group, MessageChain.create([
         *atList,
         Image.fromLocalFile('./images/off-topic.png'),
-        *([Plain(tF.ot)] if group.id == settings.specialqq.littleskin_main else [])  # 仅在 LittleSkin 主群中启用此文本消息
+        # 仅在 LittleSkin 主群中启用此文本消息
+        *([Plain(tF.ot)] if group.id == settings.specialqq.littleskin_main else [])
     ]))
 
 
@@ -236,12 +240,13 @@ async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
         if subCommand == 'remove':
             await app.sendGroupMessage(group, MessageChain.create([Plain(remove())]))
 
+
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWord('https://pastebin.aosc.io/paste/'))])
 async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_log_parsing)]))
     CP = CommandParser(_gm, settings.commandSymbol)
     fromLs = group.id in [
-        settings.specialqq.littleskin_main, 
+        settings.specialqq.littleskin_main,
         settings.specialqq.littleskin_cafe
     ]
     try:
@@ -260,6 +265,11 @@ async def command_test(app: GraiaMiraiApplication, group: Group):
 async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('请不要在此群中讨论有关话题！')]))
 
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatch(r'^草*$')),
+                                                 Depend(exceptGroups([settings.specialqq.littleskin_main]))])
+async def grass_spammer(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain('草')]))
 
 
 if __name__ == '__main__':
