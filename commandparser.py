@@ -21,6 +21,7 @@ def exceptGroups(group_list: List[int]):
     def wrapper(group: Group):
         if group.id in group_list:
             raise ExecutionStop()
+    return wrapper
 
 def adminOnly(gm: GroupMessage):
     '''仅管理员'''
@@ -39,6 +40,8 @@ def onCommand(command_name: str):
         gp = groupPermissions(cp.sender_id)
         if gp.isBlocked():
             raise ExecutionStop()
+        if not cp.plain_message:
+            raise ExecutionStop()
         if cp.Command.cmd != command_name:
             raise ExecutionStop()
     return wrapper
@@ -52,6 +55,8 @@ def onWord(word: str):
         cp = CommandParser(gm, settings.commandSymbol)
         gp = groupPermissions(cp.sender_id)
         if gp.isBlocked():
+            raise ExecutionStop()
+        if not cp.plain_message:
             raise ExecutionStop()
         if not word in cp.plain_message:
             raise ExecutionStop()
@@ -69,6 +74,8 @@ def onWords(words_list: List[str]):
         if gp.isBlocked():
             raise ExecutionStop()
         inList = False
+        if not cp.plain_message:
+            raise ExecutionStop()
         for word in words_list:
           if word in cp.plain_message:
               inList = True
@@ -87,6 +94,8 @@ def onMatch(pattern: str):
         gp = groupPermissions(cp.sender_id)
         if gp.isBlocked():
             raise ExecutionStop()
+        if not cp.plain_message:
+            raise ExecutionStop()
         if not re.match(pattern, cp.plain_message):
             raise ExecutionStop()
     return wrapper
@@ -97,7 +106,7 @@ class CommandParser(object):
     _commandSymbol: str
     messagechain: MessageChain
     sender_id: int
-    plain_message: str
+    plain_message: Optional[str]
     quote_plain_message: str
     at: List[At]
     permission: groupPermissions
@@ -125,13 +134,16 @@ class CommandParser(object):
         self.quote_plain_message = self._getQuotePlainMessage()
         self.permission = groupPermissions(self.sender_id)
 
-    def _getPlainMessage(self, _messagechain: MessageChain) -> str:
-        _text = str()
-        for _i in _messagechain.get(Plain):
-            i_text: str = _i.text
-            if i_text.strip() != '':
-                _text = f'{_text} {i_text}'
-        return _text.strip()
+    def _getPlainMessage(self, _messagechain: MessageChain) -> Optional[str]:
+        if _messagechain.has(Plain):
+            _text = str()
+            for _i in _messagechain[Plain]:
+                i_text: str = _i.text
+                if i_text.strip() != '':
+                    _text = f'{_text} {i_text}'
+            return _text.strip()
+        else:
+            return None
 
     def _getAt(self) -> List[At]:
         return self.messagechain.get(At)
@@ -150,6 +162,8 @@ class CommandParser(object):
         return self.sender_id == settings.specialqq.constance
 
     def _getCommand(self) -> Tuple[Optional[str], Optional[str]]:
+        if not self.plain_message:
+            return None, None, None
         if self._commandSymbol in self.plain_message:
             _message_body: str = self.plain_message.split(
                 '：', 1)[1] if self.isConstance() else self.plain_message
