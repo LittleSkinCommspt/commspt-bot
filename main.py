@@ -184,15 +184,15 @@ async def command_view(app: GraiaMiraiApplication, group: Group, _gm: GroupMessa
     CP = CommandParser(_gm, settings.commandSymbol)
     _textureHash = CP.Command.args
     if not _textureHash:
-        await app.sendGroupMessage(group, MessageChain.create(Plain(tF.view_no_hash_error)))
+        await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_no_hash_error)]))
     elif len(_textureHash) != 64:
-        await app.sendGroupMessage(group, MessageChain.create(Plain(tF.view_hash_length_error)))
+        await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_hash_length_error)]))
     else:
         _image_message = PlayerProfile.getPreviewByHash(_textureHash)
         if _image_message:
-            await app.sendGroupMessage(group, MessageChain.create(_image_message))
+            await app.sendGroupMessage(group, MessageChain.create([_image_message]))
         else:
-            await app.sendGroupMessage(group, MessageChain.create(Plain(tF.view_not_200_error)))
+            await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_not_200_error)]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl'))])
