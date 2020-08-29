@@ -63,6 +63,11 @@ async def membercardchangeevent_listener(app: GraiaMiraiApplication, event: Memb
 async def command_help(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
 
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.url'))])
+async def command_help(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/ygg-url.png')
+    ]))
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
 async def command_manual(app: GraiaMiraiApplication, group: Group):
