@@ -3,27 +3,39 @@ import asyncio
 
 import requests
 import settings
+from io import StringIO
 
 
 async def event_handler(repo: str, req, Send):
     etag = None
+    lastEvent = StringIO()
+    lastEvent.write('0')
     while True:
+        lastEventId = lastEvent.getvalue()
         if etag:
             req.headers.update({'If-None-Match': etag})
         _event = req.get(
-            f'http://api.github.com.xiaojin233.cn/repos/{repo}/events?per_page=1')
+            f'http://api.github.com.xiaojin233.cn/repos/{repo}/events?per_page=10')
         # Send(_event.status_code)
         hasXPollInterval = 'X-Poll-Interval' in _event.headers
         x_poll_interval: int = int(
             _event.headers['X-Poll-Interval']) if hasXPollInterval else 60
-        if _event.status_code == 200 and etag:
+        if _event.status_code == 200:
             _j = _event.json()
-            for i in _j:
-                thisType = i['type']
-                if thisType == 'IssuesEvent':
-                    await issuesOpend(repo, i['payload'], Send)
-                elif thisType == 'PushEvent':
-                    await pushEvent(repo, i, Send)
+            lastEvent.truncate(0) # clear lastEvent
+            lastEvent.seek(0)
+            lastEvent.write(_j[0]['id']) # write the latest event id into lastEvent
+            if etag:
+                for i in _j:
+                    if int(i['id']) <= int(lastEventId):
+                        break
+                    thisType = i['type']
+                    if thisType == 'IssuesEvent':
+                        await issuesOpend(repo, i['payload'], Send)
+                    elif thisType == 'PushEvent':
+                        await pushEvent(repo, i, Send)
+                    elif thisType == 'PullRequestEvent':
+                        await pullRequestEvent(repo, i['payload'], Send)
         etag = _event.headers['ETag']
         await asyncio.sleep(x_poll_interval)
 
@@ -35,9 +47,9 @@ async def issuesOpend(repo: str, payload: dict, Send):
     _title = this['title']
     _html_url = this['html_url']
     if action == 'opened':
-        await Send(f'[{repo}] #{_number} {_title}\n1 new issue opened\n{_html_url}')
+        await Send(f'[{repo}] #{_number} {_title}\n1 issue has been opened\n{_html_url}')
     elif action == 'closed':
-        await Send(f'[{repo}] #{_number} {_title}\n1 issue closed\n{_html_url}')
+        await Send(f'[{repo}] #{_number} {_title}\n1 issue has been closed\n{_html_url}')
 
 
 async def pushEvent(repo: str, event: dict, Send):
@@ -49,6 +61,18 @@ async def pushEvent(repo: str, event: dict, Send):
             f'[{repo}] {_operator} pushed {_commitsNumber} commit:\n{_desc}')
     else:
         await Send(f'[{repo}] {_operator} pushed {_commitsNumber} commits.')
+
+
+async def pullRequestEvent(repo: str, payload: dict, Send):
+    action = payload['action']
+    this = payload['pull_request']
+    _number = this['number']
+    _title = this['title']
+    _html_url = this['html_url']
+    if action == 'opened':
+        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been opened\n{_html_url}')
+    elif action == 'closed':
+        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been closed\n{_html_url}')
 
 
 req = requests.session()
