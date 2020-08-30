@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple
 import re
 
 from graia.application.entry import (At, Group, GroupMessage, MessageChain,
-                                     Plain, Quote)
+                                     Plain, Quote, Source)
 from graia.broadcast.exceptions import ExecutionStop
 
 import settings
@@ -108,6 +108,7 @@ class CommandParser(object):
     sender_id: int
     plain_message: Optional[str]
     quote_plain_message: str
+    source: Optional[Source]
     at: List[At]
     permission: groupPermissions
 
@@ -132,6 +133,7 @@ class CommandParser(object):
         self.at = self._getAt()
         self.Command.cmd, self.Command.args, self.Command.argsList = self._getCommand()
         self.quote_plain_message = self._getQuotePlainMessage()
+        self.source = self._getSource()
         self.permission = groupPermissions(self.sender_id)
 
     def _getPlainMessage(self, _messagechain: MessageChain) -> Optional[str]:
@@ -156,6 +158,9 @@ class CommandParser(object):
             return _plain_message
         else:
             return None
+    
+    def _getSource(self) -> Optional[Source]:
+            return self.messagechain[Source][0]
 
     def isConstance(self) -> bool:
         '''判断此 `GroupMessage` 是否为 Constance 发出'''
