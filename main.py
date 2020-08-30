@@ -256,12 +256,13 @@ async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMess
         _message = aoscPastebin(CP.plain_message, fromLittleSkin=fromLs)
         await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
     except Exception as e:
-        await app.sendGroupMessage(group, MessageChain.create([Plain(repr(e))]))
+        await app.sendGroupMessage(group, MessageChain.create([Plain(e)]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('test'))])
-async def command_test(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.test)]))
+async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+    CP = CommandParser(_gm, settings.commandSymbol)
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.test)]), quote=CP.source)
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWords(['网易lj', '迷你lj', '翻墙', 'vpn']))])
