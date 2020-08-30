@@ -63,11 +63,6 @@ async def membercardchangeevent_listener(app: GraiaMiraiApplication, event: Memb
 async def command_help(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.url'))])
-async def command_help(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([
-        Image.fromLocalFile('./images/ygg-url.png')
-    ]))
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
 async def command_manual(app: GraiaMiraiApplication, group: Group):
@@ -278,6 +273,13 @@ async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
                                                  Depend(exceptGroups([settings.specialqq.littleskin_main]))])
 async def grass_spammer(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
+
+
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.url'))])
+async def command_ygg_url(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/ygg-url.png')
+    ]))
 
 
 if __name__ == '__main__':

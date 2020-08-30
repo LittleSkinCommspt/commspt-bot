@@ -132,3 +132,6 @@ dmypy.json
 settings.py
 admins.list
 blockusers.list
+
+# MacOS
+.DS_Store
