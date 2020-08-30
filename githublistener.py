@@ -69,11 +69,17 @@ async def pullRequestEvent(repo: str, payload: dict, Send):
     _number = this['number']
     _title = this['title']
     _html_url = this['html_url']
-    if action == 'opened':
-        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been opened\n{_html_url}')
-    elif action == 'closed':
-        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been closed\n{_html_url}')
+    _merged = this['merged']
 
+
+    if action == 'opened':
+        statusWord = 'opened'
+    elif action == 'closed':
+        statusWord = 'merged' if _merged else 'closed'
+    else:
+        statusWord = None
+    if not statusWord: 
+        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been' + statusWord + '\n{_html_url}')
 
 req = requests.session()
 req.headers.update({'Authorization': f'token {settings.github_access_token}'})
