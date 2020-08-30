@@ -47,9 +47,9 @@ async def issuesOpend(repo: str, payload: dict, Send):
     _title = this['title']
     _html_url = this['html_url']
     if action == 'opened':
-        await Send(f'[{repo}] #{_number} {_title}\n1 issue has been opened\n{_html_url}')
+        await Send(f'[{repo}] #{_number} {_title}\n1 issue has been opened.\n{_html_url}')
     elif action == 'closed':
-        await Send(f'[{repo}] #{_number} {_title}\n1 issue has been closed\n{_html_url}')
+        await Send(f'[{repo}] #{_number} {_title}\n1 issue has been closed.\n{_html_url}')
 
 
 async def pushEvent(repo: str, event: dict, Send):
@@ -79,7 +79,7 @@ async def pullRequestEvent(repo: str, payload: dict, Send):
     else:
         statusWord = None
     if not statusWord: 
-        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been' + statusWord + '\n{_html_url}')
+        await Send(f'[{repo}] #{_number} {_title}\n1 pull request has been {statusWord}. \n{_html_url}')
 
 req = requests.session()
 req.headers.update({'Authorization': f'token {settings.github_access_token}'})
