@@ -57,6 +57,7 @@ async def membercardchangeevent_listener(app: GraiaMiraiApplication, event: Memb
         qq.littleskin_cafe,
         qq.csl_group
     ]:
+        print(f'[{group.name}] {member.name} ({member.id}) 修改了群名片！') # 看谁还敢滥用
         await app.sendGroupMessage(group, MessageChain.create(
             [Plain(tF.constance_refresh_name)]))
 
