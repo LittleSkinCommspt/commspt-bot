@@ -6,7 +6,7 @@ from graia.application.entry import (At, Group, GroupMessage, MessageChain,
 from graia.broadcast.exceptions import ExecutionStop
 
 import settings
-from botpermissions import PermissionsHandler
+from permissionshandler import PermissionsHandler
 
 
 # 一些消息过滤器
