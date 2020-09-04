@@ -30,37 +30,6 @@ app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 async def _send(message: str):  # GitHub Listener
     await app.sendGroupMessage(qq.commspt_group, MessageChain.create([Plain(message)]))
 
-# 刷新群名片
-@bcc.receiver(MemberJoinEvent)
-async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoinEvent):
-    member = event.member
-    group = member.group
-    if group.id == qq.littleskin_main:
-        await app.sendGroupMessage(group, MessageChain.create(
-            [Plain(tF.constance_refresh_name)]))
-        await app.sendGroupMessage(group, MessageChain.create(
-            [At(member.id), Plain(tF.welcome_to_littleskin)]))
-    elif group.id == qq.littleskin_cafe:
-        await app.sendGroupMessage(group, MessageChain.create(
-            [Plain(tF.constance_refresh_name)]))
-
-
-@bcc.receiver(MemberCardChangeEvent)
-async def membercardchangeevent_listener(app: GraiaMiraiApplication, event: MemberCardChangeEvent):
-    member = event.member
-    group = member.group
-    P = PermissionsHandler(member.id)  # 防止滥用
-    if P.isBlocked():
-        return None
-    if group.id in [
-        qq.littleskin_main,
-        qq.littleskin_cafe,
-        qq.csl_group
-    ]:
-        print(f'[{group.name}] {member.name} ({member.id}) 修改了群名片！') # 看谁还敢滥用
-        await app.sendGroupMessage(group, MessageChain.create(
-            [Plain(tF.constance_refresh_name)]))
-
 
 # 指令监听
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('help'))])
