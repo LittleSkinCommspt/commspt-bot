@@ -1,7 +1,6 @@
 class TextFields(object):
     '''储存有文本字段'''
     test = 'This is a bot test message'
-    constance_refresh_name = '!!name'
     welcome_to_littleskin = '欢迎！请认真阅读群公告哦~'
     member_card_changed = '修改了群名片'
     help = '请查看 https://littleskin-commspt-bot-manual.netlify.app/'
