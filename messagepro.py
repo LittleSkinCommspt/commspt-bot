@@ -137,7 +137,8 @@ class MessagePro(object):
         self.source = self._getSource()
         self.permission = PermissionsHandler(self.sender_id)
 
-    def _getPlainMessage(self, _messagechain: MessageChain) -> Optional[str]:
+    @staticmethod
+    def _getPlainMessage(_messagechain: MessageChain) -> Optional[str]:
         if _messagechain.has(Plain):
             _text = str()
             for _i in _messagechain[Plain]:
