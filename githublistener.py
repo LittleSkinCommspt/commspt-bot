@@ -99,5 +99,5 @@ def githubListener(send_func: Callable[[str], NoReturn]) -> asyncio.Task:
     repos: List[str] = github_listen_repos
     for repo in repos:
         coros.append(polling(repo, req, send_func))
-    loop = asyncio.get_events_loop()
+    loop = asyncio.get_event_loop()
     return loop.create_task(loop.run_until_complete(asyncio.wait(coros)))

@@ -275,8 +275,5 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         # 不是异常的异常
         sys.exit(0)
-    except RuntimeError('cannot schedule new futures after shutdown'):
-        # 不是异常的异常
-        sys.exit(0)
     except Exception:
         traceback.print_exception()
