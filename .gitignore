@@ -132,6 +132,7 @@ dmypy.json
 settings.py
 admins.list
 blockusers.list
+github-event-id-cache
 
 # MacOS
 .DS_Store
