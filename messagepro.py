@@ -102,6 +102,27 @@ def onMatch(pattern: str):
     return wrapper
 
 
+def onMatchs(pattern_list: List[str]):
+    '''在消息匹配正则表达式列表中的任何一项时执行
+
+    Args:
+        pattern_list: 正则表达式列表'''
+    def wrapper(gm: GroupMessage):
+        M = MessagePro(gm, settings.commandSymbol)
+        if M.permission.isBlocked():
+            raise ExecutionStop()
+        if not M.plain_message:
+            raise ExecutionStop()
+        matched: bool = False
+        for p in pattern_list:
+            if re.match(p, M.plain_message):
+                matched = True
+                break
+        if not matched:
+            raise ExecutionStop()
+    return wrapper
+
+
 class MessagePro(object):
     '''消息解析器'''
     _commandSymbol: str

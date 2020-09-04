@@ -14,7 +14,7 @@ import settings
 from csllogparser import aoscPastebin
 from githublistener import githubListener
 from messagepro import (MessagePro, adminOnly, exceptGroups, inGroups,
-                        onCommand, onMatch, onWord, onWords)
+                        onCommand, onMatch, onMatchs, onWord, onWords)
 from permissionshandler import PermissionsHandler
 from player import PlayerProfile
 from settings import specialqq as qq
@@ -248,7 +248,7 @@ async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
 async def grass_spammer(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatch(r'^为什么.*')),
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatchs([r'^为什么.*', r'^请问.*', r'^问一下.*'])),
                                                  Depend(inGroups([qq.littleskin_main]))])
 async def why_listener(app: GraiaMiraiApplication, _gm: GroupMessage):
     M = MessagePro(_gm)
