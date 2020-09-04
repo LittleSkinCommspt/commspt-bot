@@ -26,8 +26,8 @@ bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 
 
-async def _send(message: str):  # GitHub Listener
-    await app.sendGroupMessage(qq.commspt_group, MessageChain.create([Plain(message)]))
+async def _send(message: str, group: int = qq.commspt_group):  # GitHub Listener
+    await app.sendGroupMessage(group, MessageChain.create([Plain(message)]))
 
 
 # 指令监听
