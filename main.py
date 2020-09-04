@@ -253,8 +253,7 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group):
 async def why_listener(app: GraiaMiraiApplication, _gm: GroupMessage):
     M = MessagePro(_gm)
     await app.sendGroupMessage(qq.notification_channel,
-                               MessageChain.create(
-                                   [Plain('[WHY] 一个新的「为什么」问题等待被处理')]),
+                               MessageChain.create([Plain(tF.why_notify)]),
                                quote=M.source)
 
 
