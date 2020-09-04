@@ -164,7 +164,7 @@ class MessagePro(object):
     def _getSource(self) -> Optional[Source]:
         return self.messagechain[Source][0]
 
-    def isConstance(self) -> bool:
+    def fromConstance(self) -> bool:
         '''判断此 `GroupMessage` 是否为 Constance 发出'''
         return self.sender_id == settings.specialqq.constance
 
@@ -172,8 +172,9 @@ class MessagePro(object):
         if not self.plain_message:
             return None, None, None
         if self._commandSymbol in self.plain_message:
+            # Constance 消息格式为 `name: message`
             _message_body: str = self.plain_message.split(
-                '：', 1)[1] if self.isConstance() else self.plain_message
+                ': ', 1)[1] if self.fromConstance() else self.plain_message
             _splited_message: list = _message_body.split(' ', 1)
             _command: str = _splited_message[0]
             _args: Optional[str] = _splited_message[1] if len(
