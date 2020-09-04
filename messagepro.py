@@ -29,9 +29,9 @@ def inGroups(group_list: List[int]):
 def adminOnly(gm: GroupMessage):
     '''仅管理员'''
     M = MessagePro(gm, settings.commandSymbol)
-    P = PermissionsHandler(M.sender_id)
-    if not P.isAdmin():
+    if not M.permission.isAdmin():
         raise ExecutionStop()
+
 
 def onCommand(command_name: str):
     '''在特定指令时执行
@@ -40,14 +40,14 @@ def onCommand(command_name: str):
         command_name: 指令名称（不带标识符）'''
     def wrapper(gm: GroupMessage):
         M = MessagePro(gm, settings.commandSymbol)
-        P = PermissionsHandler(M.sender_id)
-        if P.isBlocked():
+        if M.permission.isBlocked():
             raise ExecutionStop()
         if not M.plain_message:
             raise ExecutionStop()
         if M.Command.cmd != command_name:
             raise ExecutionStop()
     return wrapper
+
 
 def onWord(word: str):
     '''在消息中有特定文字时执行
@@ -56,8 +56,7 @@ def onWord(word: str):
         word: 文字'''
     def wrapper(gm: GroupMessage):
         M = MessagePro(gm, settings.commandSymbol)
-        P = PermissionsHandler(M.sender_id)
-        if P.isBlocked():
+        if M.permission.isBlocked():
             raise ExecutionStop()
         if not M.plain_message:
             raise ExecutionStop()
@@ -73,19 +72,19 @@ def onWords(words_list: List[str]):
         words_list: 关键字列表'''
     def wrapper(gm: GroupMessage):
         M = MessagePro(gm, settings.commandSymbol)
-        P = PermissionsHandler(M.sender_id)
-        if P.isBlocked():
+        if M.permission.isBlocked():
             raise ExecutionStop()
         inList = False
         if not M.plain_message:
             raise ExecutionStop()
         for word in words_list:
-          if word in M.plain_message:
-              inList = True
-              break
+            if word in M.plain_message:
+                inList = True
+                break
         if not inList:
-          raise ExecutionStop()
+            raise ExecutionStop()
     return wrapper
+
 
 def onMatch(pattern: str):
     '''在消息匹配正则表达式时执行
@@ -94,18 +93,17 @@ def onMatch(pattern: str):
         pattern: 正则表达式（必须为 str）'''
     def wrapper(gm: GroupMessage):
         M = MessagePro(gm, settings.commandSymbol)
-        P = PermissionsHandler(M.sender_id)
-        if P.isBlocked():
+        if M.permission.isBlocked():
             raise ExecutionStop()
         if not M.plain_message:
             raise ExecutionStop()
         if not re.match(pattern, M.plain_message):
             raise ExecutionStop()
     return wrapper
-    
+
 
 class MessagePro(object):
-    '''指令解析器'''
+    '''消息解析器'''
     _commandSymbol: str
     messagechain: MessageChain
     sender_id: int
@@ -124,11 +122,11 @@ class MessagePro(object):
         argsList: Optional[List[str]]
 
     def __init__(self, _groupmessage: GroupMessage, _command_symbol: str = settings.commandSymbol) -> None:
-        '''初始化指令解析器
+        '''初始化解析器
 
         Args:
             _groupmessage: `GroupMessage` 对象
-            _command_symbol: 指令标识符'''
+            _command_symbol: 指令标识符，默认读取 `settings.commandSymbol`'''
         self._commandSymbol = _command_symbol
         self.messagechain = _groupmessage.messageChain
         self.sender_id = _groupmessage.sender.id
@@ -161,9 +159,9 @@ class MessagePro(object):
             return _plain_message
         else:
             return None
-    
+
     def _getSource(self) -> Optional[Source]:
-            return self.messagechain[Source][0]
+        return self.messagechain[Source][0]
 
     def isConstance(self) -> bool:
         '''判断此 `GroupMessage` 是否为 Constance 发出'''

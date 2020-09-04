@@ -6,7 +6,6 @@ from typing import List, Optional
 import requests
 from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
-                                     MemberCardChangeEvent, MemberJoinEvent,
                                      MessageChain, Plain)
 from graia.broadcast import Broadcast
 from graia.broadcast.builtin.decoraters import Depend
