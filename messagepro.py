@@ -173,8 +173,8 @@ class MessagePro(object):
             return None, None, None
         if self._commandSymbol in self.plain_message:
             # Constance 消息格式为 `name: message`
-            _message_body: str = self.plain_message.split(
-                ': ', 1)[1] if self.fromConstance() else self.plain_message
+            _message_body: str = str(self.plain_message.split(
+                ': ', 1)[1] if self.fromConstance() else self.plain_message).strip()
             _splited_message: list = _message_body.split(' ', 1)
             _command: str = _splited_message[0]
             _args: Optional[str] = _splited_message[1] if len(
