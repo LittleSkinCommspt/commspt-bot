@@ -143,18 +143,18 @@ class MessagePro(object):
             _text = str()
             for _i in _messagechain[Plain]:
                 i_text: str = _i.text
-                if i_text.strip() != '':
+                if not i_text.strip().isspace():
                     _text = f'{_text} {i_text}'
             return _text.strip()
         else:
             return None
 
     def _getAt(self) -> List[At]:
-        return self.messagechain.get(At)
+        return self.messagechain[At]
 
     def _getQuotePlainMessage(self) -> Optional[str]:
         if self.messagechain.has(Quote):
-            _quote_message: Quote = self.messagechain.get(Quote)[0]
+            _quote_message: Quote = self.messagechain[Quote][0]
             _origin_messagechain: MessageChain = _quote_message.origin
             _plain_message = self._getPlainMessage(_origin_messagechain)
             return _plain_message
@@ -168,7 +168,7 @@ class MessagePro(object):
         '''判断此 `GroupMessage` 是否为 Constance 发出'''
         return self.sender_id == settings.specialqq.constance
 
-    def _getCommand(self) -> Tuple[Optional[str], Optional[str]]:
+    def _getCommand(self) -> Tuple[Optional[str], Optional[str], Optional[str]]:
         if not self.plain_message:
             return None, None, None
         if self._commandSymbol in self.plain_message:
