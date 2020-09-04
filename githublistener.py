@@ -2,19 +2,42 @@ import asyncio
 import traceback
 from io import StringIO
 from typing import Callable, Dict, List, NoReturn, Optional
+import os.path
 
 import requests
 
 from settings import github_access_token, github_listen_repos
 
+eventIdCacheFile = 'github-event-id-cache'
+
+
+class eventIdCache(object):
+    filename: str
+
+    def __init__(self, filename: str) -> NoReturn:
+        self.filename = filename
+        self._checkFile()
+
+    def _checkFile(self) -> NoReturn:
+        if not os.path.exists(self.filename):
+            with open(self.filename, 'w') as f:
+                f.write('0')
+
+    def writeId(self, id: str) -> NoReturn:
+        with open(self.filename, 'w') as f:
+            f.write(id)
+
+    def readId(self) -> int:
+        with open(self.filename, 'r') as f:
+            return int(f.read())
+
 
 async def polling(repo: str, req: requests.Session, Send: Callable[[str], NoReturn]):
     etag: Optional[str] = None  # ETag 可用于判断内容是否更新，也可用于判断是否为第一次轮询
     x_poll_interval: int = 60  # 默认轮询间隔为 60
-    lastEvent = StringIO()
-    lastEvent.write('0')  # 初始化 StringIO
+    lastEvent = eventIdCache(eventIdCacheFile)
     while True:
-        lastEventId = lastEvent.getvalue()
+        lastEventId = lastEvent.readId()
         if etag:
             # 使用 ETag 判断内容是否更新以节省资源
             req.headers.update({'If-None-Match': etag})
@@ -26,11 +49,9 @@ async def polling(repo: str, req: requests.Session, Send: Callable[[str], NoRetu
                 _events.headers['X-Poll-Interval']) if hasXPollInterval else x_poll_interval
             if _events.status_code == 200 and etag:  # 状态码为 200 且非第一次轮询
                 _j: List[Dict] = _events.json()
-                lastEvent.truncate(0)  # 清除 lastEvent
-                lastEvent.seek(0)
-                lastEvent.write(_j[0]['id'])  # 将最新的 Event ID 写入 lastEvent
+                lastEvent.writeId(_j[0]['id'])  # 将最新的 Event ID 写入 lastEvent
                 for event in _j:
-                    if int(event['id']) <= int(lastEventId):
+                    if int(event['id']) <= lastEventId:
                         break
                     thisType: str = event['type']
                     if thisType == 'IssuesEvent':
