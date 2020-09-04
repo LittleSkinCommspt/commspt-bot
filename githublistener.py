@@ -1,6 +1,5 @@
 import asyncio
 import traceback
-from io import StringIO
 from typing import Callable, Dict, List, NoReturn, Optional
 import os.path
 
