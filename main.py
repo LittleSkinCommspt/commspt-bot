@@ -5,12 +5,13 @@ from typing import List, Optional
 
 import requests
 from graia.application import GraiaMiraiApplication
-from graia.application.entry import (At, Group, GroupMessage, Image,
+from graia.application.entry import (At, Group, GroupMessage, MemberJoinEvent, Image,
                                      MessageChain, Plain)
 from graia.broadcast import Broadcast
 from graia.broadcast.builtin.decoraters import Depend
 
 import settings
+from graiax.nem.filters import GroupFilters
 from csllogparser import aoscPastebin
 from githublistener import githubListener
 from messagepro import (MessagePro, adminOnly, exceptGroups, inGroups,
@@ -30,7 +31,18 @@ async def _send(message: str, group: int = qq.commspt_group):  # GitHub Listener
     await app.sendGroupMessage(group, MessageChain.create([Plain(message)]))
 
 
+@bcc.receiver(MemberJoinEvent)
+async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoinEvent):
+    member = event.member
+    group = member.group
+    if group.id == qq.littleskin_main:
+        await app.sendGroupMessage(group, MessageChain.create(
+            [At(member.id), Plain(tF.join_welcome)]))
+
+
 # 指令监听
+
+
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('help'))])
 async def command_help(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
@@ -244,9 +256,10 @@ async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatch(r'^草*$')),
-                                                 Depend(exceptGroups([qq.littleskin_main,qq.csl_group]))])
+                                                 Depend(exceptGroups([qq.littleskin_main, qq.csl_group]))])
 async def grass_spammer(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
+
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatchs([r'^为什么.*', r'^请问.*', r'^问一下.*'])),
                                                  Depend(inGroups([qq.littleskin_main]))])
