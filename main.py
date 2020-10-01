@@ -11,7 +11,7 @@ from graia.broadcast import Broadcast
 from graia.broadcast.builtin.decoraters import Depend
 
 import settings
-from graiax.nem.filters import GroupFilters
+# from graiax.nem.filters import GroupFilters
 from csllogparser import aoscPastebin
 from githublistener import githubListener
 from messagepro import (MessagePro, adminOnly, exceptGroups, inGroups,
@@ -35,7 +35,7 @@ async def _send(message: str, group: int = qq.commspt_group):  # GitHub Listener
 async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoinEvent):
     member = event.member
     group = member.group
-    if group.id == qq.littleskin_main:
+    if group.id == qq.littleskin_main or group.id == 1142906056:
         await app.sendGroupMessage(group, MessageChain.create(
             [At(member.id), Plain(tF.join_welcome)]))
 
