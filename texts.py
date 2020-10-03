@@ -4,7 +4,7 @@ class TextFields(object):
     why_notify = '一个新的「为什么」问题等待被处理'
     welcome_to_littleskin = '欢迎！请认真阅读群公告哦~'
     member_card_changed = '修改了群名片'
-    help = '请查看 https://littleskin-commspt-bot-manual.netlify.app/'
+    help = '请查看 https://qnzh3311.restent.site/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册！\nhttps://manual.littlesk.in/'
     faq = '\n你也许可以在「常见问题解答」中找到答案\nhttps://manual.littlesk.in/faq.html'
     ot = '\n此群禁止闲聊！请前往 Honoka Café 继续您的闲聊话题。群号 651672723'
