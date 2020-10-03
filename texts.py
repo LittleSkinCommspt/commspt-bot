@@ -9,7 +9,7 @@ class TextFields(object):
     faq = '\n你也许可以在「常见问题解答」中找到答案\nhttps://manual.littlesk.in/faq.html'
     ot = '\n此群禁止闲聊！请前往 Honoka Café 继续您的闲聊话题。群号 651672723'
     ygg_server_jvm = '请在启动脚本中加入参数 -Dauthlibinjector.debug=all，然后将 logs/latest.log 上传至群文件'
-    domain = '你似乎仍在中国大陆使用过时的 littleskin.cn，替换为 littlesk.in 以获取最佳体验'
+    domain = '我们推测您可能使用百度搜索 LittleSkin 并使用了在中国大陆过时的 littleskin.cn，因此我们要求您：\n1.将域名替换成 littlesk.in；\n2.使用除百度外其它的搜索引擎，例如 Bing。'
     view_hash_length_error = 'Hash 长度有误'
     view_not_200_error = '找不到材质？'
     view_no_hash_error = '请提供材质 Hash'
