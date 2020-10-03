@@ -71,7 +71,10 @@ async def command_ygg_server_jvm(app: GraiaMiraiApplication, group: Group):
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('domain'))])
 async def command_domain(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.domain)]))
+    await app.sendGroupMessage(group, MessageChain.create([
+        Image.fromLocalFile('./images/r-search.jpg'),
+        Plain(tF.domain)
+    ]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('mail')),
