@@ -42,7 +42,7 @@ async def polling(repo: str, req: requests.Session, Send: Callable[[str], NoRetu
             req.headers.update({'If-None-Match': etag})
         try:
             _events = req.get(
-                f'http://api.github.com.xiaojin233.cn/repos/{repo}/events?per_page=10')
+                f'http://api.github.com.xiaojin233.cn/repos/{repo}/events?per_page=10', timeout=10)
             hasXPollInterval: bool = 'X-Poll-Interval' in _events.headers  # 响应头中是否包含轮询间隔
             x_poll_interval: int = int(
                 _events.headers['X-Poll-Interval']) if hasXPollInterval else x_poll_interval
