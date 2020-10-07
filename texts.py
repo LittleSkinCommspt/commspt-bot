@@ -4,7 +4,7 @@ class TextFields(object):
     why_notify = '现在有一个新的问题被提出，请各位尽快处理。'
     welcome_to_littleskin = '欢迎！请认真阅读群公告哦~'
     member_card_changed = '修改了群名片'
-    csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ ，如果哪位有在维护相关文档，请进行相应的更新。'
+    csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://qnzh3311.restent.site/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册！\nhttps://manual.littlesk.in/'
     faq = '\n你也许可以在「常见问题解答」中找到答案\nhttps://manual.littlesk.in/faq.html'
