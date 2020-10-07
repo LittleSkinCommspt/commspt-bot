@@ -69,6 +69,11 @@ async def command_ygg_server_jvm(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ygg_server_jvm)]))
 
 
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.gui'))])
+async def command_csl_gui(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_gui)]))
+
+
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('domain'))])
 async def command_domain(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
