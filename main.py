@@ -269,7 +269,7 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatchs([r'^为什么.*', r'^为啥.*', r'^问个问题.*', r'^请问.*', r'^问一下.*', r'^求助一下.*', r'^如何解决.*', r'^我想问问.*', r'^这是什么问题.*', r'^这是咋回事.*'])),
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatchs([r'^为什么.*', r'^为啥.*', r'^问个问题.*', r'^请问.*', r'^问一下.*', r'^求助一下.*', r'^如何解决.*', r'^我想问问.*', r'^这是什么问题.*', r'^这是咋回事.*', r'^怎么办.*',r'^怎么解决.*'])),
                                                  Depend(inGroups([qq.littleskin_main]))])
 async def why_listener(app: GraiaMiraiApplication, _gm: GroupMessage):
     M = MessagePro(_gm)
