@@ -1,7 +1,8 @@
 import asyncio
 import traceback
-from typing import Callable, Dict, List, NoReturn, Optional
+from typing import Callable, Dict, List, Optional
 import os.path
+import json
 
 import requests
 
@@ -13,42 +14,47 @@ eventIdCacheFile = 'github-event-id-cache'
 class eventIdCache(object):
     filename: str
 
-    def __init__(self, filename: str) -> NoReturn:
+    def __init__(self, filename: str) -> None:
         self.filename = filename
         self._checkFile()
 
-    def _checkFile(self) -> NoReturn:
+    @property
+    def content(self):
+        return json.load(open(self.filename), 'r')
+
+    def _checkFile(self) -> None:
         if not os.path.exists(self.filename):
             with open(self.filename, 'w') as f:
-                f.write('0')
+                f.write(json.loads(dict()))
 
-    def writeId(self, id: str) -> NoReturn:
-        with open(self.filename, 'w') as f:
-            f.write(id)
+    def writeId(self, id: str, repo: str) -> None:
+        c = self.content
+        c[repo] = id
+        json.dump(c, open(self.filename, 'w'))
 
-    def readId(self) -> int:
-        with open(self.filename, 'r') as f:
-            return int(f.read())
+    def readId(self, repo: str) -> int:
+        return self.content[repo]
 
 
-async def polling(repo: str, req: requests.Session, Send: Callable[[str], NoReturn]):
+async def polling(repo: str, req: requests.Session, Send: Callable[[str], None]):
     etag: Optional[str] = None  # ETag 可用于判断内容是否更新，也可用于判断是否为第一次轮询
     x_poll_interval: int = 60  # 默认轮询间隔为 60
     lastEvent = eventIdCache(eventIdCacheFile)
     while True:
-        lastEventId = lastEvent.readId()
+        lastEventId = lastEvent.readId(repo)
         if etag:
             # 使用 ETag 判断内容是否更新以节省资源
             req.headers.update({'If-None-Match': etag})
         try:
             _events = req.get(
-                f'http://api.github.com.xiaojin233.cn/repos/{repo}/events?per_page=10', timeout=10)
+                f'https://api.github.com/repos/{repo}/events?per_page=10', timeout=10)
             hasXPollInterval: bool = 'X-Poll-Interval' in _events.headers  # 响应头中是否包含轮询间隔
             x_poll_interval: int = int(
                 _events.headers['X-Poll-Interval']) if hasXPollInterval else x_poll_interval
             if _events.status_code == 200 and etag:  # 状态码为 200 且非第一次轮询
                 _j: List[Dict] = _events.json()
-                lastEvent.writeId(_j[0]['id'])  # 将最新的 Event ID 写入 lastEvent
+                lastEvent.writeId(_j[0]['id'], repo)  # 将最新的 Event ID 写入 lastEvent
+                # 事件处理
                 for event in _j:
                     if int(event['id']) <= lastEventId:
                         break
@@ -61,13 +67,16 @@ async def polling(repo: str, req: requests.Session, Send: Callable[[str], NoRetu
                         await pullRequestEvent(repo, event['payload'], Send)
             elif _events.status_code == 304:  # 暂时没有
                 pass
-            etag = _events.headers['ETag']  # 更新 ETag
+            # 更新 ETag
+            new_etag = _events.headers['ETag']
+            if new_etag:
+                etag = new_etag
         except Exception:  # 防止突然宕
             traceback.print_exc()
         await asyncio.sleep(x_poll_interval)
 
 
-async def issuesOpend(repo: str, payload: dict, Send: Callable[[str], NoReturn]):
+async def issuesOpend(repo: str, payload: dict, Send: Callable[[str], None]):
     this = payload['issue']
     action: str = payload['action']
     _number: int = this['number']
@@ -79,7 +88,7 @@ async def issuesOpend(repo: str, payload: dict, Send: Callable[[str], NoReturn])
         await Send(f'[{repo}] #{_number} {_title}\n1 issue has been closed.\n{_html_url}')
 
 
-async def pushEvent(repo: str, event: dict, Send: Callable[[str], NoReturn]):
+async def pushEvent(repo: str, event: dict, Send: Callable[[str], None]):
     _operator: str = event['actor']['display_login']
     _commitsNumber = len(event['payload']['commits'])
     if _commitsNumber == 1:
@@ -90,7 +99,7 @@ async def pushEvent(repo: str, event: dict, Send: Callable[[str], NoReturn]):
         await Send(f'[{repo}] {_operator} pushed {_commitsNumber} commits.')
 
 
-async def pullRequestEvent(repo: str, payload: dict, Send: Callable[[str], NoReturn]):
+async def pullRequestEvent(repo: str, payload: dict, Send: Callable[[str], None]):
     action: str = payload['action']
     this: dict = payload['pull_request']
     _number: int = this['number']
@@ -114,7 +123,7 @@ req.headers.update({'Authorization': f'token {github_access_token}'})
 req.headers.update({'Accept': 'application/vnd.github.v3+json'})
 
 
-def githubListener(send_func: Callable[[str], NoReturn]) -> asyncio.Task:
+def githubListener(send_func: Callable[[str], None]) -> asyncio.Task:
     coros = list()
     repos: List[str] = github_listen_repos
     for repo in repos:
