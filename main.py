@@ -43,9 +43,9 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
 # 指令监听
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ping'))])
-async def command_ping(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ping)]))
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('help'))])
+async def command_help(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
@@ -252,10 +252,10 @@ async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMess
         await app.sendGroupMessage(group, MessageChain.create([Plain(e)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('test'))])
-async def command_test(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ping'))])
+async def command_ping(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
-    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.test)]), quote=M.source)
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ping)]), quote=M.source)
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWords(['网易lj', '迷你lj', '翻墙', 'vpn']))])
