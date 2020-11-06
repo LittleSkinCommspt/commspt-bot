@@ -43,9 +43,9 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
 # 指令监听
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('help'))])
-async def command_help(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
+@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ping'))])
+async def command_ping(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ping)]))
 
 
 @bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
