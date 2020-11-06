@@ -13,7 +13,7 @@ from graia.broadcast.builtin.decoraters import Depend
 import settings
 # from graiax.nem.filters import GroupFilters
 from csllogparser import aoscPastebin
-from githublistener import githubListener
+# from githublistener import githubListener
 from messagepro import (MessagePro, adminOnly, exceptGroups, inGroups,
                         onCommand, onMatch, onMatchs, onWord, onWords)
 from permissionshandler import PermissionsHandler
@@ -27,8 +27,8 @@ bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 
 
-async def _send(message: str, group: int = qq.commspt_group):  # GitHub Listener
-    await app.sendGroupMessage(group, MessageChain.create([Plain(message)]))
+# async def _send(message: str, group: int = qq.commspt_group):  # GitHub Listener
+#     await app.sendGroupMessage(group, MessageChain.create([Plain(message)]))
 
 
 @bcc.receiver(MemberJoinEvent)
@@ -290,8 +290,9 @@ if __name__ == '__main__':
         # 创建 Future 并启动整个应用
         app.subscribe_atexit()
         graia_task = app.create_background_task()
-        github_tasks = githubListener(_send)
-        loop.run_until_complete(asyncio.wait([graia_task, github_tasks]))
+        # github_tasks = githubListener(_send)
+        # loop.run_until_complete(asyncio.wait([graia_task, github_tasks]))
+        loop.run_until_complete(asyncio.wait([graia_task]))
     except KeyboardInterrupt:
         # 不是异常的异常
         sys.exit(0)
