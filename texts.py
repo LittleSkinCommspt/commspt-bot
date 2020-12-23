@@ -29,6 +29,7 @@ Edge: https://aka.ms/msedge'''
     client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
     join_welcome = '欢迎您加入 LittleSkin 官方用户交流群！\n请您先阅读群内置顶公告，直接提问可能会发生不好的事情。\n提问时请您详细描述您所遇到的问题，以便我们更好确定问题所在。'
+    paid_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     class ban(object):
         add_succ = '因滥用而被封禁'
         add_fail = '已在封禁列表中'
