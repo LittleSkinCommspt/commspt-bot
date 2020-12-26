@@ -136,3 +136,6 @@ github-event-id-cache
 
 # MacOS
 .DS_Store
+
+# Other
+.vscode
