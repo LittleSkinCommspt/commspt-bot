@@ -5,10 +5,12 @@ from typing import List, Optional
 
 import requests
 from graia.application import GraiaMiraiApplication
-from graia.application.entry import (At, Group, GroupMessage, MemberJoinEvent, Image,
-                                     MessageChain, Plain)
+from graia.application.entry import (At, Group, GroupMessage, Image,
+                                     MemberJoinEvent, MessageChain, Plain)
+from graia.application.message.elements import \
+    Element as GraiaMessageElementType
 from graia.broadcast import Broadcast
-from graia.broadcast.builtin.decoraters import Depend
+from graia.broadcast.builtin.decorators import Depend
 
 import settings
 # from graiax.nem.filters import GroupFilters
@@ -26,9 +28,13 @@ loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 
+# SimpleReplyRegister
 
-# async def _send(message: str, group: int = qq.commspt_group):  # GitHub Listener
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(message)]))
+
+async def registerSimpleReply(command: str, reply_content: List[GraiaMessageElementType], 
+headless_decorators: Optional[List[Depend]] = None):
+    async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
+        await app.sendGroupMessage(group, MessageChain.create(reply_content))
 
 
 @bcc.receiver(MemberJoinEvent)
@@ -43,12 +49,12 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
 # 指令监听
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('help'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('help'))])
 async def command_help(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.help)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('manual'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('manual'))])
 async def command_manual(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
         Image.fromLocalFile('./images/rtfm.png'),
@@ -56,7 +62,7 @@ async def command_manual(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('faq'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('faq'))])
 async def command_faq(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
         Image.fromLocalFile('./images/rtfm.png'),
@@ -64,17 +70,17 @@ async def command_faq(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.server.jvm'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg.server.jvm'))])
 async def command_ygg_server_jvm(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ygg_server_jvm)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.gui'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl.gui'))])
 async def command_csl_gui(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_gui)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('domain'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('domain'))])
 async def command_domain(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
         Image.fromLocalFile('./images/r-search.jpg'),
@@ -82,13 +88,13 @@ async def command_domain(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('mail')),
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('mail')),
                                                  Depend(exceptGroups([qq.csl_group]))])
 async def command_mail(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.mail)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.latest'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg.latest'))])
 async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
     _r = requests.get(
         'https://authlib-injector.yushi.moe/artifact/latest.json')
@@ -99,7 +105,7 @@ async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.latest'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl.latest'))])
 async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     _r = requests.get(
         'https://csl-1258131272.cos.ap-shanghai.myqcloud.com/latest.json')
@@ -113,7 +119,7 @@ Fabric: {_fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('clfcsl.latest'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
 async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     _r = requests.get(
         'https://csl-1258131272.cos.ap-shanghai.myqcloud.com/latest.json')
@@ -126,23 +132,23 @@ Forge: {_forge}
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.config'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl.config'))])
 async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
     _message: str = tF.csl_config_csl_group if group.id == qq.csl_group else tF.csl_config_littleskin
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl.log'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl.log'))])
 async def command_csl_log(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_log)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.nsis'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg.nsis'))])
 async def command_ygg_nsis(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ygg_nsis)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('browser'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('browser'))])
 async def command_browser(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
         Image.fromLocalFile('./images/browser.png'),
@@ -150,7 +156,7 @@ async def command_browser(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.client.refresh'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg.client.refresh'))])
 async def command_ygg_client_refresh(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
         Image.fromLocalFile('./images/ygg-client-refresh.png'),
@@ -158,7 +164,7 @@ async def command_ygg_client_refresh(app: GraiaMiraiApplication, group: Group):
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ot')),
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ot')),
                                                  Depend(exceptGroups([qq.littleskin_cafe]))])
 async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
@@ -172,7 +178,7 @@ async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage
     ]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('view'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('view'))])
 async def command_view(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
     _textureHash = M.Command.args
@@ -188,7 +194,7 @@ async def command_view(app: GraiaMiraiApplication, group: Group, _gm: GroupMessa
             await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_not_200_error)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('csl'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl'))])
 async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
     _playerName = M.Command.args if M.Command.args else M.quote_plain_message
@@ -197,7 +203,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
     await app.sendGroupMessage(group, MessageChain.create(_message))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg'))])
 async def command_ygg(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
     _playerName = M.Command.args if M.Command.args else M.quote_plain_message
@@ -206,7 +212,7 @@ async def command_ygg(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
     await app.sendGroupMessage(group, MessageChain.create(_message))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ban')), Depend(adminOnly)])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ban')), Depend(adminOnly)])
 async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
 
@@ -237,7 +243,7 @@ async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessag
             await app.sendGroupMessage(group, MessageChain.create([Plain(remove())]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWord('https://pastebin.aosc.io/paste/'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onWord('https://pastebin.aosc.io/paste/'))])
 async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_log_parsing)]))
     M = MessagePro(_gm)
@@ -252,24 +258,24 @@ async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMess
         await app.sendGroupMessage(group, MessageChain.create([Plain(e)]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ping'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ping'))])
 async def command_ping(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
     M = MessagePro(_gm)
     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.ping)]), quote=M.source)
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onWords(['网易lj', '迷你lj', '翻墙', 'vpn']))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onWords(['网易lj', '迷你lj', '翻墙', 'vpn']))])
 async def anti_bad_words(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('请不要在此群中讨论有关话题！')]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatch(r'^草*$')),
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onMatch(r'^草*$')),
                                                  Depend(exceptGroups([qq.littleskin_main, qq.csl_group]))])
 async def grass_spammer(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onMatchs([r'^为什么.*', r'^为啥.*', r'^问个问题.*', r'^请问.*', r'^问一下.*', r'^求助一下.*', r'^如何解决.*', r'^我想问问.*', r'^这是什么问题.*', r'^这是咋回事.*', r'^怎么办.*',r'^怎么解决.*'])),
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onMatchs([r'^为什么.*', r'^为啥.*', r'^问个问题.*', r'^请问.*', r'^问一下.*', r'^求助一下.*', r'^如何解决.*', r'^我想问问.*', r'^这是什么问题.*', r'^这是咋回事.*', r'^怎么办.*', r'^怎么解决.*'])),
                                                  Depend(inGroups([qq.littleskin_main]))])
 async def why_listener(app: GraiaMiraiApplication, _gm: GroupMessage):
     M = MessagePro(_gm)
@@ -278,7 +284,7 @@ async def why_listener(app: GraiaMiraiApplication, _gm: GroupMessage):
                                quote=M.source)
 
 
-@bcc.receiver(GroupMessage, headless_decoraters=[Depend(onCommand('ygg.url'))])
+@bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg.url'))])
 async def command_ygg_url(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([
         Image.fromLocalFile('./images/ygg-url.png')
@@ -287,12 +293,13 @@ async def command_ygg_url(app: GraiaMiraiApplication, group: Group):
 
 if __name__ == '__main__':
     try:
-        # 创建 Future 并启动整个应用
-        app.subscribe_atexit()
-        graia_task = app.create_background_task()
-        # github_tasks = githubListener(_send)
-        # loop.run_until_complete(asyncio.wait([graia_task, github_tasks]))
-        loop.run_until_complete(asyncio.wait([graia_task]))
+        app.launch_blocking()
+        # # 创建 Future 并启动整个应用
+        # app.subscribe_atexit()
+        # graia_task = app.create_background_task()
+        # # github_tasks = githubListener(_send)
+        # # loop.run_until_complete(asyncio.wait([graia_task, github_tasks]))
+        # loop.run_until_complete(asyncio.wait([graia_task]))
     except KeyboardInterrupt:
         # 不是异常的异常
         sys.exit(0)
