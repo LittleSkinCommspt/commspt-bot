@@ -1,7 +1,7 @@
 # commspt-bot
 LittleSkin Community Support QQ bot
 
-Manual: <https://littleskin-commspt-bot-manual.netlify.app/>
+Manual: <https://qnzh3311.restent.site>
 
 ---
 
