@@ -11,7 +11,7 @@ Manual: <https://qnzh3311.restent.site>
 
 此机器人及文档的主要维护者如下：
 - [Xiao\_Jin](https://github.com/jinzhijie) (developer) （初三/忙碌）
-- [Restent Ou](https://github.com/Restent) (maintainer) （初三/忙碌）
+- null
 - [Fidel](https://github.com/Fidelxyz) (contributor) （高一/忙碌）
 - [冰凌sama](https://github.com/bingling-sama) (documenter) （开学/忙碌）
 - [CursoR](https://github.com/CursoR-S) (maintainer) （开学/忙碌）
