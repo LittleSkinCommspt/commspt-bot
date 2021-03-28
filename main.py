@@ -1,6 +1,8 @@
 import asyncio
 import sys
 import traceback
+
+
 from typing import List, Optional
 
 from graia.application import GraiaMiraiApplication
@@ -22,6 +24,7 @@ from player import PlayerProfile
 from settings import specialqq as qq
 from texts import TextFields as tF
 
+from models import apis
 # Application & BCC 初始化
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
@@ -80,32 +83,20 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
             [At(member.id), Plain(tF.join_welcome)]))
 
 
-# 指令监听
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch(f'&ygg.latest')])])
+async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
+    infos = await apis.AuthlibInjectorLatest.get()
+    _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg.latest'))])
-# async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
-#     _r = requests.get(
-#         'https://authlib-injector.yushi.moe/artifact/latest.json')
-#     _j: dict = _r.json()
-#     _latestVersion = _j['version']
-#     _url = _j['download_url']
-#     _message = f'authlib-injector 最新版本：{_latestVersion}\n{_url}'
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl.latest'))])
-# async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
-#     _r = requests.get(
-#         'https://csl-1258131272.cos.ap-shanghai.myqcloud.com/latest.json')
-#     _j: dict = _r.json()
-#     _latestVersion = _j['version']
-#     _forge = _j['downloads']['Forge']
-#     _fabric = _j['downloads']['Fabric']
-#     _message = f'''CustomSkinLoader 最新版本：{_latestVersion}
-# Forge: {_forge}
-# Fabric: {_fabric}'''
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch(f'&csl.latest')])])
+async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
+    infos = await apis.CustomSkinLoaderLatest.get()
+    _message = f'''CustomSkinLoader 最新版本：{infos.version}
+Forge: {infos.downloads.Forge}
+Fabric: {infos.downloads.Fabric}'''
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
@@ -238,10 +229,5 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
 
 
 if __name__ == '__main__':
-    try:
-        app.launch_blocking()
-    except KeyboardInterrupt:
-        # 不是异常的异常
-        sys.exit(0)
-    except Exception:
-        traceback.print_exception()
+    app.launch_blocking()
+
