@@ -34,13 +34,13 @@ def registerSimpleReply(command: str, reply_content: List[GraiaMessageElementTyp
 registerSimpleReply('ping', [Plain('Pong!')])
 
 registerSimpleReply('help', [Plain(tF.help)])
+registerSimpleReply('ot', [
+    Image.fromLocalFile('./images/off-topic.png'),
+    Plain(tF.ot)
+])
 registerSimpleReply('manual', [
     Image.fromLocalFile('./images/rtfm.png'),
     Plain(tF.manual)
-])
-registerSimpleReply('faq', [
-    Image.fromLocalFile('./images/rtfm.png'),
-    Plain(tF.faq)
 ])
 registerSimpleReply('ygg.server.jvm', [Plain(tF.ygg_server_jvm)])
 registerSimpleReply('csl.gui', [Plain(tF.csl_gui)])
