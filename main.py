@@ -1,9 +1,5 @@
 import asyncio
-import sys
-import traceback
-
-
-from typing import List, Optional
+from typing import List
 
 from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
@@ -11,26 +7,21 @@ from graia.application.entry import (At, Group, GroupMessage, Image,
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.parser.kanata import Kanata
-from graia.application.message.parser.signature import FullMatch
+from graia.application.message.parser.signature import FullMatch, RequireParam
 from graia.broadcast import Broadcast
-from graia.broadcast.builtin.decorators import Depend
 
 import settings
-from csllogparser import aoscPastebin
-from messagepro import (MessagePro, adminOnly, exceptGroups, inGroups,
-                        onCommand, onMatch, onMatchs, onWord, onWords)
-from permissionshandler import PermissionsHandler
-from player import PlayerProfile
+
+from models import apis
 from settings import specialqq as qq
 from texts import TextFields as tF
 
-from models import apis
 # Application & BCC 初始化
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
 
-# SimpleReplyRegister
+# --- SimpleReplyRegister ---
 
 
 def registerSimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
@@ -43,13 +34,13 @@ def registerSimpleReply(command: str, reply_content: List[GraiaMessageElementTyp
 registerSimpleReply('ping', [Plain('Pong!')])
 
 registerSimpleReply('help', [Plain(tF.help)])
+registerSimpleReply('ot', [
+    Image.fromLocalFile('./images/off-topic.png'),
+    Plain(tF.ot)
+])
 registerSimpleReply('manual', [
     Image.fromLocalFile('./images/rtfm.png'),
     Plain(tF.manual)
-])
-registerSimpleReply('faq', [
-    Image.fromLocalFile('./images/rtfm.png'),
-    Plain(tF.faq)
 ])
 registerSimpleReply('ygg.server.jvm', [Plain(tF.ygg_server_jvm)])
 registerSimpleReply('csl.gui', [Plain(tF.csl_gui)])
@@ -96,6 +87,19 @@ async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     _message = f'''CustomSkinLoader 最新版本：{infos.version}
 Forge: {infos.downloads.Forge}
 Fabric: {infos.downloads.Fabric}'''
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch('&csl '), RequireParam(name='params')])])
+async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+    player_name = params.asDisplay()
+    result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
+    if not result.existed:
+        _message = f'「{player_name}」不存在'
+    else:
+        _message = f'''「{player_name}」
+皮肤：[{result.skin_type}] {result.skins.slim or result.skins.default}
+披风：{result.cape}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
@@ -146,15 +150,6 @@ Fabric: {infos.downloads.Fabric}'''
 #             await app.sendGroupMessage(group, MessageChain.create([_image_message]))
 #         else:
 #             await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_not_200_error)]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('csl'))])
-# async def command_csl(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-#     _playerName = M.Command.args if M.Command.args else M.quote_plain_message
-#     _player = PlayerProfile(_playerName)
-#     _message = _player.getCsl()
-#     await app.sendGroupMessage(group, MessageChain.create(_message))
 
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg'))])
