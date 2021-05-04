@@ -101,6 +101,20 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
 皮肤：[{result.skin_type}] {result.skins.slim or result.skins.default}
 披风：{result.cape}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+    
+
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch('&ygg '), RequireParam(name='params')])])
+async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+    player_name = params.asDisplay()
+    player_uuid = await api.YggdrasilPlayerUuidApi.get('https://littlesk.in/api/yggdrasil', player_name)
+    if not player_uuid.existed:
+        _message = f'「{player_name}」不存在'
+    else:
+        result = await api.YggdrasilGameProfileApi.get('https://littlesk.in/api/yggdrasil', player_uuid)
+        _message = f'''「{player_name}」
+皮肤：[{result.skin_type}] {result.skins.slim or result.skins.default}
+披风：{result.cape}'''
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
@@ -150,15 +164,6 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
 #             await app.sendGroupMessage(group, MessageChain.create([_image_message]))
 #         else:
 #             await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_not_200_error)]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg'))])
-# async def command_ygg(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-#     _playerName = M.Command.args if M.Command.args else M.quote_plain_message
-#     _player = PlayerProfile(_playerName)
-#     _message = _player.getYgg()
-#     await app.sendGroupMessage(group, MessageChain.create(_message))
 
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ban')), Depend(adminOnly)])
