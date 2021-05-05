@@ -48,12 +48,12 @@ class CustomSkinLoaderApi(BaseModel):
     skin_type: Optional[Literal['default', 'slim']] = 'default'
 
     @root_validator(pre=True)
-    def extra_info(cls, values: dict):
+    def pre_processor(cls, values: dict):
         existed = 'username' in values and values['username'] != '404'
         if not existed or 'skins' not in values:
             skin_type = None
         else:
-            skin_type = 'default' if 'default' not in values['skins'] else 'slim'
+            skin_type = 'default' if 'default' in values['skins'] else 'slim'
         values.update({
             'existed': existed,
             'skin_type': skin_type
@@ -83,19 +83,18 @@ class YggdrasilPlayerUuidApi(BaseModel):
 
 def make_hash(cls, values):
     url = values['url']
-    print(url)
     last_slash_location = url.rindex('/')
-    print(last_slash_location)
-    values['hash'] = url[last_slash_location+1:]
+    real_hash = url[last_slash_location+1:]
+    values['hash'] = real_hash
     return values
 
 class YggdrasilTextures(BaseModel):    
     class Skin(BaseModel):
         class MetaData(BaseModel):
-            model: Literal['default', 'slim']
+            model: Literal['default', 'slim'] = 'default'
         url: Optional[str]
         hash: Optional[str] = None
-        metadata: Optional[MetaData]
+        metadata: Optional[MetaData] = MetaData(model='default')
         _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
 
     class Cape(BaseModel):
@@ -122,7 +121,7 @@ class YggdrasilGameProfileApi(BaseModel):
     properties: Properties  # a bit difference between API
 
     @root_validator(pre=True)
-    def pre_process(cls, values):
+    def pre_processer(cls, values):
         # Doc: https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape
         # base64 decode and a little change
         values['properties'][0]['textures'] = json.loads(b64decode(

@@ -1,5 +1,6 @@
 import asyncio
 from typing import List
+from uuid import UUID
 
 from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
@@ -7,11 +8,13 @@ from graia.application.entry import (At, Group, GroupMessage, Image,
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.parser.kanata import Kanata
-from graia.application.message.parser.signature import FullMatch, RequireParam
+from graia.application.message.parser.signature import (FullMatch,
+                                                        OptionalParam,
+                                                        RegexMatch,
+                                                        RequireParam)
 from graia.broadcast import Broadcast
 
 import settings
-
 from models import apis
 from settings import specialqq as qq
 from texts import TextFields as tF
@@ -19,47 +22,47 @@ from texts import TextFields as tF
 # Application & BCC 初始化
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
-app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection)
+app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
 
-# --- SimpleReplyRegister ---
+def MatchCommand(command: str):
+    return RegexMatch(f'(.*: )?&{command} ?')
 
-
-def registerSimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
+def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
         await app.sendGroupMessage(group, MessageChain.create(reply_content))
     bcc.receiver(GroupMessage, dispatchers=[Kanata(
-        [FullMatch(f'&{command}')])])(srr_wrapper)
+        [MatchCommand(command)])])(srr_wrapper)
 
 
-registerSimpleReply('ping', [Plain('Pong!')])
+SimpleReply('ping', [Plain('Pong!')])
 
-registerSimpleReply('help', [Plain(tF.help)])
-registerSimpleReply('ot', [
+SimpleReply('help', [Plain(tF.help)])
+SimpleReply('ot', [
     Image.fromLocalFile('./images/off-topic.png'),
     Plain(tF.ot)
 ])
-registerSimpleReply('manual', [
+SimpleReply('manual', [
     Image.fromLocalFile('./images/rtfm.png'),
     Plain(tF.manual)
 ])
-registerSimpleReply('ygg.server.jvm', [Plain(tF.ygg_server_jvm)])
-registerSimpleReply('csl.gui', [Plain(tF.csl_gui)])
-registerSimpleReply('domain', [
+SimpleReply('ygg.server.jvm', [Plain(tF.ygg_server_jvm)])
+SimpleReply('csl.gui', [Plain(tF.csl_gui)])
+SimpleReply('domain', [
     Image.fromLocalFile('./images/r-search.jpg'),
     Plain(tF.domain)
 ])
-registerSimpleReply('mail', [Plain(tF.mail)])
-registerSimpleReply('csl.log', [Plain(tF.csl_log)])
-registerSimpleReply('ygg.nsis', [Plain(tF.ygg_nsis)])
-registerSimpleReply('browser', [
+SimpleReply('mail', [Plain(tF.mail)])
+SimpleReply('csl.log', [Plain(tF.csl_log)])
+SimpleReply('ygg.nsis', [Plain(tF.ygg_nsis)])
+SimpleReply('browser', [
     Image.fromLocalFile('./images/browser.png'),
     Plain(tF.browser)
 ])
-registerSimpleReply('ygg.client.refresh', [
+SimpleReply('ygg.client.refresh', [
     Image.fromLocalFile('./images/ygg-client-refresh.png'),
     Plain(tF.client_refresh)
 ])
-registerSimpleReply('ygg.url', [
+SimpleReply('ygg.url', [
     Plain('https://littlesk.in'),
     Image.fromLocalFile('./images/ygg-url.png')
 ])
@@ -90,20 +93,20 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch('&csl '), RequireParam(name='params')])])
-async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl'), OptionalParam(name='params')])])
+async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain, msg: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.existed:
         _message = f'「{player_name}」不存在'
     else:
         _message = f'''「{player_name}」
-皮肤：[{result.skin_type}] {result.skins.slim or result.skins.default}
-披风：{result.cape}'''
+皮肤：{result.skins.slim[:7] or result.skins.default[:7]} [{result.skin_type}]
+披风：{result.cape[:7]}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch('&ygg '), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg'), OptionalParam(name='params')])])
 async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     player_uuid = await apis.YggdrasilPlayerUuidApi.get('https://mcskin.littleservice.cn/api/yggdrasil', player_name)
@@ -111,11 +114,11 @@ async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageC
         _message = f'「{player_name}」不存在'
     else:
         result: apis.YggdrasilGameProfileApi = await apis.YggdrasilGameProfileApi.get('https://mcskin.littleservice.cn/api/yggdrasil', player_uuid.id)
-        print(result)
         textures: apis.YggdrasilTextures = result.properties.textures.textures
         _message = f'''「{result.name}」
-皮肤：[{textures.SKIN.metadata.model if textures.SKIN else None}] {textures.SKIN.hash if textures.SKIN else None}
-披风：{textures.CAPE.hash if textures.CAPE else None}'''
+皮肤：{textures.SKIN.hash[:7] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
+披风：{textures.CAPE.hash[:7] if textures.CAPE else None}
+UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
@@ -154,13 +157,13 @@ async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageC
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('view'))])
 # async def command_view(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
 #     M = MessagePro(_gm)
-#     _textureHash = M.Command.args
-#     if not _textureHash:
-#         await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_no_hash_error)]))
-#     elif len(_textureHash) != 64:
-#         await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_hash_length_error)]))
+#     _texturehash[:7] = M.Command.args
+#     if not _texturehash[:7]:
+#         await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_no_hash[:7]_error)]))
+#     elif len(_texturehash[:7]) != 64:
+#         await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_hash[:7]_length_error)]))
 #     else:
-#         _image_message = PlayerProfile.getPreviewByHash(_textureHash)
+#         _image_message = PlayerProfile.getPreviewByhash[:7](_texturehash[:7])
 #         if _image_message:
 #             await app.sendGroupMessage(group, MessageChain.create([_image_message]))
 #         else:
