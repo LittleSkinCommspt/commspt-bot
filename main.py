@@ -28,7 +28,7 @@ app = GraiaMiraiApplication(
 
 
 def MatchCommand(command: str):
-    return RegexMatch(rf'(.*: )?&{command}')  # 兼容 Constance
+    return RegexMatch(rf'(.*: )?&{command} *')  # 兼容 Constance
 
 
 def MatchKeywords(keywords: list):  # 仅适用于非最后一个关键词
