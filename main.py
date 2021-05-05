@@ -3,8 +3,9 @@ from typing import List
 from uuid import UUID
 
 from graia.application import GraiaMiraiApplication
-from graia.application.entry import (At, Group, GroupMessage, Image,
-                                     MemberJoinEvent, MessageChain, Plain)
+from graia.application.entry import (At, Group, GroupMessage, Image, Source,
+                                     MemberJoinEvent, MessageChain, Plain,
+                                     Quote)
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.parser.kanata import Kanata
@@ -22,10 +23,17 @@ from texts import TextFields as tF
 # Application & BCC 初始化
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
-app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
+app = GraiaMiraiApplication(
+    broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
+
 
 def MatchCommand(command: str):
-    return RegexMatch(f'(.*: )?&{command} +')
+    return RegexMatch(f'(.*: )?&{command} +')  # 兼容 Constance
+
+
+def MatchKeywords(keywords: list):  # 仅适用于非最后一个关键词
+    return [Kanata([RegexMatch(f'.*{i}.*')], stop_exec_if_fail=False) for i in keywords]
+
 
 def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
@@ -68,6 +76,18 @@ SimpleReply('ygg.url', [
 ])
 
 
+@bcc.receiver(GroupMessage, dispatchers=[
+    *MatchKeywords(['怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
+                    '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']),
+    Kanata([RegexMatch('.*为什么.*')])
+])
+async def new_question_nofication(app: GraiaMiraiApplication, msg: MessageChain):
+    # TODO 此功能目前无法正常工作，仅能对为什么做出反应
+    await app.sendGroupMessage(qq.notification_channel,
+                               MessageChain.create([Plain(tF.why_notify)]),
+                               quote=msg[Source][0].id)
+
+
 @bcc.receiver(MemberJoinEvent)
 async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoinEvent):
     member = event.member
@@ -93,33 +113,53 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl'), OptionalParam(name='params')])])
-async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain, msg: MessageChain):
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl'), RequireParam(name='params')])])
+async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.existed:
         _message = f'「{player_name}」不存在'
     else:
         _message = f'''「{player_name}」
-皮肤：{result.skins.slim[:7] or result.skins.default[:7]} [{result.skin_type}]
-披风：{result.cape[:7]}'''
+Skin: {result.skins.slim[:7] or result.skins.default[:7]} [{result.skin_type}]
+Cape: {result.cape[:7]}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg'), OptionalParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg'), RequireParam(name='params')])])
 async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
-    player_uuid = await apis.YggdrasilPlayerUuidApi.get('https://mcskin.littleservice.cn/api/yggdrasil', player_name)
+    littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
+    player_uuid = await apis.YggdrasilPlayerUuidApi.get(littleskin_yggdrasil_root, player_name)
     if not player_uuid.existed:
         _message = f'「{player_name}」不存在'
     else:
-        result: apis.YggdrasilGameProfileApi = await apis.YggdrasilGameProfileApi.get('https://mcskin.littleservice.cn/api/yggdrasil', player_uuid.id)
+        result: apis.YggdrasilGameProfileApi = await apis.YggdrasilGameProfileApi.get(littleskin_yggdrasil_root, player_uuid.id)
         textures: apis.YggdrasilTextures = result.properties.textures.textures
         _message = f'''「{result.name}」
-皮肤：{textures.SKIN.hash[:7] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
-披风：{textures.CAPE.hash[:7] if textures.CAPE else None}
+Skin: {textures.SKIN.hash[:7] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
+Cape: {textures.CAPE.hash[:7] if textures.CAPE else None}
 UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
+
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('view'), RequireParam(name='params'), OptionalParam('method')])])
+async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+    player_name = params.asDisplay()
+    result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
+    if not result.existed:
+        await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
+    else:
+        skin_hash = result.skins.slim or result.skins.default
+        cape_hash = result.cape
+        littleskin_root = 'https://mcskin.littleservice.cn'
+        preview_images: List[Image] = list()
+        for texture in [skin_hash, cape_hash]:
+            if skin_hash:
+                preview_images.append(Image.fromUnsafeBytes(await apis.getTexturePreview(
+                    littleskin_root, texture)))
+    await app.sendGroupMessage(group,
+                               MessageChain.create([*preview_images, Plain(f'Skin: {skin_hash[:7] if skin_hash else None} [{result.skin_type}]\nCape: {cape_hash[:7] if cape_hash else None}')]))
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
 # async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
@@ -231,16 +271,5 @@ UUID: {UUID(player_uuid.id)}'''
 #     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
 
 
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onMatchs([r'^为什么.*', r'^为啥.*', r'^问个问题.*', r'^请问.*', r'^问一下.*', r'^求助一下.*', r'^如何解决.*', r'^我想问问.*', r'^这是什么问题.*', r'^这是咋回事.*', r'^怎么办.*', r'^怎么解决.*'])),
-#                                                  Depend(inGroups([qq.littleskin_main]))])
-# async def why_listener(app: GraiaMiraiApplication, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-#     await app.sendGroupMessage(qq.notification_channel,
-#                                MessageChain.create([Plain(tF.why_notify)]),
-#                                quote=M.source)
-
-
-
 if __name__ == '__main__':
     app.launch_blocking()
-
