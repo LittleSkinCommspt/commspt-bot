@@ -25,7 +25,7 @@ bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
 
 def MatchCommand(command: str):
-    return RegexMatch(f'(.*: )?&{command} ?')
+    return RegexMatch(f'(.*: )?&{command} +')
 
 def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
