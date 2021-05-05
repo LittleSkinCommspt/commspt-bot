@@ -29,8 +29,3 @@ Edge: https://aka.ms/msedge'''
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
     join_welcome = '欢迎加入 LittleSkin 官方用户交流群！\n提问前请先阅读置顶公告，直接提问可能会获得我们赠送的禁言大礼包。'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
-    class ban(object):
-        add_succ = '因滥用而被封禁'
-        add_fail = '已在封禁列表中'
-        remove_succ = '已被解除封禁'
-        remove_fail = '不在封禁列表中'
