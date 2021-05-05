@@ -103,6 +103,21 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch('&ygg '), RequireParam(name='params')])])
+async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+    player_name = params.asDisplay()
+    player_uuid = await apis.YggdrasilPlayerUuidApi.get('https://mcskin.littleservice.cn/api/yggdrasil', player_name)
+    if not player_uuid.existed:
+        _message = f'「{player_name}」不存在'
+    else:
+        result: apis.YggdrasilGameProfileApi = await apis.YggdrasilGameProfileApi.get('https://mcskin.littleservice.cn/api/yggdrasil', player_uuid.id)
+        print(result)
+        textures: apis.YggdrasilTextures = result.properties.textures.textures
+        _message = f'''「{result.name}」
+皮肤：[{textures.SKIN.metadata.model if textures.SKIN else None}] {textures.SKIN.hash if textures.SKIN else None}
+披风：{textures.CAPE.hash if textures.CAPE else None}'''
+    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
 # async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
 #     _r = requests.get(

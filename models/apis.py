@@ -81,18 +81,30 @@ class YggdrasilPlayerUuidApi(BaseModel):
                 return cls.parse_raw(await resp.text())
 
 
-class YggdrasilTextures(BaseModel):
+def make_hash(cls, values):
+    url = values['url']
+    print(url)
+    last_slash_location = url.rindex('/')
+    print(last_slash_location)
+    values['hash'] = url[last_slash_location+1:]
+    return values
+
+class YggdrasilTextures(BaseModel):    
     class Skin(BaseModel):
         class MetaData(BaseModel):
             model: Literal['default', 'slim']
-        url: str
+        url: Optional[str]
+        hash: Optional[str] = None
         metadata: Optional[MetaData]
+        _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
 
     class Cape(BaseModel):
-        url: str
+        url: Optional[str]
+        hash: Optional[str] = None
+        _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
 
-    SKIN: Skin
-    CAPE: Cape
+    SKIN: Optional[Skin]
+    CAPE: Optional[Cape]
 
 
 class YggdrasilPropertiesTextures(BaseModel):
