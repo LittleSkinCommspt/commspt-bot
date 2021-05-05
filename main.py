@@ -28,7 +28,7 @@ app = GraiaMiraiApplication(
 
 
 def MatchCommand(command: str):
-    return RegexMatch(f'(.*: )?&{command} +')  # 兼容 Constance
+    return RegexMatch(rf'(.*: )?&{command}')  # 兼容 Constance
 
 
 def MatchKeywords(keywords: list):  # 仅适用于非最后一个关键词
@@ -97,14 +97,14 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
             [At(member.id), Plain(tF.join_welcome)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch(f'&ygg.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg.latest')])])
 async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch(f'&csl.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl.latest')])])
 async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.CustomSkinLoaderLatest.get()
     _message = f'''CustomSkinLoader 最新版本：{infos.version}
@@ -143,7 +143,7 @@ UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('view'), RequireParam(name='params'), OptionalParam('method')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('view'), RequireParam(name='params')])])
 async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -174,7 +174,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
 #     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-# @bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch(f'&csl.config')])])
+# @bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl.config')])])
 # async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
 #     _message: str = tF.csl_config_csl_group if group.id == qq.csl_group else tF.csl_config_littleskin
 #     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
