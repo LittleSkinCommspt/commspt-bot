@@ -3,9 +3,9 @@ from typing import List
 from uuid import UUID
 
 from graia.application import GraiaMiraiApplication
-from graia.application.entry import (At, Group, GroupMessage, Image, Source,
+from graia.application.entry import (At, Group, GroupMessage, Image,
                                      MemberJoinEvent, MessageChain, Plain,
-                                     Quote)
+                                     Quote, Source)
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.parser.kanata import Kanata
@@ -16,6 +16,7 @@ from graia.application.message.parser.signature import (FullMatch,
 from graia.broadcast import Broadcast
 
 import settings
+from matchers import CommandMatch, KeywordsMatch
 from models import apis
 from settings import specialqq as qq
 from texts import TextFields as tF
@@ -27,19 +28,11 @@ app = GraiaMiraiApplication(
     broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
 
 
-def MatchCommand(command: str):
-    return RegexMatch(rf'(.*: )?&{command} *')  # 兼容 Constance
-
-
-def MatchKeywords(keywords: list):  # 仅适用于非最后一个关键词
-    return [Kanata([RegexMatch(f'.*{i}.*')], stop_exec_if_fail=False) for i in keywords]
-
-
 def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
         await app.sendGroupMessage(group, MessageChain.create(reply_content))
     bcc.receiver(GroupMessage, dispatchers=[Kanata(
-        [MatchCommand(command)])])(srr_wrapper)
+        [CommandMatch(command)])])(srr_wrapper)
 
 
 SimpleReply('ping', [Plain('Pong!')])
@@ -77,15 +70,19 @@ SimpleReply('ygg.url', [
 
 
 @bcc.receiver(GroupMessage, dispatchers=[
-    *MatchKeywords(['怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
-                    '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']),
-    Kanata([RegexMatch('.*为什么.*')])
+    Kanata([KeywordsMatch(tF.question_keywords)])
 ])
-async def new_question_nofication(app: GraiaMiraiApplication, msg: MessageChain):
-    # TODO 此功能目前无法正常工作，仅能对为什么做出反应
-    await app.sendGroupMessage(qq.notification_channel,
-                               MessageChain.create([Plain(tF.why_notify)]),
-                               quote=msg[Source][0].id)
+async def new_question_nofication(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
+    enable_in_groups: List[int] = [qq.littleskin_main]
+    if group.id in enable_in_groups:
+        await app.sendGroupMessage(qq.notification_channel,
+                                   MessageChain.create(
+                                       [Plain(tF.new_question_nofication)]),
+                                   quote=msg[Source][0].id)
+        await app.sendGroupMessage(group,
+                                   MessageChain.create(
+                                       [Plain(tF.new_question_nofication)]),
+                                   quote=msg[Source][0].id)
 
 
 @bcc.receiver(MemberJoinEvent)
