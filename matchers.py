@@ -18,7 +18,7 @@ class CommandMatch(NormalMatch):
     pattern: str
 
     def __init__(self, pattern) -> None:
-        super().__init__(pattern=rf'(.*: )?&{pattern} *')
+        super().__init__(pattern=rf'(.*: )?&{pattern}*[^\.] ')
 
     def operator(self):
         return self.pattern

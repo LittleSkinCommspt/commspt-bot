@@ -94,14 +94,14 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
             [At(member.id), Plain(tF.join_welcome)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest')])])
 async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest')])])
 async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.CustomSkinLoaderLatest.get()
     _message = f'''CustomSkinLoader 最新版本：{infos.version}
@@ -110,7 +110,7 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl'), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl'), RequireParam(name='params')])])
 async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -123,7 +123,7 @@ Cape: {result.cape[:7]}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg'), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg'), RequireParam(name='params')])])
 async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
@@ -140,7 +140,7 @@ UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('view'), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view'), RequireParam(name='params')])])
 async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -171,7 +171,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
 #     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-# @bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl.config')])])
+# @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.config')])])
 # async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
 #     _message: str = tF.csl_config_csl_group if group.id == qq.csl_group else tF.csl_config_littleskin
 #     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
