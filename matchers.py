@@ -17,8 +17,9 @@ class KeywordsMatch(NormalMatch):
 class CommandMatch(NormalMatch):
     pattern: str
 
-    def __init__(self, pattern) -> None:
-        super().__init__(pattern=rf'(.*: )?&{pattern}[^\.] *')
+    def __init__(self, pattern, with_params: bool = True) -> None:
+        re_pattern = rf'(.*: )?&{pattern}[^\.] *' if with_params else rf'(.*: )?&{pattern}'
+        super().__init__(pattern=re_pattern)
 
     def operator(self):
         return self.pattern

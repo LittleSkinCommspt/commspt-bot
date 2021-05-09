@@ -32,7 +32,7 @@ def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
         await app.sendGroupMessage(group, MessageChain.create(reply_content))
     bcc.receiver(GroupMessage, dispatchers=[Kanata(
-        [CommandMatch(command)])])(srr_wrapper)
+        [CommandMatch(command, False)])])(srr_wrapper)
 
 
 SimpleReply('ping', [Plain('Pong!')])
@@ -94,14 +94,14 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
             [At(member.id), Plain(tF.join_welcome)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest', False)])])
 async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest', False)])])
 async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.CustomSkinLoaderLatest.get()
     _message = f'''CustomSkinLoader 最新版本：{infos.version}
