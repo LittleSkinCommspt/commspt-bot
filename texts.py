@@ -1,9 +1,11 @@
+from typing import List
+
+
 class TextFields(object):
     '''储存有文本字段'''
     ping = 'Pong'
-    why_notify = '有一个新的问题被提出，请各位尽快处理。'
+    new_question_nofication = '有一个新的问题被提出，请各位尽快处理。'
     welcome_to_littleskin = '欢迎！请认真阅读群公告哦~'
-    member_card_changed = '修改了群名片'
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://qnzh3311.restent.site/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
@@ -29,3 +31,5 @@ Edge: https://aka.ms/msedge'''
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
     join_welcome = '欢迎加入 LittleSkin 官方用户交流群！\n提问前请先阅读置顶公告，直接提问可能会获得我们赠送的禁言大礼包。'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
+    question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
+                                    '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']

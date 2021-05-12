@@ -3,9 +3,9 @@ from typing import List
 from uuid import UUID
 
 from graia.application import GraiaMiraiApplication
-from graia.application.entry import (At, Group, GroupMessage, Image, Source,
+from graia.application.entry import (At, Group, GroupMessage, Image,
                                      MemberJoinEvent, MessageChain, Plain,
-                                     Quote)
+                                     Quote, Source)
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.parser.kanata import Kanata
@@ -16,6 +16,7 @@ from graia.application.message.parser.signature import (FullMatch,
 from graia.broadcast import Broadcast
 
 import settings
+from matchers import CommandMatch, KeywordsMatch
 from models import apis
 from settings import specialqq as qq
 from texts import TextFields as tF
@@ -27,19 +28,11 @@ app = GraiaMiraiApplication(
     broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
 
 
-def MatchCommand(command: str):
-    return RegexMatch(rf'(.*: )?&{command} *')  # 兼容 Constance
-
-
-def MatchKeywords(keywords: list):  # 仅适用于非最后一个关键词
-    return [Kanata([RegexMatch(f'.*{i}.*')], stop_exec_if_fail=False) for i in keywords]
-
-
 def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
         await app.sendGroupMessage(group, MessageChain.create(reply_content))
     bcc.receiver(GroupMessage, dispatchers=[Kanata(
-        [MatchCommand(command)])])(srr_wrapper)
+        [CommandMatch(command, False)])])(srr_wrapper)
 
 
 SimpleReply('ping', [Plain('Pong!')])
@@ -77,15 +70,19 @@ SimpleReply('ygg.url', [
 
 
 @bcc.receiver(GroupMessage, dispatchers=[
-    *MatchKeywords(['怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
-                    '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']),
-    Kanata([RegexMatch('.*为什么.*')])
+    Kanata([KeywordsMatch(tF.question_keywords)])
 ])
-async def new_question_nofication(app: GraiaMiraiApplication, msg: MessageChain):
-    # TODO 此功能目前无法正常工作，仅能对为什么做出反应
-    await app.sendGroupMessage(qq.notification_channel,
-                               MessageChain.create([Plain(tF.why_notify)]),
-                               quote=msg[Source][0].id)
+async def new_question_nofication(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
+    enable_in_groups: List[int] = [qq.littleskin_main]
+    if group.id in enable_in_groups:
+        await app.sendGroupMessage(qq.notification_channel,
+                                   MessageChain.create(
+                                       [Plain(tF.new_question_nofication)]),
+                                   quote=msg[Source][0].id)
+        await app.sendGroupMessage(group,
+                                   MessageChain.create(
+                                       [Plain(tF.new_question_nofication)]),
+                                   quote=msg[Source][0].id)
 
 
 @bcc.receiver(MemberJoinEvent)
@@ -97,14 +94,14 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
             [At(member.id), Plain(tF.join_welcome)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest', False)])])
 async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl.latest')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest', False)])])
 async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
     infos = await apis.CustomSkinLoaderLatest.get()
     _message = f'''CustomSkinLoader 最新版本：{infos.version}
@@ -113,7 +110,7 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl'), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl'), RequireParam(name='params')])])
 async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -126,7 +123,7 @@ Cape: {result.cape[:7]}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('ygg'), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg'), RequireParam(name='params')])])
 async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
@@ -157,7 +154,7 @@ async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageC
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('view'), RequireParam(name='params')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view'), RequireParam(name='params')])])
 async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -188,7 +185,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
 #     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-# @bcc.receiver(GroupMessage, dispatchers=[Kanata([MatchCommand('csl.config')])])
+# @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.config')])])
 # async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
 #     _message: str = tF.csl_config_csl_group if group.id == qq.csl_group else tF.csl_config_littleskin
 #     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
