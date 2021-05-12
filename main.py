@@ -138,20 +138,6 @@ Skin: {textures.SKIN.hash[:7] if textures.SKIN else None} [{textures.SKIN.metada
 Cape: {textures.CAPE.hash[:7] if textures.CAPE else None}
 UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
-    
-
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([FullMatch('&ygg '), RequireParam(name='params')])])
-async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
-    player_name = params.asDisplay()
-    player_uuid = await api.YggdrasilPlayerUuidApi.get('https://littlesk.in/api/yggdrasil', player_name)
-    if not player_uuid.existed:
-        _message = f'「{player_name}」不存在'
-    else:
-        result = await api.YggdrasilGameProfileApi.get('https://littlesk.in/api/yggdrasil', player_uuid)
-        _message = f'''「{player_name}」
-皮肤：[{result.skin_type}] {result.skins.slim or result.skins.default}
-披风：{result.cape}'''
-    await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view'), RequireParam(name='params')])])
