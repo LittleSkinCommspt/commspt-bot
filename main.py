@@ -177,7 +177,7 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
 @bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])
 async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
     disable_in_groups: List[int] = [qq.littleskin_main, qq.csl_group]
-    if not group.id in enable_in_groups:
+    if not group.id in disable_in_groups:
         await app.sendGroupMessage(group,
                                    MessageChain.create(
                                        [Plain('草\u202e')]))
