@@ -48,12 +48,12 @@ class CustomSkinLoaderApi(BaseModel):
     skin_type: Optional[Literal['default', 'slim']] = 'default'
 
     @root_validator(pre=True)
-    def extra_info(cls, values: dict):
+    def pre_processor(cls, values: dict):
         existed = 'username' in values and values['username'] != '404'
         if not existed or 'skins' not in values:
             skin_type = None
         else:
-            skin_type = 'default' if 'default' not in values['skins'] else 'slim'
+            skin_type = 'default' if 'default' in values['skins'] else 'slim'
         values.update({
             'existed': existed,
             'skin_type': skin_type
@@ -81,18 +81,29 @@ class YggdrasilPlayerUuidApi(BaseModel):
                 return cls.parse_raw(await resp.text())
 
 
-class YggdrasilTextures(BaseModel):
+def make_hash(cls, values):
+    url = values['url']
+    last_slash_location = url.rindex('/')
+    real_hash = url[last_slash_location+1:]
+    values['hash'] = real_hash
+    return values
+
+class YggdrasilTextures(BaseModel):    
     class Skin(BaseModel):
         class MetaData(BaseModel):
-            model: Literal['default', 'slim']
-        url: str
-        metadata: Optional[MetaData]
+            model: Literal['default', 'slim'] = 'default'
+        url: Optional[str]
+        hash: Optional[str] = None
+        metadata: Optional[MetaData] = MetaData(model='default')
+        _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
 
     class Cape(BaseModel):
-        url: str
+        url: Optional[str]
+        hash: Optional[str] = None
+        _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
 
-    SKIN: Skin
-    CAPE: Cape
+    SKIN: Optional[Skin]
+    CAPE: Optional[Cape]
 
 
 class YggdrasilPropertiesTextures(BaseModel):
@@ -110,7 +121,7 @@ class YggdrasilGameProfileApi(BaseModel):
     properties: Properties  # a bit difference between API
 
     @root_validator(pre=True)
-    def pre_process(cls, values):
+    def pre_processer(cls, values):
         # Doc: https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape
         # base64 decode and a little change
         values['properties'][0]['textures'] = json.loads(b64decode(
@@ -124,3 +135,9 @@ class YggdrasilGameProfileApi(BaseModel):
         async with aiohttp.ClientSession() as session:
             async with session.get(f'{api_root}/sessionserver/session/minecraft/profile/{player_uuid}') as resp:
                 return cls.parse_raw(await resp.text())
+
+
+async def getTexturePreview(blessing_skin_root: str, texture_hash: str):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f'{blessing_skin_root}/preview/hash/{texture_hash}?png') as resp:
+            return await resp.content.read()
