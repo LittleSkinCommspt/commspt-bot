@@ -5,6 +5,7 @@ class TextFields(object):
     '''储存有文本字段'''
     ping = 'Pong'
     new_question_nofication = '有一个新的问题被提出，请各位尽快处理。'
+    new_question_sent = '运营组及社区技术支持组已收到你的问题，请耐心等待答复。'
     welcome_to_littleskin = '欢迎！请认真阅读群公告哦~'
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://qnzh3311.restent.site/'

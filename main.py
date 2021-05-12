@@ -81,7 +81,7 @@ async def new_question_nofication(app: GraiaMiraiApplication, group: Group, msg:
                                    quote=msg[Source][0].id)
         await app.sendGroupMessage(group,
                                    MessageChain.create(
-                                       [Plain(tF.new_question_nofication)]),
+                                       [Plain(tF.new_question_sent)]),
                                    quote=msg[Source][0].id)
 
 
@@ -171,6 +171,17 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
                     littleskin_root, texture)))
     await app.sendGroupMessage(group,
                                MessageChain.create([*preview_images, Plain(f'Skin: {skin_hash[:7] if skin_hash else None} [{result.skin_type}]\nCape: {cape_hash[:7] if cape_hash else None}')]))
+                               
+                               
+
+@bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])
+async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
+    disable_in_groups: List[int] = [qq.littleskin_main, qq.csl_group]
+    if not group.id in enable_in_groups:
+        await app.sendGroupMessage(group,
+                                   MessageChain.create(
+                                       [Plain('草\u202e')]))
+
 
 # @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
 # async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
