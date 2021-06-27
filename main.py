@@ -164,7 +164,7 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageCh
     if not group.id in disable_in_groups:
         await app.sendGroupMessage(group,
                                    MessageChain.create(
-                                       [Plain('草\u202e')]))
+                                       [Plain('\u202e草')]))
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('revoke', False)])])
