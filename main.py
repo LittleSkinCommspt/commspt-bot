@@ -10,7 +10,7 @@ from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.elements.internal import Quote
 from graia.application.message.parser.kanata import Kanata
-from graia.application.message.parser.signature import RequireParam
+from graia.application.message.parser.signature import RequireParam, RegexMatch
 from graia.broadcast import Broadcast
 
 import settings
@@ -80,7 +80,7 @@ async def new_question_nofication(app: GraiaMiraiApplication, group: Group, msg:
                                    quote=msg[Source][0].id)
         await app.sendGroupMessage(group,
                                    MessageChain.create(
-                                       [Plain(tF.new_question_nofication)]),
+                                       [Plain(tF.new_question_sent)]),
                                    quote=msg[Source][0].id)
 
 
@@ -156,6 +156,16 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
                     littleskin_root, texture)))
     await app.sendGroupMessage(group,
                                MessageChain.create([*preview_images, Plain(f'Skin: {skin_hash[:7] if skin_hash else None} [{result.skin_type}]\nCape: {cape_hash[:7] if cape_hash else None}')]))
+
+
+@bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])
+async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
+    disable_in_groups: List[int] = [qq.littleskin_main, qq.csl_group]
+    if not group.id in disable_in_groups:
+        await app.sendGroupMessage(group,
+                                   MessageChain.create(
+                                       [Plain('草\u202e')]))
+
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('revoke', False)])])
 async def command_csl_latest(app: GraiaMiraiApplication, messagechain: MessageChain):
