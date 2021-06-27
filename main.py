@@ -10,7 +10,7 @@ from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.elements.internal import Quote
 from graia.application.message.parser.kanata import Kanata
-from graia.application.message.parser.signature import RequireParam, RegexMatch
+from graia.application.message.parser.signature import RegexMatch, RequireParam
 from graia.broadcast import Broadcast
 
 import settings
@@ -169,11 +169,11 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageCh
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('revoke', False)])])
 async def command_csl_latest(app: GraiaMiraiApplication, messagechain: MessageChain):
-    origin_message = messagechain[Quote][0].origin[Source][0]
-    current_message = messagechain[Source][0]
-    print(origin_message, current_message)
-    await app.revokeMessage(origin_message)
-    await app.revokeMessage(current_message)
+    if Quote in messagechain:
+        origin_message = messagechain[Quote][0].origin[Source][0]
+        current_message = messagechain[Source][0]
+        await app.revokeMessage(origin_message)
+        await app.revokeMessage(current_message)
 
 if __name__ == '__main__':
     app.launch_blocking()
