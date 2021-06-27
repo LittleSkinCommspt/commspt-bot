@@ -5,14 +5,12 @@ from uuid import UUID
 from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
                                      MemberJoinEvent, MessageChain, Plain,
-                                     Quote, Source)
+                                     Source)
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
+from graia.application.message.elements.internal import Quote
 from graia.application.message.parser.kanata import Kanata
-from graia.application.message.parser.signature import (FullMatch,
-                                                        OptionalParam,
-                                                        RegexMatch,
-                                                        RequireParam)
+from graia.application.message.parser.signature import RequireParam
 from graia.broadcast import Broadcast
 
 import settings
@@ -67,6 +65,7 @@ SimpleReply('ygg.url', [
     Plain('https://littlesk.in'),
     Image.fromLocalFile('./images/ygg-url.png')
 ])
+SimpleReply('clfcsl', [Plain(tF.clfcsl)])
 
 
 @bcc.receiver(GroupMessage, dispatchers=[
@@ -158,115 +157,13 @@ async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageC
     await app.sendGroupMessage(group,
                                MessageChain.create([*preview_images, Plain(f'Skin: {skin_hash[:7] if skin_hash else None} [{result.skin_type}]\nCape: {cape_hash[:7] if cape_hash else None}')]))
 
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('clfcsl.latest'))])
-# async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
-#     _r = requests.get(
-#         'https://csl-1258131272.cos.ap-shanghai.myqcloud.com/latest.json')
-#     _j: dict = _r.json()
-#     _latestVersion = _j['version']
-#     _forge = _j['downloads']['Forge']
-#     _message = f'''CustomSkinLoader 最新版本：{_latestVersion}
-# Forge: {_forge}
-# {tF.clfcsl_latest}'''
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
-
-
-# @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.config')])])
-# async def command_csl_config_littleskin(app: GraiaMiraiApplication, group: Group):
-#     _message: str = tF.csl_config_csl_group if group.id == qq.csl_group else tF.csl_config_littleskin
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ot')),
-#                                                  Depend(exceptGroups([qq.littleskin_cafe]))])
-# async def command_ot(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-#     atList: List[Optional[At]] = [At(t.target)
-#                                   for t in M.at] if M.at != [] else []
-#     await app.sendGroupMessage(group, MessageChain.create([
-#         Image.fromLocalFile('./images/off-topic.png'),
-#         *atList,
-#         # 仅在 LittleSkin 主群中启用此文本消息
-#         *([Plain(tF.ot)] if group.id == qq.littleskin_main else [])
-#     ]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('view'))])
-# async def command_view(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-#     _texturehash[:7] = M.Command.args
-#     if not _texturehash[:7]:
-#         await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_no_hash[:7]_error)]))
-#     elif len(_texturehash[:7]) != 64:
-#         await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_hash[:7]_length_error)]))
-#     else:
-#         _image_message = PlayerProfile.getPreviewByhash[:7](_texturehash[:7])
-#         if _image_message:
-#             await app.sendGroupMessage(group, MessageChain.create([_image_message]))
-#         else:
-#             await app.sendGroupMessage(group, MessageChain.create([Plain(tF.view_not_200_error)]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ygg'))])
-# async def command_ygg(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-#     _playerName = M.Command.args if M.Command.args else M.quote_plain_message
-#     _player = PlayerProfile(_playerName)
-#     _message = _player.getYgg()
-#     await app.sendGroupMessage(group, MessageChain.create(_message))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onCommand('ban')), Depend(adminOnly)])
-# async def command_ban(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     M = MessagePro(_gm)
-
-#     def add() -> str:
-#         _l = str()
-#         for t in M.at:
-#             targetP = PermissionsHandler(t.target)
-#             if not targetP.isAdmin():
-#                 _result = targetP.blockme()
-#                 _message = f'{t.display} {tF.ban.add_succ}\n' if _result else f'{t.display} {tF.ban.add_fail}\n'
-#                 _l = f'{_l}{_message}'
-#         return _l.strip('\n')
-
-#     def remove() -> str:
-#         _l = str()
-#         for t in M.at:
-#             targetP = PermissionsHandler(t.target)
-#             _result = targetP.unblockme()
-#             _message = f'{t.display} {tF.ban.remove_succ}\n' if _result else f'{t.display} {tF.ban.remove_fail}\n'
-#             _l = f'{_l}{_message}'
-#         return _l.strip('\n')
-
-#     if M.Command.args:
-#         subCommand = M.Command.argsList[0]
-#         if subCommand == 'add':
-#             await app.sendGroupMessage(group, MessageChain.create([Plain(add())]))
-#         if subCommand == 'remove':
-#             await app.sendGroupMessage(group, MessageChain.create([Plain(remove())]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onWord('https://pastebin.aosc.io/paste/'))])
-# async def parse_csl_log(app: GraiaMiraiApplication, group: Group, _gm: GroupMessage):
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(tF.csl_log_parsing)]))
-#     M = MessagePro(_gm)
-#     fromLs = group.id in [
-#         qq.littleskin_main,
-#         qq.littleskin_cafe
-#     ]
-#     try:
-#         _message = aoscPastebin(M.plain_message, fromLittleSkin=fromLs)
-#         await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
-#     except Exception as e:
-#         await app.sendGroupMessage(group, MessageChain.create([Plain(e)]))
-
-
-# @bcc.receiver(GroupMessage, headless_decorators=[Depend(onMatch(r'^草*$')),
-#                                                  Depend(exceptGroups([qq.littleskin_main, qq.csl_group]))])
-# async def grass_spammer(app: GraiaMiraiApplication, group: Group):
-#     await app.sendGroupMessage(group, MessageChain.create([Plain('草\u202e')]))
-
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('revoke', False)])])
+async def command_csl_latest(app: GraiaMiraiApplication, messagechain: MessageChain):
+    origin_message = messagechain[Quote][0].origin[Source][0]
+    current_message = messagechain[Source][0]
+    print(origin_message, current_message)
+    await app.revokeMessage(origin_message)
+    await app.revokeMessage(current_message)
 
 if __name__ == '__main__':
     app.launch_blocking()
