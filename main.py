@@ -6,12 +6,14 @@ from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
                                      MemberJoinEvent, MessageChain, Plain,
                                      Source)
+from graia.application.group import Member
 from graia.application.message.elements import \
     Element as GraiaMessageElementType
 from graia.application.message.elements.internal import Quote
 from graia.application.message.parser.kanata import Kanata
 from graia.application.message.parser.signature import RegexMatch, RequireParam
 from graia.broadcast import Broadcast
+from graia.broadcast.exceptions import ExecutionStop
 
 import settings
 from matchers import CommandMatch, KeywordsMatch
@@ -24,7 +26,6 @@ loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(
     broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
-
 
 def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
@@ -94,14 +95,14 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest', False)])])
-async def command_ygg_latest(app: GraiaMiraiApplication, group: Group):
+async def command_handler(app: GraiaMiraiApplication, group: Group):
     infos = await apis.AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest', False)])])
-async def command_csl_latest(app: GraiaMiraiApplication, group: Group):
+async def command_handler(app: GraiaMiraiApplication, group: Group):
     infos = await apis.CustomSkinLoaderLatest.get()
     _message = f'''CustomSkinLoader 最新版本：{infos.version}
 Forge: {infos.downloads.Forge}
@@ -110,7 +111,7 @@ Fabric: {infos.downloads.Fabric}'''
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl'), RequireParam(name='params')])])
-async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.existed:
@@ -123,7 +124,7 @@ Cape: {result.cape[:7]}'''
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg'), RequireParam(name='params')])])
-async def command_ygg(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
     player_uuid = await apis.YggdrasilPlayerUuidApi.get(littleskin_yggdrasil_root, player_name)
@@ -140,7 +141,7 @@ UUID: {UUID(player_uuid.id)}'''
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view'), RequireParam(name='params')])])
-async def command_csl(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.existed:
@@ -168,12 +169,35 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageCh
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('revoke', False)])])
-async def command_csl_latest(app: GraiaMiraiApplication, messagechain: MessageChain):
+async def command_handler(app: GraiaMiraiApplication, messagechain: MessageChain):
     if Quote in messagechain:
         origin_message = messagechain[Quote][0].origin[Source][0]
         current_message = messagechain[Source][0]
         await app.revokeMessage(origin_message)
         await app.revokeMessage(current_message)
+
+
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('mute')])])
+async def command_handler(app: GraiaMiraiApplication, group: Group, member: Member, messagechain: MessageChain):
+    admins = await app.memberList(qq.notification_channel)
+    admins_id = [m.id for m in admins]
+    if member.id in admins_id and At in messagechain:
+        target_members: List[At] = messagechain[At]
+        targets = [m.target for m in target_members]
+        for target in targets:
+            await app.mute(group, target, 60 * 10)
+
+
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('unmute')])])
+async def command_handler(app: GraiaMiraiApplication, group: Group, member: Member, messagechain: MessageChain):
+    admins = await app.memberList(qq.notification_channel)
+    admins_id = [m.id for m in admins]
+    if member.id in admins_id and At in messagechain:
+        target_members: List[At] = messagechain[At]
+        targets = [m.target for m in target_members]
+        for target in targets:
+            await app.unmute(group, target)
+
 
 if __name__ == '__main__':
     app.launch_blocking()
