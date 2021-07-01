@@ -27,6 +27,7 @@ bcc = Broadcast(loop=loop)
 app = GraiaMiraiApplication(
     broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
 
+
 def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
     async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
         await app.sendGroupMessage(group, MessageChain.create(reply_content))
@@ -177,7 +178,7 @@ async def command_handler(app: GraiaMiraiApplication, messagechain: MessageChain
         await app.revokeMessage(current_message)
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('mute')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('mute ', False)])])
 async def command_handler(app: GraiaMiraiApplication, group: Group, member: Member, messagechain: MessageChain):
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
@@ -188,7 +189,7 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, member: Memb
             await app.mute(group, target, 60 * 10)
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('unmute')])])
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('unmute ', False)])])
 async def command_handler(app: GraiaMiraiApplication, group: Group, member: Member, messagechain: MessageChain):
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
@@ -197,6 +198,13 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, member: Memb
         targets = [m.target for m in target_members]
         for target in targets:
             await app.unmute(group, target)
+
+
+@bcc.receiver(GroupMessage)
+async def wrong_usage_tips(app: GraiaMiraiApplication, group: Group, messagechain: MessageChain):
+    msg_text = messagechain.asDisplay()
+    if msg_text.startswith(('&mute ', '&unmute')) and msg_text.endswith(' '):
+        await app.sendGroupMessage(group, MessageChain.create([Plain('请删除末尾空格后重试')]))
 
 
 if __name__ == '__main__':
