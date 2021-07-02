@@ -120,7 +120,7 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
     else:
         _message = f'''「{player_name}」
 Skin: {result.skins.slim[:7] or result.skins.default[:7]} [{result.skin_type}]
-Cape: {result.cape[:7]}'''
+Cape: {result.cape[:7] if result.cape else None}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
