@@ -8,7 +8,7 @@ class TextFields(object):
     new_question_sent = '运营组及社区技术支持组已收到你的问题，请耐心等待答复。'
     welcome_to_littleskin = '欢迎！请认真阅读群公告哦~'
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
-    help = '请查看 https://qnzh3311.restent.site/'
+    help = '请查看 https://bot-manual.restent.win/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
     ot = '\n您正在讨论无关话题，请前往 Honoka Café 交流，群号：651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
     ygg_server_jvm = '请在启动脚本中加入参数 -Dauthlibinjector.debug=all，然后将 logs/latest.log 上传至群文件'
