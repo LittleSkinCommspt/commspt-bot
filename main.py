@@ -92,7 +92,7 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
     group = member.group
     if group.id == qq.littleskin_main:
         await app.sendGroupMessage(group, MessageChain.create(
-            [At(member.id), Plain(tF.join_welcome)]))
+            [At(member.id), Plain(' '), Plain(tF.join_welcome)]))
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest', False)])])
@@ -102,12 +102,16 @@ async def command_handler(app: GraiaMiraiApplication, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest', False)])])
-async def command_handler(app: GraiaMiraiApplication, group: Group):
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest'), RequireParam(name='params')])])
+async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     infos = await apis.CustomSkinLoaderLatest.get()
-    _message = f'''CustomSkinLoader 最新版本：{infos.version}
-Forge: {infos.downloads.Forge}
+    mod_loader = params.asDisplay().strip()
+    forge = f'''CustomSkinLoader 最新版本：{infos.version}
+Forge 1.17-: {infos.downloads.Forge}
+forge 1.17+: {infos.downloads.ForgeActive}'''
+    fabric = f'''CustomSkinLoader 最新版本：{infos.version}
 Fabric: {infos.downloads.Fabric}'''
+    _message = forge if mod_loader == 'forge' else fabric
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 

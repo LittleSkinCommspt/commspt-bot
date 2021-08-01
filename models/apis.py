@@ -10,7 +10,8 @@ from pydantic import BaseModel, root_validator, validator
 class CustomSkinLoaderLatest(BaseModel):
     class Downloads(BaseModel):
         Fabric: str
-        Forge: str
+        Forge: str # Legacy, 1.17-
+        ForgeActive: str # New, 1.17+
     version: str
     downloads: Downloads
 
