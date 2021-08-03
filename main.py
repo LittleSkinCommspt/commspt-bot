@@ -119,12 +119,12 @@ Fabric: {infos.downloads.Fabric}'''
 async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
-    if not result.existed:
+    if not result.player_existed:
         _message = f'「{player_name}」不存在'
     else:
         _message = f'''「{player_name}」
-Skin: {result.skins.slim[:7] or result.skins.default[:7]} [{result.skin_type}]
-Cape: {result.cape[:7] if result.cape else None}'''
+Skin: {result.skin_hash[:7]} [{result.skin_type}]
+Cape: {result.cape_hash[:7] if result.cape_existed else None}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 

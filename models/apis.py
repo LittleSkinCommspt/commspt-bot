@@ -1,10 +1,11 @@
 import json
 from base64 import b64decode
 from datetime import date
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 import aiohttp
 from pydantic import BaseModel, root_validator, validator
+from pydantic.fields import Field
 
 
 class CustomSkinLoaderLatest(BaseModel):
@@ -44,20 +45,34 @@ class CustomSkinLoaderApi(BaseModel):
 
     username: Optional[str]
     skins: Optional[Skins]
-    cape: Optional[str]
-    existed: bool = True
-    skin_type: Optional[Literal['default', 'slim']] = 'default'
+    skin_hash: Optional[Union[str, None]]
+    cape_hash: Optional[Union[str, None]] = Field(..., alias='cape')
+    player_existed: bool = True
+    skin_type: Optional[Literal['default', 'slim', None]] = None
+    cape_existed: bool = True
 
     @root_validator(pre=True)
     def pre_processor(cls, values: dict):
-        existed = 'username' in values and values['username'] != '404'
-        if not existed or 'skins' not in values:
+        # 
+        player_existed = bool(values)
+        if not player_existed:
             skin_type = None
         else:
-            skin_type = 'default' if 'default' in values['skins'] else 'slim'
+            skin_type = 'slim' if 'slim' in values['skins'] else 'default' if values['skins']['default'] else None
+        cape_existed = bool(values['cape'])
+        # parse skin hash
+        if skin_type == 'default':
+            skin_hash = values['skins']['default']
+        elif skin_type == 'slim':
+            skin_hash = values['skins']['slim']
+        else:
+            skin_hash = None
+
         values.update({
-            'existed': existed,
-            'skin_type': skin_type
+            'player_existed': player_existed,
+            'skin_type': skin_type,
+            'cape_existed': cape_existed,
+            'skin_hash': skin_hash
         })
         return values
 
