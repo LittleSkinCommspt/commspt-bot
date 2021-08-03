@@ -11,7 +11,7 @@ from pydantic.fields import Field
 class CustomSkinLoaderLatest(BaseModel):
     class Downloads(BaseModel):
         Fabric: str
-        Forge: str # Legacy, 1.17-
+        Forge: str  # Legacy, 1.16.5-
         ForgeActive: str # New, 1.17+
     version: str
     downloads: Downloads
