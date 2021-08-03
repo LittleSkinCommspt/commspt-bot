@@ -174,7 +174,7 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
     if not player_uuid.existed:
         await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
     async with aiohttp.ClientSession() as session:
-        async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}') as resp:
+        async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}?overlay') as resp:
             if resp.status == 200:
                 image = await resp.content.read()
                 await app.sendGroupMessage(group, MessageChain.create([Image.fromUnsafeBytes(image)]))
