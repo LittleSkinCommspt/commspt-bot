@@ -1,6 +1,7 @@
 import asyncio
 from typing import List
 from uuid import UUID
+import aiohttp
 
 from graia.application import GraiaMiraiApplication
 from graia.application.entry import (At, Group, GroupMessage, Image,
@@ -139,7 +140,8 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
         result: apis.YggdrasilGameProfileApi = await apis.YggdrasilGameProfileApi.get(littleskin_yggdrasil_root, player_uuid.id)
         textures: apis.YggdrasilTextures = result.properties.textures.textures
         _message = f'''「{result.name}」
-Skin: {textures.SKIN.hash[:7] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
+Skin: {textures.SKIN.hash[:7] if textures.SKIN else None} [
+    {textures.SKIN.metadata.model if textures.SKIN else None}]
 Cape: {textures.CAPE.hash[:7] if textures.CAPE else None}
 UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
@@ -163,6 +165,22 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
                                                     Plain(f'''「{player_name}」
 Skin: {result.skin_hash[:7]} [{result.skin_type}]
 Cape: {result.cape_hash[:7] if result.cape_existed else None}''')]))
+
+
+@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view.mojang'), RequireParam(name='params')])])
+async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+    player_name = params.asDisplay()
+    player_uuid = await apis.MojangPlayerUuidApi.get(player_name)
+    if not player_uuid.existed:
+        await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}') as resp:
+            if resp.status == 200:
+                image = await resp.content.read()
+                await app.sendGroupMessage(group, MessageChain.create([Image.fromUnsafeBytes(image)]))
+            else:
+                err_msg = await resp.text()
+                await app.sendGroupMessage(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()}')]))
 
 
 @bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])

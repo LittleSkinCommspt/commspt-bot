@@ -157,3 +157,14 @@ async def getTexturePreview(blessing_skin_root: str, texture_hash: str):
     async with aiohttp.ClientSession() as session:
         async with session.get(f'{blessing_skin_root}/preview/hash/{texture_hash}?png') as resp:
             return await resp.content.read()
+
+
+class MojangPlayerUuidApi(YggdrasilPlayerUuidApi):
+    @classmethod
+    async def get(cls, username: str):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://api.mojang.com/users/profiles/minecraft/{username}') as resp:
+                if resp.status == 204:  # No content
+                    return cls(existed=False)
+                return cls.parse_raw(await resp.text())
+                
