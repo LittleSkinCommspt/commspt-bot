@@ -180,7 +180,7 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
                 await app.sendGroupMessage(group, MessageChain.create([Image.fromUnsafeBytes(image)]))
             else:
                 err_msg = await resp.text()
-                await app.sendGroupMessage(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()}')]))
+                await app.sendGroupMessage(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))
 
 
 @bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])
