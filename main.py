@@ -149,19 +149,20 @@ UUID: {UUID(player_uuid.id)}'''
 async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
     player_name = params.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
-    if not result.existed:
+    if not result.player_existed:
         await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
     else:
-        skin_hash = result.skins.slim or result.skins.default
-        cape_hash = result.cape
-        littleskin_root = 'https://mcskin.littleservice.cn'
+        bs_root = 'https://mcskin.littleservice.cn'
         preview_images: List[Image] = list()
-        for texture in [skin_hash, cape_hash]:
-            if skin_hash:
+        for texture in [result.skin_hash, result.cape_hash]:
+            if texture:
                 preview_images.append(Image.fromUnsafeBytes(await apis.getTexturePreview(
-                    littleskin_root, texture)))
+                    bs_root, texture)))
     await app.sendGroupMessage(group,
-                               MessageChain.create([*preview_images, Plain(f'Skin: {skin_hash[:7] if skin_hash else None} [{result.skin_type}]\nCape: {cape_hash[:7] if cape_hash else None}')]))
+                               MessageChain.create([*preview_images,
+                                                    Plain(f'''「{player_name}」
+Skin: {result.skin_hash[:7]} [{result.skin_type}]
+Cape: {result.cape_hash[:7] if result.cape_existed else None}''')]))
 
 
 @bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])
