@@ -33,3 +33,11 @@ Edge: https://aka.ms/msedge'''
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
+    dns = '我们认为可能你的 DNS 设置导致了一系列问题，您可以参考 https://baijiahao.baidu.com/s?id=1612906041166793439 并将 DNS 设置为 223.5.5.5 和 8.8.8.8'
+    launcher = '''一个问题在启动器里面反复横跳？也许你可以尝试更换启动器！以下是几个推荐的启动器
+HMCL: https://ci.huangyuhui.net/job/HMCL/
+Baxa: https://www.bakaxl.com/
+PCL2: https://afdian.net/@LTCat?tab=feed'''
+    log_minecraft = '我们需要根据你的游戏日志对问题进行判断，一般日志文件存放在 .minecraft/log/latest.log'
+    log_launcher = '我们需要根据你的启动器日志对问题进行判断，一般情况下你可以在设置中导出启动器日志'
+    email = '请检查你的垃圾邮件箱和订阅，并试着刷新邮箱，或者点击重新发送验证邮件'
