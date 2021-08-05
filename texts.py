@@ -39,6 +39,6 @@ HMCL: https://ci.huangyuhui.net/job/HMCL/
 Baxa: https://www.bakaxl.com/
 PCL2: https://afdian.net/@LTCat?tab=feed'''
     log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「 JVM 参数」设置中填入 -Dauthlibinjector.debug'
-    log_launcher = '我们需要根据你的启动器日志对问题进行判断，一般情况下你可以在设置中导出启动器日志'
+    log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
     email = '请检查你的垃圾邮件箱和订阅，并试着刷新邮箱，或者点击重新发送验证邮件'
     change_password = '请在 https://mcskin.littleservice.cn/user/profile 中重置你的密码'
