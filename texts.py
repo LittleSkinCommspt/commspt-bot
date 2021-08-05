@@ -33,12 +33,5 @@ Edge: https://aka.ms/msedge'''
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
-    dns = '我们认为可能你的 DNS 设置导致了一系列问题，您可以参考 http://dwz.win/arh5 的内容并将 DNS 设置为 223.5.5.5 和 8.8.8.8'
-    launcher = '''一个问题在启动器里面反复横跳？也许你可以尝试更换启动器！以下是几个推荐的启动器
-HMCL: https://ci.huangyuhui.net/job/HMCL/
-Baxa: https://www.bakaxl.com/
-PCL2: https://afdian.net/@LTCat?tab=feed'''
     log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「 JVM 参数」设置中填入 -Dauthlibinjector.debug'
     log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
-    email = '请检查你的垃圾邮件箱和订阅，并试着刷新邮箱，或者点击重新发送验证邮件'
-    change_password = '请在 https://mcskin.littleservice.cn/user/profile 中重置你的密码'
