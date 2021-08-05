@@ -39,12 +39,8 @@ def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
 SimpleReply('ping', [Plain('Pong!')])
 
 SimpleReply('help', [Plain(tF.help)])
-SimpleReply('dns', [Plain(tF.dns)])
-SimpleReply('launcher', [Plain(tF.launcher)])
-SimpleReply('pw', [Plain(tF.change_password)])
 SimpleReply('log.minecraft', [Plain(tF.log_minecraft)])
 SimpleReply('log.launcher', [Plain(tF.log_launcher)])
-SimpleReply('email', [Plain(tF.email)])
 SimpleReply('ot', [
     Image.fromLocalFile('./images/off-topic.png'),
     Plain(tF.ot)
