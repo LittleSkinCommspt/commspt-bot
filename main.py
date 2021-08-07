@@ -39,6 +39,8 @@ def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
 SimpleReply('ping', [Plain('Pong!')])
 
 SimpleReply('help', [Plain(tF.help)])
+SimpleReply('log.minecraft', [Plain(tF.log_minecraft)])
+SimpleReply('log.launcher', [Plain(tF.log_launcher)])
 SimpleReply('ot', [
     Image.fromLocalFile('./images/off-topic.png'),
     Plain(tF.ot)
