@@ -74,9 +74,11 @@ SimpleReply('clfcsl', [Plain(tF.clfcsl)])
 @bcc.receiver(GroupMessage, dispatchers=[
     Kanata([KeywordsMatch(tF.question_keywords)])
 ])
-async def new_question_nofication(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
+async def new_question_nofication(app: GraiaMiraiApplication, group: Group, member: Member, msg: MessageChain):
     enable_in_groups: List[int] = [qq.littleskin_main]
-    if group.id in enable_in_groups:
+    admins = await app.memberList(qq.notification_channel)
+    admins_id = [m.id for m in admins]
+    if group.id in enable_in_groups and member.id not in admins_id:
         await app.sendGroupMessage(qq.notification_channel,
                                    MessageChain.create(
                                        [Plain(tF.new_question_nofication)]),
@@ -140,8 +142,7 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
         result: apis.YggdrasilGameProfileApi = await apis.YggdrasilGameProfileApi.get(littleskin_yggdrasil_root, player_uuid.id)
         textures: apis.YggdrasilTextures = result.properties.textures.textures
         _message = f'''「{result.name}」
-Skin: {textures.SKIN.hash[:7] if textures.SKIN else None} [
-    {textures.SKIN.metadata.model if textures.SKIN else None}]
+Skin: {textures.SKIN.hash[:7] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
 Cape: {textures.CAPE.hash[:7] if textures.CAPE else None}
 UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
@@ -173,6 +174,7 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
     player_uuid = await apis.MojangPlayerUuidApi.get(player_name)
     if not player_uuid.existed:
         await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
+        return
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}?overlay') as resp:
             if resp.status == 200:
