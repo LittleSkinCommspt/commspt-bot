@@ -59,7 +59,7 @@ class CustomSkinLoaderApi(BaseModel):
             skin_type = None
         else:
             skin_type = 'slim' if 'slim' in values['skins'] else 'default' if values['skins']['default'] else None
-        cape_existed = bool(values['cape'])
+            cape_existed = 'cape' in values or bool(values['cape'])
         # parse skin hash
         if skin_type == 'default':
             skin_hash = values['skins']['default']
