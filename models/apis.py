@@ -57,7 +57,7 @@ class CustomSkinLoaderApi(BaseModel):
         player_existed = bool(values)
         if not player_existed:
             skin_type = None
-            cape_existed = None
+            cape_existed = False
         else:
             skin_type = 'slim' if 'slim' in values['skins'] else 'default' if values['skins']['default'] else None
             cape_existed = 'cape' in values or bool(values['cape'])
