@@ -45,8 +45,8 @@ class CustomSkinLoaderApi(BaseModel):
 
     username: Optional[str]
     skins: Optional[Skins]
-    skin_hash: Optional[Union[str, None]]
-    cape_hash: Optional[Union[str, None]] = Field(..., alias='cape')
+    skin_hash: Optional[str]
+    cape_hash: Optional[str] = Field(..., alias='cape')
     player_existed: bool = True
     skin_type: Optional[Literal['default', 'slim', None]] = None
     cape_existed: bool = True
@@ -60,7 +60,7 @@ class CustomSkinLoaderApi(BaseModel):
             cape_existed = False
         else:
             skin_type = 'slim' if 'slim' in values['skins'] else 'default' if values['skins']['default'] else None
-            cape_existed = 'cape' in values or bool(values['cape'])
+            cape_existed = 'cape' in values and bool(values['cape'])
         # parse skin hash
         if skin_type == 'default':
             skin_hash = values['skins']['default']

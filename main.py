@@ -108,8 +108,8 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
     infos = await apis.CustomSkinLoaderLatest.get()
     mod_loader = params.asDisplay().strip()
     forge = f'''CustomSkinLoader 最新版本：{infos.version}
-Forge 1.16.5-: {infos.downloads.Forge}
-Forge 1.17+: {infos.downloads.ForgeActive}'''
+1.7.10 ~ 1.16.5: {infos.downloads.Forge}
+1.17+: {infos.downloads.ForgeActive}'''
     fabric = f'''CustomSkinLoader 最新版本：{infos.version}
 Fabric: {infos.downloads.Fabric}'''
     _message = forge if mod_loader == 'forge' else fabric
