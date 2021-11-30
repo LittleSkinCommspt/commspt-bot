@@ -3,18 +3,23 @@ from typing import List
 from uuid import UUID
 import aiohttp
 
-from graia.application import GraiaMiraiApplication
-from graia.application.entry import (At, Group, GroupMessage, Image,
-                                     MemberJoinEvent, MessageChain, Plain,
-                                     Source)
-from graia.application.group import Member
-from graia.application.message.elements import \
-    Element as GraiaMessageElementType
-from graia.application.message.elements.internal import Quote
-from graia.application.message.parser.kanata import Kanata
-from graia.application.message.parser.signature import RegexMatch, RequireParam
+from graia.ariadne.app import Ariadne
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain, At, Image, Source, Element, Quote, Image
+from graia.ariadne.model import Friend, Member,Group, MiraiSession
+from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.event.mirai import MemberJoinEvent
+from graia.ariadne.message.parser.twilight import RegexMatch, Twilight, Sparkle, ArgumentMatch
+
+# from graia.application.entry import (At, Group, GroupMessage, Image,
+#                                      MemberJoinEvent, MessageChain, Plain,
+#                                      Source)
+# from graia.application.group import Member
+# from graia.application.message.elements import \
+#     Element as GraiaMessageElementType
+# from graia.application.message.elements.internal import Quote
+# from graia.application.message.parser.signature import RegexMatch, RequireParam
 from graia.broadcast import Broadcast
-from graia.broadcast.exceptions import ExecutionStop
 
 import settings
 from matchers import CommandMatch, KeywordsMatch
@@ -25,15 +30,14 @@ from texts import TextFields as tF
 # Application & BCC 初始化
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
-app = GraiaMiraiApplication(
-    broadcast=bcc, connect_info=settings.Connection, enable_chat_log=False)
+app = Ariadne(
+    broadcast=bcc, connect_info=settings.Connection, chat_log_config=False)
 
 
-def SimpleReply(command: str, reply_content: List[GraiaMessageElementType]):
-    async def srr_wrapper(app: GraiaMiraiApplication, group: Group):
+def SimpleReply(command: str, reply_content: List[Element]):
+    async def srr_wrapper(app: Ariadne, group: Group):
         await app.sendGroupMessage(group, MessageChain.create(reply_content))
-    bcc.receiver(GroupMessage, dispatchers=[Kanata(
-        [CommandMatch(command, False)])])(srr_wrapper)
+    bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch(command, False)]))])(srr_wrapper)
 
 
 SimpleReply('ping', [Plain('Pong!')])
@@ -42,11 +46,11 @@ SimpleReply('help', [Plain(tF.help)])
 SimpleReply('log.minecraft', [Plain(tF.log_minecraft)])
 SimpleReply('log.launcher', [Plain(tF.log_launcher)])
 SimpleReply('ot', [
-    Image.fromLocalFile('./images/off-topic.png'),
+    Image(path='./images/off-topic.png'),
     Plain(tF.ot)
 ])
 SimpleReply('manual', [
-    Image.fromLocalFile('./images/rtfm.png'),
+    Image(path='./images/rtfm.png'),
     Plain(tF.manual)
 ])
 SimpleReply('ygg.server.jvm', [Plain(tF.ygg_server_jvm)])
@@ -55,24 +59,24 @@ SimpleReply('mail', [Plain(tF.mail)])
 SimpleReply('csl.log', [Plain(tF.csl_log)])
 SimpleReply('ygg.nsis', [Plain(tF.ygg_nsis)])
 SimpleReply('browser', [
-    Image.fromLocalFile('./images/browser.png'),
+    Image(path='./images/browser.png'),
     Plain(tF.browser)
 ])
 SimpleReply('ygg.client.refresh', [
-    Image.fromLocalFile('./images/ygg-client-refresh.png'),
+    Image(path='./images/ygg-client-refresh.png'),
     Plain(tF.client_refresh)
 ])
 SimpleReply('ygg.url', [
     Plain('https://littlesk.in'),
-    Image.fromLocalFile('./images/ygg-url.png')
+    Image(path='./images/ygg-url.png')
 ])
 SimpleReply('clfcsl', [Plain(tF.clfcsl)])
 
 
 @bcc.receiver(GroupMessage, dispatchers=[
-    Kanata([KeywordsMatch(tF.question_keywords)])
+    Twilight(Sparkle([KeywordsMatch(tF.question_keywords)]))
 ])
-async def new_question_nofication(app: GraiaMiraiApplication, group: Group, member: Member, msg: MessageChain):
+async def new_question_nofication(app: Ariadne, group: Group, member: Member, msg: MessageChain):
     enable_in_groups: List[int] = [qq.littleskin_main]
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
@@ -88,7 +92,7 @@ async def new_question_nofication(app: GraiaMiraiApplication, group: Group, memb
 
 
 @bcc.receiver(MemberJoinEvent)
-async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoinEvent):
+async def memberjoinevent_listener(app: Ariadne, event: MemberJoinEvent):
     member = event.member
     group = member.group
     if group.id == qq.littleskin_main:
@@ -96,17 +100,17 @@ async def memberjoinevent_listener(app: GraiaMiraiApplication, event: MemberJoin
             [At(member.id), Plain(' '), Plain(tF.join_welcome)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg.latest', False)])])
-async def command_handler(app: GraiaMiraiApplication, group: Group):
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('ygg.latest', False)]))])
+async def command_handler(app: Ariadne, group: Group):
     infos = await apis.AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl.latest'), RequireParam(name='params')])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl.latest')], {"arg": ArgumentMatch('arg', optional=True)}))])
+async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
     infos = await apis.CustomSkinLoaderLatest.get()
-    mod_loader = params.asDisplay().strip()
+    mod_loader = params.result.asDisplay().strip()
     forge = f'''CustomSkinLoader 最新版本：{infos.version}
 1.7.10 ~ 1.16.5: {infos.downloads.Forge}
 1.17+: {infos.downloads.ForgeActive}'''
@@ -116,9 +120,9 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('csl'), RequireParam(name='params')])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
-    player_name = params.asDisplay()
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl')], {"arg": ArgumentMatch('arg', optional=True)}))])
+async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+    player_name = params.result.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.player_existed:
         _message = f'「{player_name}」不存在'
@@ -129,9 +133,9 @@ Cape: {result.cape_hash[:7] if result.cape_existed else None}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('ygg'), RequireParam(name='params')])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
-    player_name = params.asDisplay()
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('ygg')], {"arg": ArgumentMatch('arg', optional=True)}))])
+async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+    player_name = params.result.asDisplay()
     littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
     player_uuid = await apis.YggdrasilPlayerUuidApi.get(littleskin_yggdrasil_root, player_name)
     if not player_uuid.existed:
@@ -146,9 +150,9 @@ UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view'), RequireParam(name='params')])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
-    player_name = params.asDisplay()
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view')], {"arg": ArgumentMatch('arg', optional=True)}))])
+async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+    player_name = params.result.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.player_existed:
         await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
@@ -166,9 +170,9 @@ Skin: {result.skin_hash[:7]} [{result.skin_type}]
 Cape: {result.cape_hash[:7] if result.cape_existed else None}''')]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('view.mojang'), RequireParam(name='params')])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, params: MessageChain):
-    player_name = params.asDisplay()
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view.mojang')], {"arg": ArgumentMatch('arg', optional=True)}))])
+async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+    player_name = params.result.asDisplay()
     player_uuid = await apis.MojangPlayerUuidApi.get(player_name)
     if not player_uuid.existed:
         await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
@@ -183,8 +187,8 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, params: Mess
                 await app.sendGroupMessage(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))
 
 
-@bcc.receiver("GroupMessage", dispatchers=[Kanata([RegexMatch(r'^草*$')])])
-async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageChain):
+@bcc.receiver("GroupMessage", dispatchers=[Twilight(Sparkle([RegexMatch(r'^草*$')]))])
+async def grass_spammer(app: Ariadne, group: Group, msg: MessageChain):
     disable_in_groups: List[int] = [qq.littleskin_main, qq.csl_group]
     if not group.id in disable_in_groups:
         await app.sendGroupMessage(group,
@@ -192,8 +196,8 @@ async def grass_spammer(app: GraiaMiraiApplication, group: Group, msg: MessageCh
                                        [Plain('\u202e草')]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('revoke', False)])])
-async def command_handler(app: GraiaMiraiApplication, messagechain: MessageChain):
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('revoke', False)]))])
+async def command_handler(app: Ariadne, messagechain: MessageChain):
     if Quote in messagechain:
         origin_message = messagechain[Quote][0].origin[Source][0]
         current_message = messagechain[Source][0]
@@ -201,8 +205,8 @@ async def command_handler(app: GraiaMiraiApplication, messagechain: MessageChain
         await app.revokeMessage(current_message)
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('mute ', False)])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, member: Member, messagechain: MessageChain):
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('mute ', False)]))])
+async def command_handler(app: Ariadne, group: Group, member: Member, messagechain: MessageChain):
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
     if member.id in admins_id and At in messagechain:
@@ -212,8 +216,8 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, member: Memb
             await app.mute(group, target, 60 * 10)
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Kanata([CommandMatch('unmute ', False)])])
-async def command_handler(app: GraiaMiraiApplication, group: Group, member: Member, messagechain: MessageChain):
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('unmute ', False)]))])
+async def command_handler(app: Ariadne, group: Group, member: Member, messagechain: MessageChain):
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
     if member.id in admins_id and At in messagechain:
@@ -224,11 +228,11 @@ async def command_handler(app: GraiaMiraiApplication, group: Group, member: Memb
 
 
 @bcc.receiver(GroupMessage)
-async def wrong_usage_tips(app: GraiaMiraiApplication, group: Group, messagechain: MessageChain):
+async def wrong_usage_tips(app: Ariadne, group: Group, messagechain: MessageChain):
     msg_text = messagechain.asDisplay()
     if msg_text.startswith(('&mute ', '&unmute')) and msg_text.endswith(' '):
         await app.sendGroupMessage(group, MessageChain.create([Plain('请删除末尾空格后重试')]))
 
 
 if __name__ == '__main__':
-    app.launch_blocking()
+    loop.run_until_complete(app.lifecycle())
