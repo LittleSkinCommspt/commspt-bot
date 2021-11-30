@@ -1,11 +1,11 @@
 FROM python:latest
 
-LABEL maintainer=me@xiaojin233.cn
+LABEL maintainer=i@xiaojin233.cn
 
-RUN pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple/ && \
-    pip config set install.trusted-host mirrors.cloud.tencent.com
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
+    pip config set install.trusted-host mirrors.aliyun.com
 
-RUN pip install graia-application-mirai==0.19.2
+RUN pip install graia-ariadne
 
 WORKDIR /app
 CMD python3 main.py
