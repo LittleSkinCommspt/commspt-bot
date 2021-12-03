@@ -196,16 +196,16 @@ async def grass_spammer(app: Ariadne, group: Group, msg: MessageChain):
                                        [Plain('\u202e草')]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('revoke', False)]))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('recall', False)]))])
 async def command_handler(app: Ariadne, messagechain: MessageChain):
     if Quote in messagechain:
-        origin_message = messagechain[Quote][0].origin[Source][0]
-        current_message = messagechain[Source][0]
-        await app.revokeMessage(origin_message)
-        await app.revokeMessage(current_message)
+        origin_message = messagechain[Quote][0].id
+        current_message = messagechain[Source][0].id
+        await app.recallMessage(origin_message)
+        await app.recallMessage(current_message)
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('mute ', False)]))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('mute', False)]))])
 async def command_handler(app: Ariadne, group: Group, member: Member, messagechain: MessageChain):
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
@@ -216,7 +216,7 @@ async def command_handler(app: Ariadne, group: Group, member: Member, messagecha
             await app.mute(group, target, 60 * 10)
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('unmute ', False)]))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('unmute', False)]))])
 async def command_handler(app: Ariadne, group: Group, member: Member, messagechain: MessageChain):
     admins = await app.memberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
