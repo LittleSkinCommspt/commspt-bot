@@ -161,7 +161,7 @@ async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
         preview_images: List[Image] = list()
         for texture in [result.skin_hash, result.cape_hash]:
             if texture:
-                preview_images.append(Image.fromUnsafeBytes(await apis.getTexturePreview(
+                preview_images.append(Image(data_bytes=await apis.getTexturePreview(
                     bs_root, texture)))
     await app.sendGroupMessage(group,
                                MessageChain.create([*preview_images,
@@ -181,7 +181,7 @@ async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
         async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}?overlay') as resp:
             if resp.status == 200:
                 image = await resp.content.read()
-                await app.sendGroupMessage(group, MessageChain.create([Image.fromUnsafeBytes(image)]))
+                await app.sendGroupMessage(group, MessageChain.create([Image(data_bytes=image)]))
             else:
                 err_msg = await resp.text()
                 await app.sendGroupMessage(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))
