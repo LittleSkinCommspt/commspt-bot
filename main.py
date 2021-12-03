@@ -78,7 +78,7 @@ SimpleReply('clfcsl', [Plain(tF.clfcsl)])
 ])
 async def new_question_nofication(app: Ariadne, group: Group, member: Member, msg: MessageChain):
     enable_in_groups: List[int] = [qq.littleskin_main]
-    admins = await app.memberList(qq.notification_channel)
+    admins = await app.getMemberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
     if group.id in enable_in_groups and member.id not in admins_id:
         await app.sendGroupMessage(qq.notification_channel,
@@ -207,24 +207,24 @@ async def command_handler(app: Ariadne, messagechain: MessageChain):
 
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('mute', False)]))])
 async def command_handler(app: Ariadne, group: Group, member: Member, messagechain: MessageChain):
-    admins = await app.memberList(qq.notification_channel)
+    admins = await app.getMemberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
     if member.id in admins_id and At in messagechain:
         target_members: List[At] = messagechain[At]
         targets = [m.target for m in target_members]
         for target in targets:
-            await app.mute(group, target, 60 * 10)
+            await app.muteMember(group, target, 60 * 10)
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('unmute', False)]))])
 async def command_handler(app: Ariadne, group: Group, member: Member, messagechain: MessageChain):
-    admins = await app.memberList(qq.notification_channel)
+    admins = await app.getMemberList(qq.notification_channel)
     admins_id = [m.id for m in admins]
     if member.id in admins_id and At in messagechain:
         target_members: List[At] = messagechain[At]
         targets = [m.target for m in target_members]
         for target in targets:
-            await app.unmute(group, target)
+            await app.unmuteMember(group, target)
 
 
 @bcc.receiver(GroupMessage)
