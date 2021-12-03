@@ -9,7 +9,7 @@ from graia.ariadne.message.element import Plain, At, Image, Source, Element, Quo
 from graia.ariadne.model import Friend, Member,Group, MiraiSession
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.event.mirai import MemberJoinEvent
-from graia.ariadne.message.parser.twilight import RegexMatch, Twilight, Sparkle, ArgumentMatch
+from graia.ariadne.message.parser.twilight import RegexMatch, Twilight, Sparkle, ArgumentMatch, WildcardMatch
 
 # from graia.application.entry import (At, Group, GroupMessage, Image,
 #                                      MemberJoinEvent, MessageChain, Plain,
@@ -107,8 +107,8 @@ async def command_handler(app: Ariadne, group: Group):
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl.latest')], {"arg": ArgumentMatch('arg', optional=True)}))])
-async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl.latest')], {"params": WildcardMatch(optional=True)}))])
+async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     infos = await apis.CustomSkinLoaderLatest.get()
     mod_loader = params.result.asDisplay().strip()
     forge = f'''CustomSkinLoader 最新版本：{infos.version}
@@ -120,7 +120,7 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl')], {"arg": ArgumentMatch('arg', optional=True)}))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
     player_name = params.result.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -133,7 +133,7 @@ Cape: {result.cape_hash[:7] if result.cape_existed else None}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('ygg')], {"arg": ArgumentMatch('arg', optional=True)}))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('ygg')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
     player_name = params.result.asDisplay()
     littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
@@ -150,7 +150,7 @@ UUID: {UUID(player_uuid.id)}'''
     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view')], {"arg": ArgumentMatch('arg', optional=True)}))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
     player_name = params.result.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
@@ -170,7 +170,7 @@ Skin: {result.skin_hash[:7]} [{result.skin_type}]
 Cape: {result.cape_hash[:7] if result.cape_existed else None}''')]))
 
 
-@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view.mojang')], {"arg": ArgumentMatch('arg', optional=True)}))])
+@bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view.mojang')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
     player_name = params.result.asDisplay()
     player_uuid = await apis.MojangPlayerUuidApi.get(player_name)
