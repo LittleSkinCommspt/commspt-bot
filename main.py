@@ -121,7 +121,7 @@ Fabric: {infos.downloads.Fabric}'''
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl')], {"params": WildcardMatch(optional=True)}))])
-async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.player_existed:
@@ -134,7 +134,7 @@ Cape: {result.cape_hash[:7] if result.cape_existed else None}'''
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('ygg')], {"params": WildcardMatch(optional=True)}))])
-async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
     littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
     player_uuid = await apis.YggdrasilPlayerUuidApi.get(littleskin_yggdrasil_root, player_name)
@@ -151,7 +151,7 @@ UUID: {UUID(player_uuid.id)}'''
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view')], {"params": WildcardMatch(optional=True)}))])
-async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
     result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
     if not result.player_existed:
@@ -171,7 +171,7 @@ Cape: {result.cape_hash[:7] if result.cape_existed else None}''')]))
 
 
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view.mojang')], {"params": WildcardMatch(optional=True)}))])
-async def command_handler(app: Ariadne, group: Group, params: ArgumentMatch):
+async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
     player_uuid = await apis.MojangPlayerUuidApi.get(player_name)
     if not player_uuid.existed:
