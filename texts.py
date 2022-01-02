@@ -35,3 +35,9 @@ Edge: https://aka.ms/msedge'''
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
     log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「 JVM 参数」设置中填入 -Dauthlibinjector.debug'
     log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
+    java_latest = '''请更新到最新的 Java 版本，将下面链接复制到浏览器中下载
+Windows x64: http://download.mcbbs.net/java/jre_x64.exe
+Windows x32: http://download.mcbbs.net/java/jre_x86.exe
+macOS: http://download.mcbbs.net/java/jre_mac.dmg'''
+    hmcl_latest = '''请到 HMCL 官网下载最新版本
+http://ci.huangyuhui.net/job/HMCL/'''
