@@ -41,8 +41,8 @@ SimpleReply('ping', [Plain('Pong!')])
 SimpleReply('help', [Plain(tF.help)])
 SimpleReply('log.minecraft', [Plain(tF.log_minecraft)])
 SimpleReply('log.launcher', [Plain(tF.log_launcher)])
-SimpleReply('update.java', [Plain(tF.update_java)])
-SimpleReply('update.hmcl', [Plain(tF.update_hmcl)])
+SimpleReply('java.latest', [Plain(tF.update_java)])
+SimpleReply('hmcl.latest', [Plain(tF.update_hmcl)])
 SimpleReply('ot', [
     Image.fromLocalFile('./images/off-topic.png'),
     Plain(tF.ot)
