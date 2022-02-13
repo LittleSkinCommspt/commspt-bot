@@ -123,7 +123,7 @@ Fabric: {infos.downloads.Fabric}'''
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
-    result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
+    result = await apis.CustomSkinLoaderApi.get('https://littleskin.cn/csl', player_name)
     if not result.player_existed:
         _message = f'「{player_name}」不存在'
     else:
@@ -136,7 +136,7 @@ Cape: {result.cape_hash[:7] if result.cape_existed else None}'''
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('ygg')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
-    littleskin_yggdrasil_root = 'https://mcskin.littleservice.cn/api/yggdrasil'
+    littleskin_yggdrasil_root = 'https://littleskin.cn/api/yggdrasil'
     player_uuid = await apis.YggdrasilPlayerUuidApi.get(littleskin_yggdrasil_root, player_name)
     if not player_uuid.existed:
         _message = f'「{player_name}」不存在'
@@ -153,11 +153,11 @@ UUID: {UUID(player_uuid.id)}'''
 @bcc.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('view')], {"params": WildcardMatch(optional=True)}))])
 async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
     player_name = params.result.asDisplay()
-    result = await apis.CustomSkinLoaderApi.get('https://mcskin.littleservice.cn/csl', player_name)
+    result = await apis.CustomSkinLoaderApi.get('https://littleskin.cn/csl', player_name)
     if not result.player_existed:
         await app.sendGroupMessage(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
     else:
-        bs_root = 'https://mcskin.littleservice.cn'
+        bs_root = 'https://littleskin.cn'
         preview_images: List[Image] = list()
         for texture in [result.skin_hash, result.cape_hash]:
             if texture:
