@@ -39,12 +39,15 @@ Edge: https://aka.ms/msedge'''
 Windows x64: 
    Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-windows-amd64-full.msi
    Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-windows-amd64-full.msi
+
 Windows x32:
    Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-windows-i586-full.msi
    Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-windows-i586-full.msi
+
 macOS(Intel): 
    Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-macos-amd64-full.pkg
    Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-macos-amd64-full.pkg
+
 macOS(M1)
    Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-macos-aarch64-full.pkg
    Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-macos-aarch64-full.pkg'''
