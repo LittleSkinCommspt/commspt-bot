@@ -36,8 +36,17 @@ Edge: https://aka.ms/msedge'''
     log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「 JVM 参数」设置中填入 -Dauthlibinjector.debug'
     log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
     java_latest = '''请更新到最新的 Java 版本，将下面链接复制到浏览器中下载
-Windows x64: http://download.mcbbs.net/java/jre_x64.exe
-Windows x32: http://download.mcbbs.net/java/jre_x86.exe
-macOS: http://download.mcbbs.net/java/jre_mac.dmg'''
-    hmcl_latest = '''请到 HMCL 官网下载最新版本
-http://ci.huangyuhui.net/job/HMCL/'''
+Windows x64: 
+   Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-windows-amd64-full.msi
+   Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-windows-amd64-full.msi
+Windows x32:
+   Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-windows-i586-full.msi
+   Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-windows-i586-full.msi
+macOS(Intel): 
+   Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-macos-amd64-full.pkg
+   Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-macos-amd64-full.pkg
+macOS(M1)
+   Java 8 - https://download.bell-sw.com/java/8u322+6/bellsoft-jre8u322+6-macos-aarch64-full.pkg
+   Java 17 - https://download.bell-sw.com/java/17.0.2+9/bellsoft-jre17.0.2+9-macos-aarch64-full.pkg'''
+    hmcl_latest = '''请到 HMCL 官网下载最新版本的 HMCL 启动器
+http://ci.huangyuhui.net/job/HMCL-stable/lastSuccessfulBuild/artifact/HMCL/build/libs/HMCL-3.5.3.jar'''
