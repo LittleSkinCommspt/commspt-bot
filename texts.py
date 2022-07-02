@@ -4,8 +4,8 @@ from typing import List
 class TextFields(object):
     '''储存有文本字段'''
     ping = 'Pong'
-    new_question_nofication = 'LittleSkin 用户交流群内有一个新的问题已被提出。'
-    new_question_sent = '运营组及社区技术支持组已收到你的问题，请耐心等待答复。'
+    new_question_nofication = '有用户提出了一个新的问题，请尽快进行解答。'
+    new_question_sent = '已收到你的问题，请耐心等待答复。'
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://bot-manual.restent.win/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
