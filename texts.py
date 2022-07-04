@@ -4,8 +4,8 @@ from typing import List
 class TextFields(object):
     '''储存有文本字段'''
     ping = 'Pong'
-    new_question_nofication = 'LittleSkin 用户交流群内有一个新的问题已被提出。'
-    new_question_sent = '运营组及社区技术支持组已收到你的问题，请耐心等待答复。'
+    new_question_nofication = '有用户提出了一个新的问题，请尽快进行解答。'
+    new_question_sent = '已收到你的问题，请耐心等待答复。'
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://bot-manual.restent.win/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
@@ -33,7 +33,7 @@ Edge: https://aka.ms/msedge'''
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
-    log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「 JVM 参数」设置中填入 -Dauthlibinjector.debug'
+    log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「JVM 参数（Java 虚拟机参数）」设置中填入 -Dauthlibinjector.debug'
     log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
     java_latest = '''请更新到最新的 Java 版本，将下面链接复制到浏览器中下载
 Windows x64: https://download.bell-sw.com/java/8u332+9/bellsoft-jre8u332+9-windows-amd64-full.msi
