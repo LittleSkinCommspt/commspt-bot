@@ -189,7 +189,7 @@ async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
                 await app.sendGroupMessage(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))
 
 
-@bcc.receiver("GroupMessage", dispatchers=[Twilight(Sparkle([RegexMatch(r'^草*$')]))])
+@bcc.receiver("GroupMessage", dispatchers=[Twilight(Sparkle([RegexMatch(r'^草+$')]))])
 async def grass_spammer(app: Ariadne, group: Group, msg: MessageChain):
     disable_in_groups: List[int] = [qq.littleskin_main, qq.csl_group]
     if not group.id in disable_in_groups:
