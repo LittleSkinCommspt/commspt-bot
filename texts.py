@@ -35,9 +35,15 @@ Edge: https://aka.ms/msedge'''
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
     log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「JVM 参数（Java 虚拟机参数）」设置中填入 -Dauthlibinjector.debug'
     log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
-    java_latest = '''请更新到最新的 Java 版本，将下面链接复制到浏览器中下载
-Windows x64: https://download.bell-sw.com/java/8u332+9/bellsoft-jre8u332+9-windows-amd64-full.msi
-Windows x32: https://download.bell-sw.com/java/8u332+9/bellsoft-jre8u332+9-windows-i586-full.msi
-macOS: https://download.bell-sw.com/java/8u332+9/bellsoft-jre8u332+9-macos-amd64-full.pkg'''
+    java8_latest = '''请更新到最新的 Java 8 版本，将下面链接复制到浏览器中下载
+Windows x64: https://bot-manual.restent.win/java8/win64
+Windows x32: https://bot-manual.restent.win/java8/win32
+macOS: https://bot-manual.restent.win/java8/macos
+同时为了确保启动游戏时能够引导到正确的 Java 17 版本，我们建议您卸载其他 Java 17 版本'''
+    java_latest = '''请更新到最新的 Java 17 版本，将下面链接复制到浏览器中下载
+Windows x64: https://bot-manual.restent.win/java/win64
+Windows x32: https://bot-manual.restent.win/java/win32
+macOS: https://bot-manual.restent.win/java/macos
+同时为了确保启动游戏时能够引导到正确的 Java 17 版本，我们建议您卸载其他 Java 17 版本'''
     hmcl_latest = '''请到 HMCL 官网下载最新版本的 HMCL
 http://hmcl.huangyuhui.net/download/'''
