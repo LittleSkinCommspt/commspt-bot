@@ -39,7 +39,7 @@ Edge: https://aka.ms/msedge'''
 Windows x64: https://bot-manual.restent.win/java8/win64
 Windows x32: https://bot-manual.restent.win/java8/win32
 macOS: https://bot-manual.restent.win/java8/macos
-同时为了确保启动游戏时能够引导到正确的 Java 17 版本，我们建议您卸载其他 Java 17 版本'''
+同时为了确保启动游戏时能够引导到正确的 Java 8 版本，我们建议您卸载其他 Java 8 版本'''
     java_latest = '''请更新到最新的 Java 17 版本，将下面链接复制到浏览器中下载
 Windows x64: https://bot-manual.restent.win/java/win64
 Windows x32: https://bot-manual.restent.win/java/win32
