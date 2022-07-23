@@ -45,6 +45,7 @@ SimpleReply('ping', [Plain('Pong!')])
 SimpleReply('help', [Plain(tF.help)])
 SimpleReply('log.minecraft', [Plain(tF.log_minecraft)])
 SimpleReply('log.launcher', [Plain(tF.log_launcher)])
+SimpleReply('java8.latest', [Plain(tF.java8_latest)])
 SimpleReply('java.latest', [Plain(tF.java_latest)])
 SimpleReply('hmcl.latest', [Plain(tF.hmcl_latest)])
 SimpleReply('ot', [
@@ -79,18 +80,21 @@ SimpleReply('clfcsl', [Plain(tF.clfcsl)])
     Twilight(Sparkle([KeywordsMatch(tF.question_keywords)]))
 ])
 async def new_question_nofication(app: Ariadne, group: Group, member: Member, msg: MessageChain):
-    enable_in_groups: List[int] = [qq.littleskin_main]
-    admins = await app.getMemberList(qq.notification_channel)
-    admins_id = [m.id for m in admins]
-    if group.id in enable_in_groups and member.id not in admins_id:
-        await app.sendGroupMessage(qq.notification_channel,
-                                   MessageChain.create(
-                                       [Plain(tF.new_question_nofication)]),
-                                   quote=msg[Source][0].id)
-        await app.sendGroupMessage(group,
-                                   MessageChain.create(
-                                       [Plain(tF.new_question_sent)]),
-                                   quote=msg[Source][0].id)
+    if Twilight(Sparkle([KeywordsMatch(tF.question_keywords_excepted)])):
+        return
+    else:
+        enable_in_groups: List[int] = [qq.littleskin_main]
+        admins = await app.getMemberList(qq.notification_channel)
+        admins_id = [m.id for m in admins]
+        if group.id in enable_in_groups and member.id not in admins_id:
+            await app.sendGroupMessage(qq.notification_channel,
+                                       MessageChain.create(
+                                           [Plain(tF.new_question_nofication)]),
+                                       quote=msg[Source][0].id)
+            await app.sendGroupMessage(group,
+                                       MessageChain.create(
+                                           [Plain(tF.new_question_sent)]),
+                                       quote=msg[Source][0].id)
 
 
 @bcc.receiver(MemberJoinEvent)
