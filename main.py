@@ -81,7 +81,7 @@ SimpleReply('clfcsl', [Plain(tF.clfcsl)])
 ])
 async def new_question_nofication(app: Ariadne, group: Group, member: Member, msg: MessageChain):
     if Twilight(Sparkle([KeywordsMatch(tF.question_keywords_excepted)])):
-        await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+        return
     else:
         enable_in_groups: List[int] = [qq.littleskin_main]
         admins = await app.getMemberList(qq.notification_channel)
