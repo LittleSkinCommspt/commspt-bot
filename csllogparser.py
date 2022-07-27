@@ -1,8 +1,16 @@
+from graia.ariadne.app import Ariadne
 from typing import Dict, List, Set, Optional, Tuple
 from texts import TextFields as tF
 import re
 import json
 import requests
+from graia.saya import Channel
+
+from graia.saya.builtins.broadcast.schema import ListenerSchema
+
+channel = Channel.current()
+
+@channel.use(ListenerSchema())
 
 
 class cslLogParser(object):
@@ -53,10 +61,6 @@ class cslLogParser(object):
     def _getMcVersion(self) -> Optional[str]:
         '''获取 MC 版本号'''
         return self._getItem(r'Minecraft: (.*)\(.*\)', self.log_raw, 1)
-
-    def _isLsOldDomain(self) -> bool:
-        '''是否为 LittleSkin 旧域名'''
-        return 'littleskin.cn/' in self.log_raw
 
     def _getPlayersList(self) -> set:
         '''获取 玩家列表'''

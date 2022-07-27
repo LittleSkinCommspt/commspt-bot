@@ -139,3 +139,4 @@ github-event-id-cache
 
 # Other
 .vscode
+.DS_Store

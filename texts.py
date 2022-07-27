@@ -9,7 +9,7 @@ class TextFields(object):
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://bot-manual.restent.win/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
-    ot = '\n您正在讨论无关话题，请前往 Honoka Café 交流，群号：651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
+    ot = '\n您正在讨论一个与 LittleSkin 无关的话题，请前往 Honoka Café 交流，群号：651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
     ygg_server_jvm = '请在启动脚本中加入参数 -Dauthlibinjector.debug=all，然后将 logs/latest.log 上传至群文件'
     domain = '我们推测您可能使用百度搜索 LittleSkin 并使用了在中国大陆过时的 littleskin.cn，我们建议您：\n1.将域名替换成 littlesk.in；\n2.使用除百度外的搜索引擎。'
     view_hash_length_error = 'Hash 长度有误'
