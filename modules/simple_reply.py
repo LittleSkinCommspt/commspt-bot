@@ -50,3 +50,7 @@ SimpleReply('ygg.client.refresh', [
 SimpleReply('csl.log', [Plain(tF.csl_log)])
 SimpleReply('csl.gui', [Plain(tF.csl_gui)])
 SimpleReply('clfcsl', [Plain(tF.clfcsl)])
+SimpleReply('pay', [Plain(tF.pay_for_help)])
+SimpleReply('msoauth', [Plain(tF.ms_oauth)])
+SimpleReply('cape_format', [Plain(tF.cape_format)])
+SimpleReply('pro_verify', [Plain(tF.pro_verify)])

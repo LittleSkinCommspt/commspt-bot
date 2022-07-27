@@ -11,7 +11,7 @@ class TextFields(object):
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
     ot = '\n您正在讨论一个与 LittleSkin 无关的话题，请前往 Honoka Café 交流，群号：651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
     ygg_server_jvm = '请在启动脚本中加入参数 -Dauthlibinjector.debug=all，然后将 logs/latest.log 上传至群文件'
-    domain = '我们推测您可能使用百度搜索 LittleSkin 并使用了在中国大陆过时的 littleskin.cn，我们建议您：\n1.将域名替换成 littlesk.in；\n2.使用除百度外的搜索引擎。'
+    domain = '我们推测您可能使用百度搜索 LittleSkin 并使用了在中国大陆过时的域名，我们建议您：\n1.将域名替换成 littlesk.in；\n2.使用除百度外的搜索引擎。'
     view_hash_length_error = 'Hash 长度有误'
     view_not_200_error = '找不到材质？'
     view_no_hash_error = '请提供材质 Hash'
@@ -48,3 +48,15 @@ macOS: https://edgelight.nofated.win/java/macos
 同时为了确保启动游戏时能够引导到正确的 Java 17 版本，我们建议您卸载其他 Java 17 版本'''
     hmcl_latest = '''请到 HMCL 官网下载最新版本的 HMCL
 http://hmcl.huangyuhui.net/download/'''
+    ms_oauth = '''通过微软邮箱直接授权登录的用户初始没有密码，请在 LittleSkin 里先退出登录，然后在登录界面点击忘记密码，即可通过邮箱修改密码。'''
+    cape_format = '''“不是有效的披风文件”
+LittleSkin 对于披风文件的格式要求如下：
+·png 格式文件；
+·宽高比需为 2：1；
+·为 64 x 32 的整倍数。'''
+    pro_verify = '''目前在 LittleSkin 验证正版后有以下功能：
+    ·在主页上获得一个“正版”（英文为“Pro”）徽标
+    ·赠送您 1k 积分；
+    ·在皮肤站内取回您的正版 ID 对应的角色（如果您的 ID 已被人抢注）。
+    请注意，正版验证过后，您的 LittleSkin 外置登录账号并不具备正版的属性，性质仍为离线账号，您无法将 LittleSkin 外置登录账号代替正版账号使用。'''
+

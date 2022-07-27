@@ -7,7 +7,7 @@ from graia.ariadne.message.element import At, Plain, Quote, Source
 from graia.ariadne.model import Group, Member
 from graia.broadcast.builtin.decorators import Depend
 from graia.saya import Channel
-from utils.permissons import require_admin
+from utils.decorators import require_admin
 
 channel = Channel.current()
 

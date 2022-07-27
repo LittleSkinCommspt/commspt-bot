@@ -25,16 +25,3 @@ async def csl_latest(app: Ariadne, group: Group, mod_loader: str):
 Fabric: {infos.downloads.Fabric}'''
     _messages = {'fabric': fabric, 'forge': forge}
     await app.sendGroupMessage(group, MessageChain([Plain(_messages[mod_loader])]))
-
-
-# @broadcast.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl.latest')], {"params": WildcardMatch(optional=True)}))])
-# async def command_handler(app: Ariadne, group: Group, params: WildcardMatch):
-#     infos = await apis.CustomSkinLoaderLatest.get()
-#     mod_loader = params.result.asDisplay().strip()
-#     forge = f'''CustomSkinLoader 最新版本：{infos.version}
-# 1.7.10 ~ 1.16.5: {infos.downloads.Forge}
-# 1.17+: {infos.downloads.ForgeActive}'''
-#     fabric = f'''CustomSkinLoader 最新版本：{infos.version}
-# Fabric: {infos.downloads.Fabric}'''
-#     _message = forge if mod_loader == 'forge' else fabric
-#     await app.sendGroupMessage(group, MessageChain([Plain(_message)]))
