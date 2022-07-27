@@ -47,10 +47,10 @@ async def ask(app: Ariadne, group: Group, member: Member, msg: MessageChain):
 #     admins_id = [m.id for m in admins]
 #     if group.id in enable_in_groups and member.id not in admins_id:
 #         await app.sendGroupMessage(qq.notification_channel,
-#                                     MessageChain.create(
+#                                     MessageChain(
 #                                         [Plain(tF.new_question_nofication)]),
 #                                     quote=msg[Source][0].id)
 #         await app.sendGroupMessage(group,
-#                                     MessageChain.create(
+#                                     MessageChain(
 #                                         [Plain(tF.new_question_sent)]),
 #                                     quote=msg[Source][0].id)

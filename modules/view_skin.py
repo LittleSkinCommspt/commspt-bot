@@ -10,7 +10,8 @@ from graia.saya import Channel
 from models.apis import (CustomSkinLoaderApi, MojangPlayerUuidApi,
                          getTexturePreview)
 
-channel  = Channel.current()
+channel = Channel.current()
+
 
 @channel.use(CommandSchema('&view {player_name: str}'))
 async def view(app: Ariadne, group: Group, player_name: str):
@@ -24,9 +25,9 @@ async def view(app: Ariadne, group: Group, player_name: str):
             if texture:
                 preview_images.append(Image(data_bytes=await getTexturePreview(
                     bs_root, texture)))
-    await app.send_message(group,
-                               MessageChain.create([*preview_images,
-                                                    Plain(f'''「{player_name}」
+                await app.send_message(group,
+                                       MessageChain([*preview_images,
+                                                     Plain(f'''「{player_name}」
 Skin: {result.skin_hash[:8]} [{result.skin_type}]
 Cape: {result.cape_hash[:8] if result.cape_existed else None}''')]))
 
@@ -35,13 +36,13 @@ Cape: {result.cape_hash[:8] if result.cape_existed else None}''')]))
 async def view(app: Ariadne, group: Group, player_name: str):
     player_uuid = await MojangPlayerUuidApi.get(player_name)
     if not player_uuid.existed:
-        await app.send_message(group, MessageChain.create([Plain(f'「{player_name}」不存在')]))
+        await app.send_message(group, MessageChain([Plain(f'「{player_name}」不存在')]))
         return
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}?overlay') as resp:
             if resp.status == 200:
                 image = await resp.content.read()
-                await app.send_message(group, MessageChain.create([Image(data_bytes=image)]))
+                await app.send_message(group, MessageChain([Image(data_bytes=image)]))
             else:
                 err_msg = await resp.text()
-                await app.send_message(group, MessageChain.create([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))
+                await app.send_message(group, MessageChain([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))

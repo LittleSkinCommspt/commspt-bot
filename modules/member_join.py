@@ -13,6 +13,6 @@ channel = Channel.current()
 @channel.use(ListenerSchema([MemberJoinEvent]))
 async def memberjoinevent_listener(app: Ariadne, group: Group, member: Member):
     if group.id == qq.littleskin_main:
-        await app.send_message(group, MessageChain.create(
+        await app.send_message(group, MessageChain(
             [At(member.id), Plain(' '), Plain(tF.join_welcome)]))
 

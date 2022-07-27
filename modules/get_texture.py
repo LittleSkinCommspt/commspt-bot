@@ -36,4 +36,4 @@ async def ygg(app: Ariadne, group: Group, player_name: str):
 Skin: {textures.SKIN.hash[:8] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
 Cape: {textures.CAPE.hash[:8] if textures.CAPE else None}
 UUID: {UUID(player_uuid.id)}'''
-    await app.send_message(group, MessageChain.create([Plain(_message)]))
+    await app.send_message(group, MessageChain([Plain(_message)]))

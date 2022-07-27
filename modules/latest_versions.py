@@ -12,7 +12,7 @@ channel = Channel.current()
 async def ygg_latest(app: Ariadne, group: Group):
     infos = await AuthlibInjectorLatest.get()
     _message = f'authlib-injector 最新版本：{infos.version}\n{infos.download_url}'
-    await app.send_message(group, MessageChain.create([Plain(_message)]))
+    await app.send_message(group, MessageChain([Plain(_message)]))
 
 
 @channel.use(CommandSchema('&csl.latest {mod_loader: str = "fabric"}'))
@@ -24,7 +24,7 @@ async def csl_latest(app: Ariadne, group: Group, mod_loader: str):
     fabric = f'''CustomSkinLoader (Fabric) 最新版本：{infos.version}
 Fabric: {infos.downloads.Fabric}'''
     _messages = {'fabric': fabric, 'forge': forge}
-    await app.sendGroupMessage(group, MessageChain.create([Plain(_messages[mod_loader])]))
+    await app.sendGroupMessage(group, MessageChain([Plain(_messages[mod_loader])]))
 
 
 # @broadcast.receiver(GroupMessage, dispatchers=[Twilight(Sparkle([CommandMatch('csl.latest')], {"params": WildcardMatch(optional=True)}))])
@@ -37,4 +37,4 @@ Fabric: {infos.downloads.Fabric}'''
 #     fabric = f'''CustomSkinLoader 最新版本：{infos.version}
 # Fabric: {infos.downloads.Fabric}'''
 #     _message = forge if mod_loader == 'forge' else fabric
-#     await app.sendGroupMessage(group, MessageChain.create([Plain(_message)]))
+#     await app.sendGroupMessage(group, MessageChain([Plain(_message)]))

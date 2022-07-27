@@ -45,12 +45,12 @@ class CustomSkinLoaderApi(BaseModel):
 
     username: Optional[str]
     skins: Optional[Skins]
-    skin_hash: Optional[str]
-    cape_hash: Optional[str] = Field(..., alias='cape')
-    player_existed: bool = True
+    skin_hash: Optional[str] = ''
+    cape_hash: Optional[str] = Field('', alias='cape')
+    player_existed: Optional[bool] = True
     skin_type: Optional[Literal['default', 'slim', None]] = None
-    skin_existed: bool = True
-    cape_existed: bool = True
+    skin_existed: Optional[bool] = True
+    cape_existed: Optional[bool] = True
 
     @root_validator(pre=True)
     def pre_processor(cls, values: dict):
