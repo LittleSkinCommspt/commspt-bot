@@ -49,6 +49,7 @@ class CustomSkinLoaderApi(BaseModel):
     cape_hash: Optional[str] = Field(..., alias='cape')
     player_existed: bool = True
     skin_type: Optional[Literal['default', 'slim', None]] = None
+    skin_existed: bool = True
     cape_existed: bool = True
 
     @root_validator(pre=True)
@@ -57,6 +58,7 @@ class CustomSkinLoaderApi(BaseModel):
         player_existed = bool(values)
         if not player_existed:
             skin_type = None
+            skin_existed = False
             cape_existed = False
         else:
             skin_type = 'slim' if 'slim' in values['skins'] else 'default' if values['skins']['default'] else None
@@ -72,6 +74,7 @@ class CustomSkinLoaderApi(BaseModel):
         values.update({
             'player_existed': player_existed,
             'skin_type': skin_type,
+            'skin_existed': skin_existed,
             'cape_existed': cape_existed,
             'skin_hash': skin_hash
         })

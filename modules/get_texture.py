@@ -19,7 +19,7 @@ async def csl(app: Ariadne, group: Group, player_name: str):
         _message = f'「{player_name}」不存在'
     else:
         _message = f'''「{player_name}」
-Skin: {result.skin_hash[:8]} [{result.skin_type}]
+Skin: {result.skin_hash[:8] if result.skin_existed else None} [{result.skin_type if result.skin_existed else None}]
 Cape: {result.cape_hash[:8] if result.cape_existed else None}'''
     await app.send_message(group, MessageChain([Plain(_message)]))
 
