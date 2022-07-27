@@ -102,7 +102,7 @@ CSL {C.cslVersion} | MC {C.mcVersion} | Java {C.javaVersion}'''
     # 
     diaMessages: Set[str] = set()
     if not C.javaVersion:
-        diaMessages.add('[WARN] 过旧的 CSL 版本，请更新你的 CSL')
+        diaMessages.add('[WARN] 过时的 CSL 版本，请更新你的 CSL')
     for rc in C.responseContents:
         if 'skins' in rc and 'slim' in rc['skins'] and C.mcVersion == '1.7.10':
             diaMessages.add('[ERROR] 试图在 1.7.10 中加载 Slim 模型的皮肤\n')
