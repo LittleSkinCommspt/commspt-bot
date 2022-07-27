@@ -66,10 +66,13 @@ class CustomSkinLoaderApi(BaseModel):
         # parse skin hash
         if skin_type == 'default':
             skin_hash = values['skins']['default']
+            skin_existed = True
         elif skin_type == 'slim':
             skin_hash = values['skins']['slim']
+            skin_existed = True
         else:
             skin_hash = None
+            skin_existed = False
 
         values.update({
             'player_existed': player_existed,
