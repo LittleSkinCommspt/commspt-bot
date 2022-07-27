@@ -1,4 +1,3 @@
-from logging import exception
 from typing import Dict, List, Set, Optional, Tuple
 import re
 import json
@@ -45,6 +44,10 @@ class cslLogParser(object):
         return self._getAllItem(r'Loading (.*)\'s profile', self.log_raw, 1)
 
     @property
+    def firstPlayer(self) -> str:
+        return self._getItem(r'Loading (.*)\'s profile', self.log_raw, 1)
+
+    @property
     def responseContents(self) -> List[str]:
         '''获取 API 响应（JSON 格式）'''
         return [json.loads(_i) for _i in self._getAllItem(r'Content: ({.*})', self.log_raw, 1)]
@@ -84,38 +87,48 @@ class cslLogParser(object):
         return self._getItem(r'Java Version: (.*)', self.log_raw, 1)
 
 
-def cslHandler(log_raw: str, fromLittleSkin: bool = True) -> Tuple[str, str, str, Set[str]]:
+def cslHandler(log_raw: str, fromLittleSkin: bool = True) -> Tuple[str, str, str, str]:
     C = cslLogParser(log_raw)
     # 
     envMessage = f'''=== 环境信息 ===
 CSL {C.cslVersion} | MC {C.mcVersion} | Java {C.javaVersion}'''
     # 
-    _s = list()
-    for player in C.playersList:
-        fromApi = C.loadFrom[player]
-        _s.append(f'{player} (from {fromApi})')
-    s = '\n'.join(_s)
-    playerInfoMessage = f'''=== 玩家信息 ===
-{s}'''
+    firstPlayer = C.firstPlayer
+    fromApi = C.loadFrom[firstPlayer]
+    playerInfoMessage = f'''=== 主玩家信息 ===
+{firstPlayer} (from {fromApi})'''
     # 
-    exceptions = '\n'.join(C.exceptionLines)
+    exceptionLines = list()
+    for i in C.exceptionLines:
+        if firstPlayer in i:
+            exceptionLines.append(i)
+    
     # 
-    diaMessages: Set[str] = set()
+    diaMessages: List[str] = list()
     if not C.javaVersion:
-        diaMessages.add('[WARN] 过时的 CSL 版本，请更新你的 CSL')
+        diaMessages.append('[WARN] 过时的 CSL 版本，请更新你的 CSL')
     for rc in C.responseContents:
         if 'skins' in rc and 'slim' in rc['skins'] and C.mcVersion == '1.7.10':
-            diaMessages.add('[ERROR] 试图在 1.7.10 中加载 Slim 模型的皮肤\n')
+            diaMessages.append('[ERROR] 试图在 1.7.10 中加载 Slim 模型的皮肤')
             break
-    if 'timed out' in C.exceptionLines:
-        diaMessages.add('[WARN] 疑似请求皮肤时超时，请检查网络是否正常\n')
-    if 'SSL' in C.exceptionLines:
-        diaMessages.add('[ERROR] SSL 验证错误')
-    # if fromLittleSkin aNone and isLsOldDomain:
-    #     diaMessgaes.add(f
-    # if C.SSLHandShakeError
-    # .   diaMessages.add(f'[ERROR] 使用过老的 Javages\n ')dd(f'[WARN] {tF.domain}\n')    
-    if not diaMessages:
-        diaMessages.add('[TIPS] 未能与任何一个典型错误匹配，请人工检查日志\n')
-    return envMessage, playerInfoMessage, exceptions, diaMessages
-
+    for l in exceptionLines:
+        if 'timed out' in l:
+            diaMessages.append('[ERROR] 请求材质时连接超时，请检查网络是否正常')
+            break
+    for l in exceptionLines:
+        if 'SSLException' in l:
+            diaMessages.append('[ERROR] SSL 验证错误')
+            break
+    for l in exceptionLines:
+        if 'Connection reset' in l:
+            diaMessages.append('[ERROR] 请求材质时连接重置，请检查网络是否正常')
+            break
+    # 
+    if not exceptionLines:
+        exceptionLines.append('[INFO] 默认角色没有异常')
+    exceptionMessage = '\n'.join(exceptionLines)
+    if not diaMessages: # 没有检测到典型错误
+        diaMessages.append('[TIPS] 未能与任何一个典型错误匹配')
+    diaMessage = '\n'.join(diaMessages)
+    # 
+    return envMessage, playerInfoMessage, exceptionMessage, diaMessage

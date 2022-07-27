@@ -24,11 +24,10 @@ async def parse_csl_log(app: Ariadne, group: Group, message: MessageChain):
             csl_log = await resp.text()
     # Parse log
     env_info, playerInfoMessage, exceptionLines, csl_problems = cslHandler(csl_log)
-    csl_problems_str = '\n'.join(csl_problems)
     await app.send_message(group, MessageChain(Plain(f'''{env_info}
 {playerInfoMessage}
 === 抛出的异常 ===
 {exceptionLines}
 === 检测到的错误 ===
-{csl_problems_str}''')))
+{csl_problems}''')))
     
