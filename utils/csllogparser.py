@@ -110,6 +110,8 @@ CSL {C.cslVersion} | MC {C.mcVersion} | Java {C.javaVersion}'''
     for el in C.exceptionLines:
         if 'Read timed out' in el:
             diaMessages.add('[WARN] 疑似请求皮肤时网络超时，请检查网络是否正常\n')
+        if 'Connection reset' in el:
+            diaMessages.add('[WARN] 疑似请求皮肤时连接重置，请检查网络是否正常\n')
         if 'SSL' in el:
             diaMessages.add('[ERROR] SSL 验证错误\n')
     # if fromLittleSkin aNone and isLsOldDomain:
