@@ -96,7 +96,7 @@ CSL {C.cslVersion} | MC {C.mcVersion} | Java {C.javaVersion}'''
         _s.append(f'{player} (from {fromApi})')
     s = '\n'.join(_s)
     playerInfoMessage = f'''=== 玩家信息 ===
-    {s}'''
+{s}'''
     # 
     exceptions = '\n'.join(C.exceptionLines)
     # 
@@ -107,7 +107,10 @@ CSL {C.cslVersion} | MC {C.mcVersion} | Java {C.javaVersion}'''
         if 'skins' in rc and 'slim' in rc['skins'] and C.mcVersion == '1.7.10':
             diaMessages.add('[ERROR] 试图在 1.7.10 中加载 Slim 模型的皮肤\n')
             break
-    
+    if 'timed out' in C.exceptionLines:
+        diaMessages.add('[WARN] 疑似请求皮肤时超时，请检查网络是否正常\n')
+    if 'SSL' in C.exceptionLines:
+        diaMessages.add('[ERROR] SSL 验证错误')
     # if fromLittleSkin aNone and isLsOldDomain:
     #     diaMessgaes.add(f
     # if C.SSLHandShakeError
