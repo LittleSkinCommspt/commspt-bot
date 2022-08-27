@@ -12,7 +12,7 @@ Manual: <https://bot-manual.restent.win>
 此机器人及文档的主要维护者如下：
 - [Xiao\_Jin](https://github.com/jinzhijie) (developer) （忙碌）
 - [冰凌sama](https://github.com/bingling-sama) (developer) （忙碌）
-- [Restent Ou])(https://gituhb.com/Restent) (dev helper)（忙碌）
+- [Restent Ou](https://gituhb.com/Restent) (dev helper)（忙碌）
 - [FlyEmoji\-表情酱](https://github.com/FLYEMOJ1) (documenter) (忙碌)
 - [Fidel](https://github.com/Fidelxyz) (contributor) （忙碌）
 - [CursoR](https://github.com/CursoR-S) (maintainer) （忙碌）
