@@ -15,7 +15,7 @@ async def ygg_latest(app: Ariadne, group: Group):
     await app.send_message(group, MessageChain([Plain(_message)]))
 
 
-@channel.use(CommandSchema('&csl.latest {mod_loader: str = "fabric"}'))
+@channel.use(CommandSchema('&csl.latest {mod_loader: str = "both"}'))
 async def csl_latest(app: Ariadne, group: Group, mod_loader: str):
     infos = await CustomSkinLoaderLatest.get()
     forge = f'''CustomSkinLoader (Forge) 最新版本：{infos.version}
@@ -23,5 +23,6 @@ async def csl_latest(app: Ariadne, group: Group, mod_loader: str):
 1.17+: {infos.downloads.ForgeActive}'''
     fabric = f'''CustomSkinLoader (Fabric) 最新版本：{infos.version}
 Fabric: {infos.downloads.Fabric}'''
-    _messages = {'fabric': fabric, 'forge': forge}
+    both = fabric + "\n" + forge
+    _messages = {'both': both, 'fabric': fabric, 'forge': forge}
     await app.sendGroupMessage(group, MessageChain([Plain(_messages[mod_loader])]))
