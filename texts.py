@@ -9,7 +9,7 @@ class TextFields(object):
     csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
     help = '请查看 https://bot-manual.restent.win/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
-    ot = '\n您正在讨论一个与 LittleSkin 无关的话题，请前往 Honoka Café 交流，群号：651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
+    ot = '\n请停止讨论与 LittleSkin 无关的话题并前往群 651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
     ygg_server_jvm = '请在启动脚本中加入参数 -Dauthlibinjector.debug=all，然后将 logs/latest.log 上传至群文件'
     domain = '我们推测您可能使用百度搜索 LittleSkin 并使用了在中国大陆过时的域名，我们建议您：\n1.将域名替换成 littlesk.in；\n2.使用除百度外的搜索引擎。'
     view_hash_length_error = 'Hash 长度有误'
@@ -52,8 +52,8 @@ https://hmcl.huangyuhui.net/download/'''
     cape_format = '''「不是有效的披风文件」
 LittleSkin 对于披风文件的格式要求如下：
 ·png 格式文件；
-·宽高比需为 2：1；
-·为 64 x 32 的整倍数。'''
+·宽高比需为 2:1；
+·为 64x32 的整倍数。'''
     pro_verify = '''目前在 LittleSkin 验证正版后有以下功能：
 ·在主页上获得一个「正版」（英文为“Pro”）徽标
 ·赠送您 1k 积分；
@@ -64,3 +64,4 @@ LittleSkin 对于披风文件的格式要求如下：
 「验证服务器他们宕了吗？」：
 由于各种玄学的网络问题导致此问题随机出现，当你看到这条消息由社区技术支持人员触发时说明 LittleSkin 并没有出现宕机等问题，请优先检查您的网络环境和使用的域名是否为 littleskin.cn，并在重启游戏后再次尝试登录。
 （总之这不是 LittleSkin 的问题）'''
+    cafe = '''欢迎加入 Honoka Café 穗香咖啡馆来水群～\n群号 651672723。'''
