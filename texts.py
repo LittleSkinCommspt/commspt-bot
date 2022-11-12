@@ -29,7 +29,7 @@ Edge: https://aka.ms/msedge'''
 更多：https://manual.littlesk.in/advanced/yggdrasil.html'''
     client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
-    join_welcome = '欢迎加入 LittleSkin 官方用户交流群！\n提问前请先仔细阅读群内置顶公告，若直接提问可能不会被回答或被禁言。'
+    join_welcome = '欢迎来到 LittleSkin 问题反馈群！\n提问前请先仔细阅读群内置顶公告，如因未阅读而导致的问题可能不会被回答或被禁言。'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
