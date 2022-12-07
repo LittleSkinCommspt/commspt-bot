@@ -11,7 +11,7 @@ class TextFields(object):
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
     ot = '\n请停止讨论与 LittleSkin 无关的话题并前往群 651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
     ygg_server_jvm = '请在启动脚本中加入参数 -Dauthlibinjector.debug=all，然后将 logs/latest.log 上传至群文件'
-    domain = '我们推测您可能使用百度搜索 LittleSkin 并使用了在中国大陆过时的域名，我们建议您：\n1.将域名替换成 littleskin.cn；\n2.使用除百度外的搜索引擎。'
+    domain = '如果您仍然在使用 mcskin.littleservice.cn 或 littlesk.in，我们建议您：\n将域名替换成 littleskin.cn'
     view_hash_length_error = 'Hash 长度有误'
     view_not_200_error = '找不到材质？'
     view_no_hash_error = '请提供材质 Hash'
