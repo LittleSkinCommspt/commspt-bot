@@ -48,6 +48,10 @@ macOS: https://honoka.eu.org/java/macos
 同时为了确保启动游戏时能够引导到正确的 Java 17 版本，我们建议您卸载其他 Java 17 版本'''
     hmcl_latest = '''请到 HMCL 官网下载最新版本的 HMCL
 https://hmcl.huangyuhui.net/download/'''
+    bakaxl_latest = '''请到 BakaXL Jenkins 下载最新版本的 BakaXL 鹦鹉通道构建
+http://jk-insider.bakaxl.com:8888/job/BakaXL%20Insider%20Parrot/'''
+    pcl_latest = '''请到爱发电下载最新版本的 PCL2 正式版本
+https://afdian.net/a/LTCat?tab=feed'''
     ms_oauth = '''通过微软邮箱直接授权登录的用户初始没有密码，请在 LittleSkin 里先退出登录，然后在登录界面点击忘记密码，即可通过邮箱修改密码。'''
     cape_format = '''「不是有效的披风文件」
 LittleSkin 对于披风文件的格式要求如下：
@@ -65,7 +69,3 @@ LittleSkin 对于披风文件的格式要求如下：
 由于各种玄学的网络问题导致此问题随机出现，当你看到这条消息由社区技术支持人员触发时说明 LittleSkin 并没有出现宕机等问题，请优先检查您的网络环境和使用的域名是否为 littleskin.cn，并在重启游戏后再次尝试登录。
 （总之这不是 LittleSkin 的问题）'''
     cafe = '''欢迎加入 Honoka Café 穗香咖啡馆来水群～\n群号 651672723。'''
-    bakaxl_latest = '''请到 BakaXL Jenkins 下载最新版本的 BakaXL 鹦鹉通道构建
-http://jk-insider.bakaxl.com:8888/job/BakaXL%20Insider%20Parrot/'''
-    pcl_latest = '''请到爱发电下载最新版本的 PCL2 正式版本
-https://afdian.net/a/LTCat?tab=feed'''
