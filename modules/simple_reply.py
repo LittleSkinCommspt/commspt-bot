@@ -28,6 +28,8 @@ SimpleReply('log.launcher', [Plain(tF.log_launcher)])
 SimpleReply('java8.latest', [Plain(tF.java8_latest)])
 SimpleReply('java.latest', [Plain(tF.java_latest)])
 SimpleReply('hmcl.latest', [Plain(tF.hmcl_latest)])
+SimpleReply('bakaxl.latest', [Plain(tF.hmcl_latest)])
+SimpleReply('pcl.latest', [Plain(tF.hmcl_latest)])
 SimpleReply('manual', [
     Image(path='./images/rtfm.png'),
     Plain(tF.manual)
