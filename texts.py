@@ -17,7 +17,14 @@ class TextFields(object):
     view_no_hash_error = '请提供材质 Hash'
     mail = '请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html'
     csl_log = 'CustomSkinLoader 的日志通常位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将文件直接发送至群内。'
-    csl_config_littleskin = '请参照「手动修改配置文件」\nhttps://manual.littlesk.in/newbee/mod.html#%E6%89%8B%E5%8A%A8%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6'
+    csl_config_littleskin = '''
+    若安装了csl后无法正确加载皮肤，可能是ID存在同名正版被优先加载，可使用以下方法
+手动修改csl加载顺序
+
+https://manual.littlesk.in/newbee/mod.html
+————————————————
+您可以在「群文件-资源下载」下载到一个 CustomSkinLoader.json 文件，将其直接替换游戏 csl 目录下的文件即可
+    '''
     csl_config_csl_group = '请访问 https://csl.littleservice.cn/faq/config-csl.html 以了解如何修改 CustomSkinLoader 的配置文件'
     clfcsl = '''在 1.7.10 中使用需要同时安装最新 Forge 版的 CustomSkinLoader 和 CompatibilityLayerForCustomSkinLoader，
 你可以在 https://www.mcbbs.net/thread-1109996-1-1.html 下载到后者'''
