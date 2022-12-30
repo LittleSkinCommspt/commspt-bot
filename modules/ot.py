@@ -17,3 +17,12 @@ async def ot(app: Ariadne, group: Group):
             Image(path='./images/off-topic.png'),
             Plain(tF.ot)
         ]))
+
+
+@channel.use(CommandSchema('&cafe'))
+async def ot(app: Ariadne, group: Group):
+    if group.id == qq.littleskin_main or group.id == qq.csl_group:
+        await app.send_message(group, MessageChain([
+            Image(path='./images/honokacafe.png'),
+            Plain(tF.cafe)
+        ]))

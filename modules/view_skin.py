@@ -25,9 +25,9 @@ async def view(app: Ariadne, group: Group, player_name: str):
             if texture:
                 preview_images.append(Image(data_bytes=await getTexturePreview(
                     bs_root, texture)))
-                await app.send_message(group,
-                                       MessageChain([*preview_images,
-                                                     Plain(f'''「{player_name}」
+        await app.send_message(group,
+                                MessageChain([*preview_images,
+                                                Plain(f'''「{player_name}」
 Skin: {result.skin_hash[:8]} [{result.skin_type}]
 Cape: {result.cape_hash[:8] if result.cape_existed else None}''')]))
 
