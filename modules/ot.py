@@ -17,6 +17,7 @@ async def ot(app: Ariadne, group: Group):
             Image(path='./images/off-topic.png'),
             Plain(tF.ot)
         ]))
+        await app.send_group_message(qq.commspt_group, MessageChain([Plain('Sent')]))
 
 
 @channel.use(CommandSchema('&cafe'))
