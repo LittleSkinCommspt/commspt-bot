@@ -7,42 +7,77 @@ from graia.ariadne.message.commander.saya import CommandSchema
 from graia.ariadne.message.element import Image, Plain
 from graia.ariadne.model import Group
 from graia.saya import Channel
-from models.apis import (CustomSkinLoaderApi, MojangPlayerUuidApi,
-                         getTexturePreview)
+from models.apis import (
+    CustomSkinLoaderApi,
+    LegacyApi,
+    MojangPlayerUuidApi,
+    getTexturePreview,
+)
 
 channel = Channel.current()
 
 
-@channel.use(CommandSchema('&view {player_name: str}'))
+@channel.use(CommandSchema("&view {player_name: str}"))
 async def view(app: Ariadne, group: Group, player_name: str):
-    result = await CustomSkinLoaderApi.get('https://littleskin.cn/csl', player_name)
+    result = await CustomSkinLoaderApi.get("https://littleskin.cn/csl", player_name)
     if not result.player_existed:
-        await app.send_message(group, MessageChain([Plain(f'「{player_name}」不存在')]))
+        await app.send_message(group, MessageChain([Plain(f"「{player_name}」不存在")]))
     else:
-        bs_root = 'https://littleskin.cn'
+        bs_root = "https://littleskin.cn"
         preview_images: List[Image] = list()
         for texture in [result.skin_hash, result.cape_hash]:
             if texture:
-                preview_images.append(Image(data_bytes=await getTexturePreview(
-                    bs_root, texture)))
-        await app.send_message(group,
-                                MessageChain([*preview_images,
-                                                Plain(f'''「{player_name}」
+                preview_images.append(
+                    Image(data_bytes=await getTexturePreview(bs_root, texture))
+                )
+        await app.send_message(
+            group,
+            MessageChain(
+                [
+                    *preview_images,
+                    Plain(
+                        f"""「{player_name}」
 Skin: {result.skin_hash[:8]} [{result.skin_type}]
-Cape: {result.cape_hash[:8] if result.cape_existed else None}''')]))
+Cape: {result.cape_hash[:8] if result.cape_existed else None}
+
+via CustomSkinLoader API"""
+                    ),
+                ]
+            ),
+        )
 
 
-@channel.use(CommandSchema('&view.mojang {player_name: str}'))
+@channel.use(CommandSchema("&view.mojang {player_name: str}"))
 async def view(app: Ariadne, group: Group, player_name: str):
     player_uuid = await MojangPlayerUuidApi.get(player_name)
     if not player_uuid.existed:
-        await app.send_message(group, MessageChain([Plain(f'「{player_name}」不存在')]))
+        await app.send_message(group, MessageChain([Plain(f"「{player_name}」不存在")]))
         return
     async with aiohttp.ClientSession() as session:
-        async with session.get(f'https://crafatar.com/renders/body/{player_uuid.id}?overlay') as resp:
+        async with session.get(
+            f"https://crafatar.com/renders/body/{player_uuid.id}?overlay"
+        ) as resp:
             if resp.status == 200:
                 image = await resp.content.read()
                 await app.send_message(group, MessageChain([Image(data_bytes=image)]))
             else:
                 err_msg = await resp.text()
-                await app.send_message(group, MessageChain([Plain(f'Crafatar Error: {err_msg.strip()[:64]}')]))
+                await app.send_message(
+                    group,
+                    MessageChain([Plain(f"Crafatar Error: {err_msg.strip()[:64]}")]),
+                )
+
+
+@channel.use(CommandSchema("&view.legacy {player_name: str}"))
+async def legacy(app: Ariadne, group: Group, player_name: str):
+    preview_images: List[Image] = list()
+    hashs = { 'skin': None, 'cape': None}
+    for t_type in ['skin', 'cape']:
+        legacy = await LegacyApi.get("https://littleskin.cn", player_name, t_type)
+        if legacy.existed:
+            hashs[t_type] = legacy.sha256[:8]
+            preview_images.append(Image(data_bytes=legacy.skin_preview))
+    _message = f"""「{player_name}」
+Skin Hash: {hashs.get('skin')}
+Cape Hash: {hashs.get('cape')}"""
+    await app.send_message(group, MessageChain([*preview_images, Plain(_message)]))
