@@ -1,5 +1,6 @@
 kind: pipeline
-name: update runtime
+type: exec
+name: deploy
 
 platform:
   os: linux
@@ -9,17 +10,24 @@ clone:
   disable: true
 
 steps:
-- name: pull and restart
+- name: pull and deploy
   commands:
   - cd /app/commspt-bot/
-  - proxychians4 -q git pull
+  - proxychians4 -q git pull origin master
   - docker restart commspt-bot
 
-- name: send telegram notification
-  image: appleboy/drone-telegram
-  settings:
-    token: 
-      from_secret: bot_token
-    to: 
-      from_secret: chat_id
-    socks5: socks5://10.50.0.3:7891
+- name: send message to telegram via apprise (success)
+  failure: ignore
+  commands:
+    - apprise --title="COMMSPT-BOT DEPLOY" --body="branch master has been deployed successfully." apprise://10.50.0.3:8988/telegram-commspt?tags=all
+  when:
+    status:
+    - success
+
+- name: send message to telegram via apprise (error)
+  commands:
+    - apprise --title="COMMSPT-BOT DEPLOY" --body="error while deploying! please check!" \ apprise://10.50.0.3:8988/telegram-commspt?tags=all
+  failure: ignore
+  when:
+    status:
+    - failure
