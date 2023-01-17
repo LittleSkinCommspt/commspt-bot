@@ -13,7 +13,7 @@ steps:
 - name: pull and deploy
   commands:
   - cd /app/commspt-bot/
-  - proxychians4 -q git pull origin master
+  - proxychains4 -q git pull origin master
   - docker restart commspt-bot
 
 - name: send message to telegram via apprise (success)
