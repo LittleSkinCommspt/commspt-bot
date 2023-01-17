@@ -11,6 +11,7 @@ from pydantic import BaseModel, root_validator, validator
 from pydantic.fields import Field
 
 
+
 class CustomSkinLoaderLatest(BaseModel):
     class Downloads(BaseModel):
         Fabric: str
