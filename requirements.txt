@@ -1,3 +1,5 @@
 graia-ariadne==0.7.16
 graia-saya==0.0.16
+graia-broadcast==0.18.2
+graia-amnesia==0.5.4
 aiohttp
