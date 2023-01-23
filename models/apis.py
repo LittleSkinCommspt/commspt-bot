@@ -11,7 +11,6 @@ from pydantic import BaseModel, root_validator, validator
 from pydantic.fields import Field
 
 
-
 class CustomSkinLoaderLatest(BaseModel):
     class Downloads(BaseModel):
         Fabric: str
@@ -117,15 +116,23 @@ class YggdrasilPlayerUuidApi(BaseModel):
     async def get(cls, api_root: str, username: str):
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"{api_root}/api/users/profiles/minecraft/{username}"
+                f"{api_root}/users/profiles/minecraft/{username}"
             ) as resp:
                 if resp.status == 204:  # No content
                     return cls(existed=False)
                 return cls.parse_raw(await resp.text())
 
+    @classmethod
+    async def getBlessingSkinServer(cls, api_root: str, username: str):
+        return await cls.get(f"{api_root}/api", username)
+
+    @classmethod
+    async def getMojangServer(cls, username: str):
+        return await cls.get("https://api.mojang.com", username)
+
 
 def make_hash(cls, values):
-    url = values["url"]
+    url: str = values["url"]
     last_slash_location = url.rindex("/")
     real_hash = url[last_slash_location + 1 :]
     values["hash"] = real_hash
@@ -137,18 +144,22 @@ class YggdrasilTextures(BaseModel):
         class MetaData(BaseModel):
             model: Literal["default", "slim"] = "default"
 
-        url: Optional[str]
+        url: Optional[str] = None
         hash: Optional[str] = None
         metadata: Optional[MetaData] = MetaData(model="default")
-        _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
+        _hash: Optional[str] = None
+        
+        root_validator(pre=True, allow_reuse=True)(make_hash)
 
     class Cape(BaseModel):
-        url: Optional[str]
+        url: Optional[str] = None
         hash: Optional[str] = None
-        _hash = root_validator(pre=True, allow_reuse=True)(make_hash)
+        _hash: Optional[str] = None
+        
+        root_validator(pre=True, allow_reuse=True)(make_hash)
 
-    SKIN: Optional[Skin]
-    CAPE: Optional[Cape]
+    SKIN: Optional[Skin] = Skin()
+    CAPE: Optional[Cape] = Skin()
 
 
 class YggdrasilPropertiesTextures(BaseModel):
@@ -181,9 +192,17 @@ class YggdrasilGameProfileApi(BaseModel):
     async def get(cls, api_root: str, player_uuid: str):
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"{api_root}/sessionserver/session/minecraft/profile/{player_uuid}"
+                f"{api_root}/session/minecraft/profile/{player_uuid}"
             ) as resp:
                 return cls.parse_raw(await resp.text())
+
+    @classmethod
+    async def getBlessingSkinServer(cls, api_root: str, player_uuid: str):
+        return await cls.get(f"{api_root}/sessionserver", player_uuid)
+
+    @classmethod
+    async def getMojangServer(cls, player_uuid: str):
+        return await cls.get("https://sessionserver.mojang.com", player_uuid)
 
 
 async def getTexturePreview(blessing_skin_root: str, texture_hash: str):
@@ -195,18 +214,6 @@ async def getTexturePreview(blessing_skin_root: str, texture_hash: str):
                 return
             else:
                 return await resp.content.read()
-
-
-class MojangPlayerUuidApi(YggdrasilPlayerUuidApi):
-    @classmethod
-    async def get(cls, username: str):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://api.mojang.com/users/profiles/minecraft/{username}"
-            ) as resp:
-                if resp.status == 204:  # No content
-                    return cls(existed=False)
-                return cls.parse_raw(await resp.text())
 
 
 class LegacyApi(BaseModel):

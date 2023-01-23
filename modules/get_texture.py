@@ -26,11 +26,11 @@ Cape: {result.cape_hash[:8] if result.cape_existed else None}'''
 @channel.use(CommandSchema('&ygg {player_name: str}'))
 async def ygg(app: Ariadne, group: Group, player_name: str):
     littleskin_yggdrasil_root = 'https://littleskin.cn/api/yggdrasil'
-    player_uuid = await YggdrasilPlayerUuidApi.get(littleskin_yggdrasil_root, player_name)
+    player_uuid = await YggdrasilPlayerUuidApi.getBlessingSkinServer(littleskin_yggdrasil_root, player_name)
     if not player_uuid.existed:
         _message = f'「{player_name}」不存在'
     else:
-        result: YggdrasilGameProfileApi = await YggdrasilGameProfileApi.get(littleskin_yggdrasil_root, player_uuid.id)
+        result: YggdrasilGameProfileApi = await YggdrasilGameProfileApi.getBlessingSkinServer(littleskin_yggdrasil_root, player_uuid.id)
         textures: YggdrasilTextures = result.properties.textures.textures
         _message = f'''「{result.name}」
 Skin: {textures.SKIN.hash[:8] if textures.SKIN else None} [{textures.SKIN.metadata.model if textures.SKIN else None}]
