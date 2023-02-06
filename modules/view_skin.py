@@ -34,7 +34,7 @@ async def request_skinrendermc(
 
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            f"http://10.50.0.4:57680/skinview3d/image/both",
+            f"http://10.50.0.4:57680/url/image/both",
             params=p,
             timeout=30,  # 通常只需要不到 15 秒
         ) as resp:
