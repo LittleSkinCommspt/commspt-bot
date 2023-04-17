@@ -3,7 +3,7 @@ from typing import List
 
 class TextFields(object):
     '''储存有文本字段'''
-    ping = '你好*N'
+    ping = 'Pong!'
     new_question_nofication = '有用户提出了一个新的问题，请尽快进行解答。'
     new_question_sent = '已收到你的问题，将会尽快答复。'
     csl_gui = '想要更方便制作 CustomSkinLoader 配置文件？访问：https://mc-csl.netlify.app'
