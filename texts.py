@@ -3,10 +3,10 @@ from typing import List
 
 class TextFields(object):
     '''储存有文本字段'''
-    ping = 'Pong'
+    ping = 'Pong!'
     new_question_nofication = '有用户提出了一个新的问题，请尽快进行解答。'
     new_question_sent = '已收到你的问题，将会尽快答复。'
-    csl_gui = '新的 CustomSkinLoader GUI 地址是 https://mc-csl.netlify.app/ 。'
+    csl_gui = '想要更方便制作 CustomSkinLoader 配置文件？访问：https://mc-csl.netlify.app'
     help = '请查看 https://bot-manual.commspt.littlesk.in/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
     ot = '\n请停止讨论与 LittleSkin 无关的话题并前往群 651672723。\n大水怪将会收到我们赠送的禁言大礼包。'
@@ -33,8 +33,8 @@ Edge: https://aka.ms/msedge'''
 更多：https://manual.littlesk.in/advanced/yggdrasil.html'''
     client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
-    cafe = '''欢迎加入 Honoka Café 穗香咖啡馆来水群～\n群号 651672723。'''
-    join_welcome = f'欢迎来到 LittleSkin 问题反馈群！\n请阅读指定公告以了解如何高效地提问。\n此群禁止讨论无关内容，{cafe}'
+    cafe = '''想要讨论更广泛的内容？欢迎加入 Honoka Café 和我们一起讨论！群号：651672723。'''
+    join_welcome = f'欢迎来到 LittleSkin 问题反馈群！\n请阅读指定公告以了解如何高效地提问。\n此群禁止讨论无关内容。{cafe}'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
