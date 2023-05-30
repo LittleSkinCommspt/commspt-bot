@@ -14,7 +14,7 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema([GroupMessage], decorators=[Depend(require_file), Depend(require_csl_log)]))
 async def parse_csl_log(app: Ariadne, group: Group, message: MessageChain):
-    await app.send_message(group, MessageChain([Plain('正在解析日志...')]))
+    await app.send_message(group, MessageChain([Plain('正在尝试解析日志。此模块年久失修，不保证能正常工作。')]))
     # Get log file
     file: File = message[File][0]
     file_info = await app.get_file_info(group, file.id, with_download_info=True)
