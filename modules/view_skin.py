@@ -10,8 +10,6 @@ from graia.saya import Channel
 from models.apis import (
     CustomSkinLoaderApi,
     LegacyApi,
-    YggdrasilPlayerUuidApi,
-    YggdrasilGameProfileApi,
     getTexturePreview,
 )
 
@@ -79,6 +77,9 @@ via SkinRenderMC, CustomSkinLoader API"""
 
 @channel.use(CommandSchema("&view.ygg {player_name: str}"))
 async def yggdrasil(app: Ariadne, group: Group, player_name: str):
+    # TODO
+    await app.send_message(group, MessageChain([Plain(f"此功能等待重构")]))
+    return
 
     api_root = "https://littleskin.cn/api/yggdrasil"
 
@@ -120,6 +121,10 @@ async def yggdrasil(app: Ariadne, group: Group, player_name: str):
 
 @channel.use(CommandSchema("&view.mojang {player_name: str}"))
 async def mojang(app: Ariadne, group: Group, player_name: str):
+    # TODO
+    await app.send_message(group, MessageChain([Plain(f"此功能等待重构")]))
+    return
+
     player_uuid = await YggdrasilPlayerUuidApi.getMojangServer(player_name)
     if not player_uuid.existed:
         await app.send_message(group, MessageChain([Plain(f"「{player_name}」不存在")]))
@@ -154,6 +159,7 @@ async def mojang(app: Ariadne, group: Group, player_name: str):
 
 @channel.use(CommandSchema("&view.legacy {player_name: str}"))
 async def legacy(app: Ariadne, group: Group, player_name: str):
+    # TODO 屎一样，等待重写
 
     # 临时禁用 Hash 计算
 
