@@ -4,4 +4,4 @@ graia-broadcast==0.18.2
 graia-amnesia==0.5.4
 aiohttp
 httpx
-yggdrasil-mc==0.1b5
+yggdrasil-mc==0.1b6
