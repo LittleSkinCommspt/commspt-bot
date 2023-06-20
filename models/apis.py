@@ -4,6 +4,7 @@ from datetime import date
 from typing import Literal, Optional, Union
 
 import aiohttp
+import httpx
 from pydantic import BaseModel, root_validator, validator
 from pydantic.fields import Field
 
@@ -175,3 +176,8 @@ class MojangPlayerUuidApi(YggdrasilPlayerUuidApi):
                     return cls(existed=False)
                 return cls.parse_raw(await resp.text())
                 
+async def getLiberica(version: int, type: str):
+  r = httpx.get(
+    "https://api.bell-sw.com/v1/liberica/releases?version-feature={version}&version-modifier=latest&bitness=64&os=windows&arch=x86&installation-type=installer&bundle-type={type}-full&output=text&fields=downloadUrl"
+  )
+  return r.text
