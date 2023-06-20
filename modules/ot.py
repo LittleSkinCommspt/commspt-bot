@@ -9,14 +9,15 @@ from settings import specialqq as qq
 
 channel = Channel.current()
 
-
+# 在 commspt 群触发，发送到 littleskin_main
 @channel.use(CommandSchema('&ot'))
 async def ot(app: Ariadne, group: Group):
-    if group.id == qq.littleskin_main or group.id == qq.csl_group:
-        await app.send_message(group, MessageChain([
+    if group.id == qq.commspt_group:
+        await app.send_group_message(qq.littleskin_main, MessageChain([
             Image(path='./images/off-topic.png'),
             Plain(tF.ot)
         ]))
+        await app.send_group_message(qq.commspt_group, MessageChain([Plain('Sent')]))
 
 
 @channel.use(CommandSchema('&cafe'))

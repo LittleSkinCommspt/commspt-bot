@@ -1,0 +1,32 @@
+kind: pipeline
+type: exec
+name: deploy
+
+platform:
+  os: linux
+  arch: arm64
+
+clone:
+  disable: true
+
+steps:
+- name: pull and deploy
+  commands:
+  - su -c "cd /app/commspt-bot/ && proxychains4 -q git pull origin master" ubuntu
+  - docker restart commspt-bot
+
+- name: send message to telegram via apprise (success)
+  failure: ignore
+  commands:
+    - apprise --title="COMMSPT-BOT DEPLOY" --body="branch master has been deployed successfully." apprise://10.50.0.3:8988/telegram-commspt?tags=all
+  when:
+    status:
+    - success
+
+- name: send message to telegram via apprise (error)
+  failure: ignore
+  commands:
+    - apprise --title="COMMSPT-BOT DEPLOY" --body="error while deploying! please check!" \ apprise://10.50.0.3:8988/telegram-commspt?tags=all
+  when:
+    status:
+    - failure

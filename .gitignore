@@ -130,6 +130,7 @@ dmypy.json
 
 # settings and secrets
 settings.py
+*.env
 admins.list
 blockusers.list
 github-event-id-cache
