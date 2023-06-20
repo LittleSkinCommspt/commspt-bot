@@ -143,19 +143,21 @@ class LegacyApi(BaseModel):
 
 
 async def getLiberica(version: int, type: str):
-    params = {
-        "version-feature": version,
-        "version-modifier": "latest",
-        "bitness": 64,
-        "os": "windows",
-        "arch": "x86",
-        "installation-type": "installer",
-        "bundle-type": f"{type}-full",
-        "output": "json",
-    }
-    r = httpx.get(f"https://api.bell-sw.com/v1/liberica/releases", params=params)
-    obj = r.json()[0]
-    file_version = obj["version"]
-    filename = obj["filename"]
-    url = f"https://download.bell-sw.com/java/{file_version}/{filename}"
-    return url
+    async with httpx.AsyncClient() as client:
+        params = {
+            "version-feature": version,
+            "version-modifier": "latest",
+            "bitness": 64,
+            "os": "windows",
+            "arch": "x86",
+            "installation-type": "installer",
+            "bundle-type": f"{type}-full",
+            "output": "json",
+        }
+        r = await client.get(f"https://api.bell-sw.com/v1/liberica/releases", params=params)
+        obj = r.json()[0]
+        file_version = obj["version"]
+        filename = obj["filename"]
+        url = f"https://download.bell-sw.com/java/{file_version}/{filename}"
+        await client.aclose()
+        return url
