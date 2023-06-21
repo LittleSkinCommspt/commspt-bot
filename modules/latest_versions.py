@@ -29,7 +29,7 @@ Fabric: {infos.downloads.Fabric}'''
 
 @channel.use(CommandSchema('&java.latest {type: str = "jre"} {version: int = "8"}'))
 async def java_latest(app: Ariadne, group: Group, version: int, type: str):
-    url = getLiberica(version, type)
+    url = await getLiberica(version, type)
     await app.sendGroupMessage(group, MessageChain([Plain(f'''
 最新 Liberica {type}{version} 下载地址：
 {url}

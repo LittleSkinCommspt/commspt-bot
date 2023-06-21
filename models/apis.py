@@ -159,5 +159,4 @@ async def getLiberica(version: int, type: str):
         file_version = obj["version"]
         filename = obj["filename"]
         url = f"https://download.bell-sw.com/java/{file_version}/{filename}"
-        await client.aclose()
-        return url
+    return url
