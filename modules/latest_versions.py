@@ -27,7 +27,7 @@ Fabric: {infos.downloads.Fabric}'''
     await app.sendGroupMessage(group, MessageChain([Plain(_messages[mod_loader])]))
 
 
-@channel.use(CommandSchema('&java.latest {type: str = "jre"} {version: int = "8"}'))
+@channel.use(CommandSchema('&java.latest {version: int = "8"} {type: str = "jre"}'))
 async def java_latest(app: Ariadne, group: Group, version: int, type: str):
     url = await getLiberica(version, type)
     await app.sendGroupMessage(group, MessageChain([Plain(f'''
