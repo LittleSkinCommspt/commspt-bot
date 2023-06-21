@@ -4,7 +4,7 @@ from graia.ariadne.message.element import Plain
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.ariadne.message.commander.saya import CommandSchema
-from models.apis import AuthlibInjectorLatest, CustomSkinLoaderLatest
+from models.apis import AuthlibInjectorLatest, CustomSkinLoaderLatest, getLiberica
 
 channel = Channel.current()
 
@@ -25,3 +25,12 @@ async def csl_latest(app: Ariadne, group: Group, mod_loader: str):
 Fabric: {infos.downloads.Fabric}'''
     _messages = {'fabric': fabric, 'forge': forge}
     await app.sendGroupMessage(group, MessageChain([Plain(_messages[mod_loader])]))
+
+
+@channel.use(CommandSchema('&java.latest {version: int = "8"} {type: str = "jre"}'))
+async def java_latest(app: Ariadne, group: Group, version: int, type: str):
+    url = await getLiberica(version, type)
+    await app.sendGroupMessage(group, MessageChain([Plain(f'''
+最新 Liberica {type}{version} 下载地址：
+{url}
+    ''')]))
