@@ -15,18 +15,6 @@ async def ygg_latest(app: Ariadne, group: Group):
     await app.send_message(group, MessageChain([Plain(_message)]))
 
 
-@channel.use(CommandSchema('&csl.latest {mod_loader: str = "fabric"}'))
-async def csl_latest(app: Ariadne, group: Group, mod_loader: str):
-    infos = await CustomSkinLoaderLatest.get()
-    forge = f'''CustomSkinLoader (Forge) 最新版本：{infos.version}
-1.7.10 ~ 1.16.5: {infos.downloads.Forge}
-1.17+: {infos.downloads.ForgeActive}'''
-    fabric = f'''CustomSkinLoader (Fabric) 最新版本：{infos.version}
-Fabric: {infos.downloads.Fabric}'''
-    _messages = {'fabric': fabric, 'forge': forge}
-    await app.sendGroupMessage(group, MessageChain([Plain(_messages[mod_loader])]))
-
-
 @channel.use(CommandSchema('&java.latest {version: int = "8"} {type: str = "jre"}'))
 async def java_latest(app: Ariadne, group: Group, version: int, type: str):
     url = await getLiberica(version, type)

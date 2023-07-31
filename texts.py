@@ -34,6 +34,7 @@ Edge: https://aka.ms/msedge'''
     client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
     cafe = '''想要讨论更广泛的内容？欢迎加入 Honoka Café 和我们一起讨论！群号：651672723。'''
+    csl_latest = '你可以访问 https://3-3.dev/csl-download 以下载适合对应版本的 CustomSkinLoader 模组。'
     join_welcome = f'欢迎来到 LittleSkin 问题反馈群！\n请阅读置顶公告以了解如何高效地提问。\n此群禁止讨论无关内容。{cafe}'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
