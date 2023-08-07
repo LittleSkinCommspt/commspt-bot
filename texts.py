@@ -5,14 +5,7 @@ class TextFields(object):
     '''储存有文本字段'''
     ping = 'Pong!'
     new_question_nofication = '有用户提出了一个新的问题，请尽快进行解答。'
-    new_question_sent = '''我们已收到您的提问。在帮助人员还未到达前，需要您提供下述有效信息：
-您当前的游戏版本？
-您正在使用什么启动器？
-您在游戏中的角色名？
-您是否使用了外置登录？
-您正在游玩单人模式还是多人模式？
-单人模式下，您设定的材质是否能加载？
-您是否使用了万用皮肤补丁（简称 CSL）模组？'''
+    new_question_sent = '''已收到你的问题，将会尽快解答。你可以提前提供如 游戏版本、角色名、启动器 等可能对解决问题有帮助的信息。'''
     csl_gui = '想要更方便制作 CustomSkinLoader 配置文件？访问：https://mc-csl.netlify.app'
     help = '请查看 https://bot-manual.commspt.littlesk.in/'
     manual = '\n请仔细阅读 LittleSkin 用户使用手册，特别是「常见问题解答」！\nhttps://manual.littlesk.in/'
@@ -28,7 +21,7 @@ class TextFields(object):
 
 https://manual.littlesk.in/newbee/mod.html
 ————————————————
-您也可以在「群文件-资源下载」下载到一个 CustomSkinLoader.json 文件，将其直接替换 .minecraft\CustomSkinLoader 下的文件即可'''
+或者，您可以在「群文件-资源下载」下载到一个 CustomSkinLoader.json 文件，将其直接替换 .minecraft\CustomSkinLoader 下的文件即可'''
     csl_config_csl_group = '请访问 https://csl.littleservice.cn/faq/config-csl.html 以了解如何修改 CustomSkinLoader 的配置文件'
     clfcsl = '''在 1.7.10 中使用需要同时安装最新 Forge 版的 CustomSkinLoader 和 CompatibilityLayerForCustomSkinLoader，
 你可以在 https://www.mcbbs.net/thread-1109996-1-1.html 下载到后者'''
