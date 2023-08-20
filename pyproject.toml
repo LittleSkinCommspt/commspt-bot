@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "commspt-bot"
+version = "0.1.0"
+description = ""
+authors = ["jinzhijie <34389622+jinzhijie@users.noreply.github.com>"]
+license = "AGPLv3"
+readme = "README.md"
+# packages = [{include = "commspt_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+graia-ariadne = "0.7.16"
+graia-saya = "0.0.16"
+graia-broadcast = "0.18.2"
+graia-amnesia = "0.5.4"
+creart = "0.2.1"
+creart-graia = "0.1.5"
+yggdrasil-mc = "0.1b6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
