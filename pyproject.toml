@@ -15,7 +15,7 @@ graia-broadcast = "0.18.2"
 graia-amnesia = "0.5.4"
 creart = "0.2.1"
 creart-graia = "0.1.5"
-yggdrasil-mc = "0.1b6"
+yggdrasil-mc = "0.1b7"
 
 
 [build-system]

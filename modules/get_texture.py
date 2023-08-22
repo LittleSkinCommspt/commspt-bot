@@ -10,7 +10,7 @@ from graia.saya import Channel
 from models.apis import CustomSkinLoaderApi
 
 from yggdrasil_mc import YggdrasilPlayer
-from yggdrasil_mc.model import YggdrasilTexturesModel
+from yggdrasil_mc.model import YggdrasilGameProfileApiModel
 
 channel = Channel.current()
 
@@ -44,7 +44,7 @@ UUID: {UUID(player_uuid.id)}"""
     await app.send_message(group, MessageChain([Plain(_message)]))
 
 
-def is_existed(value: bool) -> str:
+def translate_existed(value: bool) -> str:
     """Check if a value exists or not.
 
     Args:
@@ -54,6 +54,26 @@ def is_existed(value: bool) -> str:
         str: "存在" if the value is True, "不存在" otherwise.
     """
     return "存在" if value else "不存在"
+
+
+def check_textures(csl_texture: CustomSkinLoaderApi, ygg_texture: YggdrasilGameProfileApiModel):
+    _message: list[str] = []
+    # check textures
+
+    # - skin
+    if csl_texture.skin_hash != ygg_texture.properties.textures.textures.skin.hash:
+        _message.append("- Skin Hash 不一致！")
+
+    # - cape
+    if csl_texture.cape_hash != ygg_texture.properties.textures.textures.cape.hash:
+        _message.append("- Cape Hash 不一致！")
+
+    if not _message:
+        _message.append("- 一致性检查通过。")
+    else:
+        _message.append("- 一致性检查失败！")
+
+    return _message
 
 
 @channel.use(CommandSchema("&check {player_name: str}"))
@@ -74,7 +94,7 @@ async def check(app: Ariadne, group: Group, player_name: str):
                 [
                     Plain(f"{_message[0]}\n"),
                     Plain(
-                        f"- 此角色在 CSL API 上{is_existed(ygg_uuid_result.existed)}，在 YGG API 上却{is_existed(csl_texture.player_existed)}！"
+                        f"- 此角色在 CSL API 上{translate_existed(csl_texture.player_existed)}，在 YGG API 上却{translate_existed(ygg_uuid_result.existed)}！"
                     ),
                 ]
             ),
@@ -90,21 +110,10 @@ async def check(app: Ariadne, group: Group, player_name: str):
         )
         return
 
-    # check textures
     ygg_texture = await ygg_server.Profile.get3rdAsync(ygg_uuid_result.id)
 
-    # - skin
-    if csl_texture.skin_hash != ygg_texture.properties.textures.textures.skin.hash:
-        _message.append("- Skin Hash 不一致！")
+    _message.extend(check_textures(csl_texture, ygg_texture))
 
-    # - cape
-    if csl_texture.cape_hash != ygg_texture.properties.textures.textures.cape.hash:
-        _message.append("- Cape Hash 不一致！")
-
-    if len(_message) == 1:
-        _message.append("- 一致性检查通过。")
-    else:
-        _message.append("- 一致性检查失败！")
     
     # check mojang
     ygg_mojang = YggdrasilPlayer()

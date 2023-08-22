@@ -875,13 +875,13 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yggdrasil-mc"
-version = "0.1b6"
+version = "0.1b7"
 description = "A simple Python lib to get player info and texture from Mojang and Yggdrasil APIs."
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "yggdrasil_mc-0.1b6-py3-none-any.whl", hash = "sha256:486ef025c8ccd51c6a27e5054833030bceded6d70c1bf3563625bddad6856571"},
-    {file = "yggdrasil_mc-0.1b6.tar.gz", hash = "sha256:f188867413df9f4db6016954586925603ee0568dcebac02e5017c6ccafea591e"},
+    {file = "yggdrasil_mc-0.1b7-py3-none-any.whl", hash = "sha256:10732c1bd6c364a97218e1b0cb1c125216c238a88c5e1bb6bf8935e0cbfdfd48"},
+    {file = "yggdrasil_mc-0.1b7.tar.gz", hash = "sha256:c87a4fb47d57f41823a6360b6739a2efb43b642a9c6f626a820fa5179149acd8"},
 ]
 
 [package.dependencies]
@@ -891,4 +891,4 @@ pydantic = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "78bb7502786b2722d28b1a3948574138192a4cced07119ca5b25608df3580cdc"
+content-hash = "07263f351735994b38fc99140131655056b229a7e7eb72ae1d2ef27cf7f98c3a"

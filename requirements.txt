@@ -6,4 +6,4 @@ creart==0.2.1
 creart-graia==0.1.5
 aiohttp
 httpx
-yggdrasil-mc==0.1b6
+yggdrasil-mc==0.1b7
