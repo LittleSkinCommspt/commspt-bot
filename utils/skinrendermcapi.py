@@ -39,7 +39,7 @@ def process_image(image_bytes: bytes, text: str) -> bytes:
     draw = ImageDraw.Draw(image)
 
     # Define the font to be used for the watermark
-    font = ImageFont.truetype("mojangles.ttf", size=12)
+    font = ImageFont.truetype("fonts/mojangles.ttf", size=12)
 
     # Set the margin around the watermark
     margin_x = 20

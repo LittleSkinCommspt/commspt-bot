@@ -2,8 +2,6 @@ FROM python:3.10-slim
 
 LABEL maintainer=i@xiaojin233.cn
 
-COPY fonts /usr/local/share/fonts
-
 COPY poetry.lock /tmp/poetry.lock
 COPY pyproject.toml /tmp/pyproject.toml
 
