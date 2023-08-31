@@ -7,8 +7,8 @@ platform:
     arch: arm64
 
 trigger:
-  branch:
-  - master
+    branch:
+        - master
 
 clone:
     disable: true
@@ -22,7 +22,7 @@ steps:
     - name: send message to telegram via apprise (success)
       failure: ignore
       commands:
-          - apprise --title="COMMSPT-BOT DEPLOY" --body="branch `master` has been deployed successfully." apprise://10.50.0.3:8988/telegram-commspt?tags=all
+          - apprise --title="COMMSPT-BOT DEPLOY" --body="branch master has been deployed successfully." apprise://10.50.0.3:8988/telegram-commspt?tags=all
       when:
           status:
               - success
