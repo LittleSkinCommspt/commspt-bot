@@ -16,6 +16,8 @@ graia-amnesia = "0.5.4"
 creart = "0.2.1"
 creart-graia = "0.1.5"
 yggdrasil-mc = "0.1b7"
+pillow = "^10.0.0"
+arrow = "^1.2.3"
 
 
 [build-system]

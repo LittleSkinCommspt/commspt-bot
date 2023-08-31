@@ -7,3 +7,5 @@ creart-graia==0.1.5
 aiohttp
 httpx
 yggdrasil-mc==0.1b7
+pillow
+arrow
