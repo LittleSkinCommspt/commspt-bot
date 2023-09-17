@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    viewBox="0 0 768.6 720.1" style="enable-background:new 0 0 768.6 720.1;" xml:space="preserve">
+    <style type="text/css">
+        text {
+            shape-rendering: crispEdges;
+        }
+
+        .st0 {
+            fill: #FAFAFA;
+            stroke: #FFFFFF;
+            stroke-width: 0.25;
+            stroke-miterlimit: 10;
+        }
+
+        .st1 {
+            fill: #607D8B;
+        }
+
+        .st2 {
+            font-family: 'Noto Sans', NotoSans-Regular;
+        }
+
+        .st3 {
+            font-size: 12px;
+        }
+
+        .st4 {
+            fill: #FFFFFF;
+            stroke: #FFFFFF;
+            stroke-width: 0.25;
+            stroke-miterlimit: 10;
+        }
+
+        .st5 {
+            font-family: 'Noto Sans', NotoSans-Medium;
+        }
+
+        .st6 {
+            font-size: 54px;
+        }
+
+        .st7 {
+            fill: #CFD8DC;
+        }
+
+        .st8 {
+            font-size: 32px;
+        }
+
+        .st9 {
+            fill: none;
+            stroke: #BDBDBD;
+            stroke-miterlimit: 10;
+        }
+
+        .st10 {
+            fill: #212121;
+        }
+
+        .st11 {
+            font-family: 'Sarasa Fixed SC', 'Sarasa Fixed TC', 'Sarasa Fixed HC','Sarasa Fixed J', 'Sarasa
+      Fixed K','Sarasa Fixed CL', Sarasa-Fixed-SC-Regular;
+        }
+
+        .st12 {
+            fill: #757575;
+        }
+
+        .st13 {
+            font-family: 'Noto Sans', NotoSans-Light;
+        }
+
+        .st14 {
+            font-size: 18px;
+        }
+    </style>
+    <g id="background">
+        <rect x="0" y="324" class="st0" width="768" height="396.1" />
+        <rect x="0" class="st1" width="768" height="324" />
+        <text transform="matrix(1 0 0 1 728.6 702)" class="st2 st3" text-anchor="end">Generated at: {{ time }}</text>
+    </g>
+    <g id="title">
+        <text transform="matrix(1 0 0 1 144.125 171)" class="st4 st5 st6">Player Profile</text>
+        <text transform="matrix(1 0 0 1 144.125 225)" class="st7 st2 st8">from LittleSkin</text>
+    </g>
+    <g id="player_info">
+        <line class="st9" x1="0.6" y1="504.5" x2="768.6" y2="504.5" />
+        <text transform="matrix(1 0 0 1 72.125 414)" class="st10 st11 st8">{{ player_name }}</text>
+        <text transform="matrix(1 0 0 1 72.125 450)" class="st12 st13 st14">Player Name</text>
+        <text transform="matrix(1 0 0 1 696.475 413.6663)" class="st10 st11 st8" text-anchor="end">{{ skin_type }}</text>
+        <text transform="matrix(1 0 0 1 696.475 450.3372)" class="st12 st13 st14" text-anchor="end">Skin Type</text>
+    </g>
+    <g id="player_profile">
+        <line class="st9" x1="0.1" y1="675.5" x2="768.1" y2="675.5" />
+        <text transform="matrix(1 0 0 1 71.625 585)" class="st10 st11 st8">{{ skin_hash }}</text>
+        <text transform="matrix(1 0 0 1 71.625 621)" class="st12 st13 st14">Skin Hash</text>
+        <text transform="matrix(1 0 0 1 696.475 584.6663)" class="st10 st11 st8" text-anchor="end">{{ has_cape }}</text>
+        <text transform="matrix(1 0 0 1 696.475 621.3372)" class="st12 st13 st14" text-anchor="end">Cape</text>
+        <text transform="matrix(1 0 0 1 384.3 585.1937)" class="st10 st11 st8" text-anchor="middle">{{ cape_hash}}</text>
+        <text transform="matrix(1 0 0 1 384.3 621.1937)" class="st12 st13 st14" text-anchor="middle">Cape Hash</text>
+    </g>
+</svg>
