@@ -98,7 +98,7 @@
         <text transform="matrix(1 0 0 1 71.625 621)" class="st12 st13 st14">Skin Hash</text>
         <text transform="matrix(1 0 0 1 696.475 584.6663)" class="st10 st11 st8" text-anchor="end">{{ has_cape }}</text>
         <text transform="matrix(1 0 0 1 696.475 621.3372)" class="st12 st13 st14" text-anchor="end">Cape</text>
-        <text transform="matrix(1 0 0 1 384.3 585.1937)" class="st10 st11 st8" text-anchor="middle">{{ cape_hash}}</text>
-        <text transform="matrix(1 0 0 1 384.3 621.1937)" class="st12 st13 st14" text-anchor="middle">Cape Hash</text>
+        <text transform="matrix(1 0 0 1 350.3 585.1937)" class="st10 st11 st8">{{ cape_hash}}</text>
+        <text transform="matrix(1 0 0 1 350.3 621.1937)" class="st12 st13 st14">Cape Hash</text>
     </g>
 </svg>

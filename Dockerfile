@@ -7,7 +7,8 @@ COPY pyproject.toml /tmp/pyproject.toml
 
 RUN cd /tmp && \
     pip config set global.index-url https://mirror.sjtu.edu.cn/pypi/web/simple && \
-    pip install poetry && \
+    pip install pipx && \
+    pipx install poetry && \
     poetry config virtualenvs.create false && \
     poetry install --no-interaction
 
