@@ -44,12 +44,12 @@ def get_number_from_string(string: str) -> int | None:
 async def write_uid_db(uid: int, qq: int):
     mongo = AsyncIOMotorClient(SETTING.db_mongo.url)
     coll = mongo["commspt-bot"]["uid"]
-    i = await coll.find_one({"uid": uid})
+    i = await coll.find_one({"qq": qq})
 
     r = {"uid": uid, "qq": qq, "last_update": datetime.now().timestamp()}
 
     if i:
-        await coll.update_one({"uid": uid}, {"$set": r})
+        await coll.update_one({"qq": qq}, {"$set": r})
     else:
         await coll.insert_one(r)
     
