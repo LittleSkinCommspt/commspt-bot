@@ -1,4 +1,3 @@
-from datetime import datetime
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.mirai import MemberJoinRequestEvent
 from graia.saya.builtins.broadcast.schema import ListenerSchema
@@ -7,8 +6,7 @@ from settings import specialqq as qq
 from settings import verify_qmail_uid_api
 import httpx
 from loguru import logger
-from motor.motor_asyncio import AsyncIOMotorClient
-from utils.setting_manager import SETTING
+from utils.db_manager import write_uid_db
 
 channel = Channel.current()
 
@@ -39,21 +37,6 @@ def get_number_from_string(string: str) -> int | None:
 
     # Convert the digits to an integer if any digits are found, otherwise return None
     return int(digits) if digits else None
-
-
-async def write_uid_db(uid: int, qq: int):
-    mongo = AsyncIOMotorClient(SETTING.db_mongo.url)
-    coll = mongo["commspt-bot"]["uid"]
-    i = await coll.find_one({"qq": qq})
-
-    r = {"uid": uid, "qq": qq, "last_update": datetime.now().timestamp()}
-
-    if i:
-        await coll.update_one({"qq": qq}, {"$set": r})
-    else:
-        await coll.insert_one(r)
-    
-    mongo.close()
 
 
 @channel.use(ListenerSchema([MemberJoinRequestEvent]))
