@@ -35,7 +35,13 @@ Edge: https://aka.ms/msedge'''
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
     cafe = '''可以选择加入 Honoka Café 和我们一起聊天！群号：651672723。'''
     csl_latest = '你可以访问 https://3-3.dev/csl-download 以下载适合对应版本的 CustomSkinLoader 模组。'
-    join_welcome = f'\n* \n* 我们正在努力与 CDN 服务商一起处理目前的故障，一旦问题被解决，我们会马上发布公告。\n* \n欢迎来到 LittleSkin 问题反馈群！\n请首先阅读置顶公告。\n此群禁止讨论除 LittleSkin 以外的内容。{cafe}'
+    down_now = '''  *  *  *
+LittleSkin 目前出现了 502 Bad Gateway / 504 Gateway Timeout 的问题，我们对此给您带来的不便深表歉意。
+我们正在全力以赴与我们的 CDN 服务商合作，迅速解决这一问题。
+我们理解这对您来说是多么重要，我们比任何人都更急切地希望服务能够恢复正常。
+感谢您的耐心和理解！
+  *  *  * '''
+    join_welcome = f'\n{down_now}\n欢迎来到 LittleSkin 问题反馈群！\n请首先阅读置顶公告。\n此群禁止讨论除 LittleSkin 以外的内容。{cafe}'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
     question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
                                     '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
