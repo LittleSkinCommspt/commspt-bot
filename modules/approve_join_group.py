@@ -61,7 +61,7 @@ async def member_join_request(app: Ariadne, event: MemberJoinRequestEvent):
         )
 
     if response.status_code == httpx.codes.OK:
-        event.accept()
+        await event.accept()
         logger.info("MemberJoinRequestEvent: ACCEPTED by bot")
     else:
         logger.info("MemberJoinRequestEvent: IGNORED")
