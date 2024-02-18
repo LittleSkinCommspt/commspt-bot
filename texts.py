@@ -34,7 +34,7 @@ Edge: https://aka.ms/msedge'''
     client_refresh = '请在你的 启动器 -> 账户列表 内刷新你的账户（以 HMCL3 为例）'
     csl_log_parsing = 'Got it! I\'m busy with parsing it now!'
     cafe = '''此群禁止讨论除 LittleSkin 以外的内容。你可以选择加入 Honoka Café 和我们一起聊天，群号：651672723。'''
-    csl_latest = '你可以访问 https://3-3.dev/csl-download 以下载适合对应版本的 CustomSkinLoader 模组。'
+    csl_latest = '你可以在站内的「Mod 下载」下载 CustomSkinLoader 并了解如何配置它。\nhttps://littleskin.cn/user/config'
     down_now = '''  *  *  *
 LittleSkin 目前出现了断断续续的 502 Bad Gateway / 504 Gateway Timeout 的问题，我们对此给您带来的不便深表歉意。
 我们正在全力以赴与我们的网络服务提供商合作，迅速解决这一问题。
