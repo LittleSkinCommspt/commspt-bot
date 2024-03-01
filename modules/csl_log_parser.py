@@ -22,6 +22,15 @@ async def parse_csl_log(app: Ariadne, group: Group, message: MessageChain):
     async with aiohttp.ClientSession() as session:
         async with session.get(download_url) as resp:
             csl_log = await resp.text()
+    # upload to mclo.gs
+    async with aiohttp.ClientSession() as session:
+        async with session.post('https://api.mclo.gs/1/log', data={'content': csl_log}) as resp:
+            mclogs: dict = await resp.json()
+    if mclogs.get('success'):
+        await app.send_message(
+            group,
+            MessageChain(Plain(mclogs.get("url"))),
+        )
     # Parse log
     env_info, playerInfoMessage, exceptionLines, csl_problems = cslHandler(csl_log)
     await app.send_message(group, MessageChain(Plain(f'''{env_info}
