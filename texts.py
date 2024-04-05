@@ -15,16 +15,16 @@ class TextFields(object):
     view_hash_length_error = 'Hash 长度有误'
     view_not_200_error = '找不到材质？'
     view_no_hash_error = '请提供材质 Hash'
-    mail = '请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n更多：https://manual.littlesk.in/email.html'
+    mail = '请发送邮件至 support@littlesk.in，并在邮件中详细说明你的情况\n详细：https://manual.littlesk.in/email.html'
     csl_log = 'CustomSkinLoader 的日志通常位于 .minecraft/CustomSkinLoader/CustomSkinLoader.log，请将文件直接发送至群内。'
     csl_config_littleskin = '''若安装了 CustomSkinLoader 后无法正确加载皮肤，可能是当前角色名被同名正版优先加载，可通过以下方法手动修改 CustomSkinLoader 的加载顺序
 
 https://manual.littlesk.in/newbee/mod.html
 ————————————————
 或者，您可以在「群文件-资源下载」下载到一个 CustomSkinLoader.json 文件，将其直接替换 .minecraft\CustomSkinLoader 下的文件即可'''
-    csl_config_csl_group = '请访问 https://csl.littleservice.cn/faq/config-csl.html 以了解如何修改 CustomSkinLoader 的配置文件'
+    csl_config_csl_group = '请访问 https://manual.littlesk.in/newbee/mod.html#customskinloader 以了解如何修改 CustomSkinLoader 的配置文件'
     clfcsl = '''在 1.7.10 中使用需要同时安装最新 Forge 版的 CustomSkinLoader 和 CompatibilityLayerForCustomSkinLoader，
-你可以在 https://www.mcbbs.net/thread-1109996-1-1.html 下载到后者'''
+你可以在 https://www.curseforge.com/minecraft/mc-mods/compatibilitylayerforcustomskinloader 下载到后者'''
     browser = '''请仔细阅读图片中的内容！以下是几个推荐的浏览器
 Chrome: https://www.google.cn/chrome
 Firefox: https://www.mozilla.org/firefox/new/
@@ -43,8 +43,7 @@ LittleSkin 目前出现了断断续续的 502 Bad Gateway / 504 Gateway Timeout 
   *  *  * '''
     join_welcome = f'\n欢迎来到 LittleSkin 问题反馈群！请首先阅读置顶公告。\n{cafe}'
     pay_for_help = '在群里和大佬吹牛逼帮助不了你的问题？\nhttps://afdian.net/@tnqzh123 \n购买一对一帮助服务即可快速解决你的问题！'
-    question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决',
-                                    '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
+    question_keywords: List[str] = ['为什么', '怎么回事', '为啥', '问个问题', '请问', '问一下', '如何解决', '我想问', '什么问题', '咋回事', '怎么办', '怎么解决']
     question_keywords_excepted: List[str] = ['为什么要', '怎么能', '怎么这样', '干嘛', '干吗', '怎么可以', '难道']    
     log_minecraft = '请使用启动器的「测试游戏」功能启动游戏，并在复现问题后导出日志发送至群内。如果问题与外置登录有关，请在启动器的「JVM 参数（Java 虚拟机参数）」设置中填入 -Dauthlibinjector.debug'
     log_launcher = '请在启动器中复现你的问题，然后导出启动器日志发送至群内'
